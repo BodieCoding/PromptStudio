@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - SA_PASSWORD=Two3RobotDuckTag!
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    networks:
+      - prompt-net
+  promptstudio:
+    build:
+      context: .
+      dockerfile: PromptStudio/Dockerfile
+    depends_on:
+      - sqlserver
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PromptStudio;User Id=sa;Password=Two3RobotDuckTag!;TrustServerCertificate=true;
+    ports:
+      - "5000:80"
+    networks:
+      - prompt-net
+networks:
+  prompt-net:
+    driver: bridge

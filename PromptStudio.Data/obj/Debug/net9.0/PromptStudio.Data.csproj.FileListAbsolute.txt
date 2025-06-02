@@ -1,0 +1,17 @@
+C:\Code\Promptlet\PromptStudio.Data\bin\Debug\net9.0\PromptStudio.Data.deps.json
+C:\Code\Promptlet\PromptStudio.Data\bin\Debug\net9.0\PromptStudio.Data.runtimeconfig.json
+C:\Code\Promptlet\PromptStudio.Data\bin\Debug\net9.0\PromptStudio.Data.dll
+C:\Code\Promptlet\PromptStudio.Data\bin\Debug\net9.0\PromptStudio.Data.pdb
+C:\Code\Promptlet\PromptStudio.Data\bin\Debug\net9.0\PromptStudio.Core.dll
+C:\Code\Promptlet\PromptStudio.Data\bin\Debug\net9.0\PromptStudio.Core.pdb
+C:\Code\Promptlet\PromptStudio.Data\obj\Debug\net9.0\PromptStudio.Data.csproj.AssemblyReference.cache
+C:\Code\Promptlet\PromptStudio.Data\obj\Debug\net9.0\PromptStudio.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Code\Promptlet\PromptStudio.Data\obj\Debug\net9.0\PromptStudio.Data.AssemblyInfoInputs.cache
+C:\Code\Promptlet\PromptStudio.Data\obj\Debug\net9.0\PromptStudio.Data.AssemblyInfo.cs
+C:\Code\Promptlet\PromptStudio.Data\obj\Debug\net9.0\PromptStudio.Data.csproj.CoreCompileInputs.cache
+C:\Code\Promptlet\PromptStudio.Data\obj\Debug\net9.0\PromptSt.237EC2C6.Up2Date
+C:\Code\Promptlet\PromptStudio.Data\obj\Debug\net9.0\PromptStudio.Data.dll
+C:\Code\Promptlet\PromptStudio.Data\obj\Debug\net9.0\refint\PromptStudio.Data.dll
+C:\Code\Promptlet\PromptStudio.Data\obj\Debug\net9.0\PromptStudio.Data.pdb
+C:\Code\Promptlet\PromptStudio.Data\obj\Debug\net9.0\PromptStudio.Data.genruntimeconfig.cache
+C:\Code\Promptlet\PromptStudio.Data\obj\Debug\net9.0\ref\PromptStudio.Data.dll

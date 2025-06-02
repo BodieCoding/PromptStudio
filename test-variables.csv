@@ -1,0 +1,14 @@
+language,code
+javascript,"function greet(name) {
+    return 'Hello ' + name;
+}"
+python,"def greet(name):
+    return f""Hello {name}"""
+java,"public class Greeting {
+    public static String greet(String name) {
+        return ""Hello "" + name;
+    }
+}"
+typescript,"function greet(name: string): string {
+    return `Hello ${name}`;
+}"

@@ -1,0 +1,28 @@
+{
+    "folders": [
+        {
+            "name": "Solution Root",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "dotnet.defaultSolution": "./PromptStudio.sln",
+        "files.exclude": {
+            "**/bin": true,
+            "**/obj": true,
+            "**/.vs": true
+        },
+        "search.exclude": {
+            "**/bin": true,
+            "**/obj": true,
+            "**/node_modules": true
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-dotnettools.csharp",
+            "ms-dotnettools.csdevkit",
+            "ms-dotnettools.vscode-dotnet-runtime"
+        ]
+    }
+}

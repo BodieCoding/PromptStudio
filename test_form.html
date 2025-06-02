@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Prompt Creation</title>
+</head>
+<body>
+    <form action="http://localhost:5131/Prompts/Create" method="post" id="testForm">
+        <input type="hidden" name="__RequestVerificationToken" value="TOKEN_PLACEHOLDER" />
+        <input type="hidden" name="CollectionId" value="1" />
+        <input type="text" name="PromptTemplate.Name" value="API Test Prompt" />
+        <input type="text" name="PromptTemplate.Description" value="Testing prompt creation via form" />
+        <textarea name="PromptTemplate.Content">Generate a {{type}} for {{topic}} with {{tone}} tone.</textarea>
+        <button type="submit">Create Prompt</button>
+    </form>
+    
+    <script>
+        // Get token first
+        fetch('http://localhost:5131/Prompts/Create')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const token = doc.querySelector('input[name="__RequestVerificationToken"]').value;
+                document.querySelector('input[name="__RequestVerificationToken"]').value = token;
+                console.log('Token set:', token);
+            });
+    </script>
+</body>
+</html>

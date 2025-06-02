@@ -1,0 +1,14 @@
+C:\Code\Promptlet\PromptStudio.Core\bin\Debug\net9.0\PromptStudio.Core.deps.json
+C:\Code\Promptlet\PromptStudio.Core\bin\Debug\net9.0\PromptStudio.Core.runtimeconfig.json
+C:\Code\Promptlet\PromptStudio.Core\bin\Debug\net9.0\PromptStudio.Core.dll
+C:\Code\Promptlet\PromptStudio.Core\bin\Debug\net9.0\PromptStudio.Core.pdb
+C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.csproj.AssemblyReference.cache
+C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.AssemblyInfoInputs.cache
+C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.AssemblyInfo.cs
+C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.csproj.CoreCompileInputs.cache
+C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.dll
+C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\refint\PromptStudio.Core.dll
+C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.pdb
+C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.genruntimeconfig.cache
+C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\ref\PromptStudio.Core.dll

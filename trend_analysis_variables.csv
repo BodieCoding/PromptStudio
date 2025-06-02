@@ -1,0 +1,9 @@
+metric_name,time_frame,dataset_name,time_granularity,seasonality_pattern,trend_type,forecast_horizon,risk_factors,industry,market_conditions,external_factors,decision_makers,business_decision
+Monthly Recurring Revenue,24 months,SaaS Revenue Data,monthly,quarterly billing cycles,growth,6 months,economic downturn,SaaS Technology,stable growth,remote work adoption,CFO,budget planning
+Website Traffic,18 months,Google Analytics,weekly,holiday seasonality,cyclical,3 months,algorithm changes,E-commerce,competitive market,search engine updates,Marketing VP,ad spend allocation
+Customer Acquisition Cost,12 months,Marketing Spend Data,monthly,no clear pattern,increasing,4 months,market saturation,FinTech,high competition,regulatory changes,Growth team,channel strategy
+Product Feature Adoption,6 months,Product Analytics,daily,workday patterns,exponential,2 months,feature complexity,Enterprise Software,digital transformation,user training capacity,Product VP,feature investment
+Support Ticket Volume,24 months,Customer Support Data,weekly,end-of-month spikes,seasonal,8 weeks,product releases,SaaS Platform,scaling challenges,customer growth rate,Operations VP,staffing decisions
+Email Campaign Performance,12 months,Email Marketing Data,weekly,holiday seasonality,declining,6 weeks,deliverability issues,Retail,omnichannel shift,email provider changes,Marketing Director,campaign strategy
+Mobile App Downloads,18 months,App Store Analytics,daily,weekend patterns,viral growth,30 days,app store policy changes,Mobile Gaming,saturated market,platform algorithm updates,Product team,marketing investment
+Sales Pipeline Velocity,24 months,CRM Sales Data,monthly,quarterly closing patterns,accelerating,3 months,sales team turnover,B2B Services,economic uncertainty,buyer behavior changes,Sales VP,quota planning
