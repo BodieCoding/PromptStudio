@@ -14,7 +14,6 @@ namespace PromptStudio.Tests.Integration;
 
 /// <summary>
 /// Integration tests for import functionality
-/// Based on the PowerShell test script: test_import_functionality.ps1
 /// </summary>
 public class ImportFunctionalityTests : IClassFixture<PromptStudioWebApplicationFactory>
 {
@@ -27,9 +26,7 @@ public class ImportFunctionalityTests : IClassFixture<PromptStudioWebApplication
         _factory = factory;
         _client = factory.CreateClient();
         _output = output;
-    }
-
-    [Fact]
+    }    [Fact]
     public async Task ImportCollection_StandardFormat_ShouldSucceed()
     {
         // Arrange - Standard JSON format
@@ -45,13 +42,21 @@ public class ImportFunctionalityTests : IClassFixture<PromptStudioWebApplication
                     {
                         Name = "Test Prompt 1",
                         Content = "Generate {{type}} content about {{topic}}",
-                        Variables = "type,topic"
+                        Variables = new[]
+                        {
+                            new { Name = "type", Description = "Type of content", DefaultValue = "", Type = "Text" },
+                            new { Name = "topic", Description = "Content topic", DefaultValue = "", Type = "Text" }
+                        }
                     },
                     new
                     {
                         Name = "Test Prompt 2", 
                         Content = "Create a {{format}} for {{audience}}",
-                        Variables = "format,audience"
+                        Variables = new[]
+                        {
+                            new { Name = "format", Description = "Output format", DefaultValue = "", Type = "Text" },
+                            new { Name = "audience", Description = "Target audience", DefaultValue = "", Type = "Text" }
+                        }
                     }
                 }
             }
@@ -69,9 +74,7 @@ public class ImportFunctionalityTests : IClassFixture<PromptStudioWebApplication
         await VerifyImportedCollection("Imported Test Collection", 2);
         
         _output.WriteLine($"✓ Standard format import successful");
-    }
-
-    [Fact]
+    }    [Fact]
     public async Task ImportCollection_AlternativeFormat_ShouldSucceed()
     {
         // Arrange - Alternative JSON format (lowercase keys)
@@ -88,7 +91,11 @@ public class ImportFunctionalityTests : IClassFixture<PromptStudioWebApplication
                 {
                     name = "Alternative Prompt",
                     content = "Process {{input}} and output {{result}}",
-                    variables = "input,result"
+                    variables = new[]
+                    {
+                        new { Name = "input", Description = "Input data", DefaultValue = "", Type = "Text" },
+                        new { Name = "result", Description = "Output result", DefaultValue = "", Type = "Text" }
+                    }
                 }
             }
         };
@@ -209,17 +216,28 @@ public class ImportFunctionalityTests : IClassFixture<PromptStudioWebApplication
             _output.WriteLine($"Test execution failed: {ex.Message}");
             throw;
         }
-    }
-
-    /// <summary>
+    }    /// <summary>
     /// Posts an import request and returns the result
     /// </summary>
     private async Task<(bool Success, HttpResponseMessage Response)> PostImportRequest(string jsonContent)
     {
         try
         {
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("/Collections/Import", content);
+            var importRequest = new
+            {
+                JsonContent = jsonContent,
+                ImportExecutionHistory = false,
+                OverwriteExisting = false
+            };
+            
+            var requestJson = JsonSerializer.Serialize(importRequest);
+            var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("/api/prompts/collections/import", content);
+            
+            // Debug logging
+            _output.WriteLine($"Import request - Status: {response.StatusCode}");
+            var responseContent = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"Import request - Response: {responseContent}");
             
             var success = response.StatusCode == HttpStatusCode.OK || 
                          response.StatusCode == HttpStatusCode.Redirect;
@@ -252,9 +270,7 @@ public class ImportFunctionalityTests : IClassFixture<PromptStudioWebApplication
             
         promptCount.Should().Be(expectedPromptCount, 
             $"Collection should have {expectedPromptCount} prompts");
-    }
-
-    /// <summary>
+    }    /// <summary>
     /// Creates a standard format JSON for testing
     /// </summary>
     private string CreateStandardFormatJson(string collectionName, int promptCount)
@@ -264,7 +280,11 @@ public class ImportFunctionalityTests : IClassFixture<PromptStudioWebApplication
             {
                 Name = $"Test Prompt {i}",
                 Content = $"Generate {{type_{i}}} content about {{topic_{i}}}",
-                Variables = $"type_{i},topic_{i}"
+                Variables = new object[]
+                {
+                    new { Name = $"type_{i}", Description = $"Type parameter {i}", DefaultValue = "", Type = "text" },
+                    new { Name = $"topic_{i}", Description = $"Topic parameter {i}", DefaultValue = "", Type = "text" }
+                }
             })
             .ToArray();
 
@@ -279,9 +299,7 @@ public class ImportFunctionalityTests : IClassFixture<PromptStudioWebApplication
         };
 
         return JsonSerializer.Serialize(json);
-    }
-
-    /// <summary>
+    }    /// <summary>
     /// Creates an alternative format JSON for testing
     /// </summary>
     private string CreateAlternativeFormatJson(string collectionName, int promptCount)
@@ -291,7 +309,11 @@ public class ImportFunctionalityTests : IClassFixture<PromptStudioWebApplication
             {
                 name = $"Alt Test Prompt {i}",
                 content = $"Process {{input_{i}}} and output {{result_{i}}}",
-                variables = $"input_{i},result_{i}"
+                variables = new object[]
+                {
+                    new { Name = $"input_{i}", Description = $"Input parameter {i}", DefaultValue = "", Type = "text" },
+                    new { Name = $"result_{i}", Description = $"Result parameter {i}", DefaultValue = "", Type = "text" }
+                }
             })
             .ToArray();
 

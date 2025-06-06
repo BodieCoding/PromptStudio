@@ -1,6 +1,6 @@
 using PromptStudio.Core.Domain;
 using PromptStudio.Core.Interfaces;
-using PromptStudio.Core.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,13 +15,11 @@ namespace PromptStudio.Core.Services;
 public class PromptService : IPromptService
 {
     private static readonly Regex VariablePattern = new(@"\{\{([^{}]+)\}\}", RegexOptions.Compiled);
-    private readonly PromptStudioDbContext _context;
-
-    /// <summary>
+    private readonly IPromptStudioDbContext _context;    /// <summary>
     /// Initializes a new instance of the PromptService
     /// </summary>
     /// <param name="context">Database context for data access</param>
-    public PromptService(PromptStudioDbContext context)
+    public PromptService(IPromptStudioDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
@@ -813,26 +811,28 @@ public class PromptService : IPromptService
     private class ServiceCollectionData { public string? Name { get; set; } public string? Description { get; set; } public List<ServicePromptData>? Prompts { get; set; } }
     private class ServicePromptData { public string? Name { get; set; } public string? Description { get; set; } public string? Content { get; set; } public List<ServiceVariableData>? Variables { get; set; } public List<ServiceExecutionData>? ExecutionHistory { get; set; } }
     private class ServiceVariableData { public string? Name { get; set; } public string? Description { get; set; } public string? DefaultValue { get; set; } public string? Type { get; set; } }
-    private class ServiceExecutionData { public DateTime ExecutedAt { get; set; } public string? VariableValues { get; set; } public string? ResolvedPrompt { get; set; } }
-
-    public async Task<Collection?> ImportCollectionFromJsonAsync(string jsonContent, bool importExecutionHistory, bool overwriteExisting)
+    private class ServiceExecutionData { public DateTime ExecutedAt { get; set; } public string? VariableValues { get; set; } public string? ResolvedPrompt { get; set; } }    public async Task<Collection?> ImportCollectionFromJsonAsync(string jsonContent, bool importExecutionHistory, bool overwriteExisting)
     {
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         ServiceCollectionData? collectionData = null;
-        List<ServicePromptData>? promptsData = null;
-
-        // Attempt to deserialize standard format
+        List<ServicePromptData>? promptsData = null;        // Debug: Log the JSON content we're trying to deserialize
+        Console.WriteLine($"DEBUG: JSON Content length: {jsonContent.Length}");
+        Console.WriteLine($"DEBUG: JSON Content: {jsonContent.Substring(0, Math.Min(200, jsonContent.Length))}...");        // Attempt to deserialize standard format (collection contains prompts)
         var importData = JsonSerializer.Deserialize<ServiceImportData>(jsonContent, options);
-        if (importData?.Collection != null)
+        if (importData?.Collection != null && importData.Collection.Prompts != null)
         {
+            Console.WriteLine("DEBUG: Using standard format");
             collectionData = importData.Collection;
             promptsData = collectionData.Prompts;
         }
-        else // Attempt to deserialize alternative format
+        else // Attempt to deserialize alternative format (prompts at root level)
         {
+            Console.WriteLine("DEBUG: Trying alternative format");
             var altFormat = JsonSerializer.Deserialize<ServiceAlternativeImportData>(jsonContent, options);
             if (altFormat?.Collection != null)
             {
+                Console.WriteLine($"DEBUG: Alternative format collection: {altFormat.Collection.Name}");
+                Console.WriteLine($"DEBUG: Alternative format prompts count: {altFormat.Prompts?.Count ?? 0}");
                 collectionData = new ServiceCollectionData
                 {
                     Name = altFormat.Collection.Name,
@@ -841,15 +841,23 @@ public class PromptService : IPromptService
                 };
                 promptsData = altFormat.Prompts;
             }
-        }
-
-        if (collectionData == null)
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Alternative format failed");
+            }
+        }        if (collectionData == null)
         {
             // If data is still null, the format is unrecognized or essential parts are missing.
-            return null; // Or throw ArgumentException("Invalid import file format.")
+            throw new ArgumentException("Invalid import file format: Unable to parse collection data");
         }
 
-        var collectionName = collectionData.Name ?? "Untitled Collection";
+        // Validate required fields
+        if (string.IsNullOrWhiteSpace(collectionData.Name))
+        {
+            throw new ArgumentException("Collection name is required for import");
+        }
+
+        var collectionName = collectionData.Name;
         var existingCollection = await _context.Collections
             .Include(c => c.PromptTemplates)
                 .ThenInclude(pt => pt.Variables)
@@ -889,31 +897,23 @@ public class PromptService : IPromptService
         targetCollection.Description = collectionData.Description ?? "";
         targetCollection.CreatedAt = DateTime.UtcNow;
         targetCollection.UpdatedAt = DateTime.UtcNow;
-        targetCollection.PromptTemplates = new List<PromptTemplate>(); // Initialize navigation property
-
-        if (existingCollection == null || overwriteExisting) // Add if it's new or if we overwrote
-        {
-            _context.Collections.Add(targetCollection);
-        }
-        // If !OverwriteExisting and existingCollection != null, targetCollection is a new entity to be added.
-        // If existingCollection != null and overwriteExisting, targetCollection is also a new entity.
-        // The logic above already adds targetCollection if it's truly new or replacing an old one.
-        // If we were updating an existing one (not overwriting), we wouldn't Add, just modify.
-
-        // Save to get targetCollection.Id if it's new
-        await _context.SaveChangesAsync();
-
+        targetCollection.PromptTemplates = new List<PromptTemplate>(); // Initialize navigation property        // Always add the new collection to context since we're creating a new entity in all cases
+        _context.Collections.Add(targetCollection);
 
         if (promptsData != null)
         {
+            // Debug: Log how many prompts we're processing
+            Console.WriteLine($"DEBUG: Processing {promptsData.Count} prompts");
+            
             foreach (var promptData in promptsData)
             {
+                Console.WriteLine($"DEBUG: Processing prompt '{promptData.Name}' with content '{promptData.Content}'");
+                
                 var prompt = new PromptTemplate
                 {
                     Name = promptData.Name ?? "Untitled Prompt",
                     Description = promptData.Description,
                     Content = promptData.Content ?? "",
-                    CollectionId = targetCollection.Id, // Assign foreign key
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     Variables = new List<PromptVariable>(),
@@ -930,8 +930,8 @@ public class PromptService : IPromptService
                         Description = importedVarData?.Description,
                         DefaultValue = importedVarData?.DefaultValue,
                         Type = Enum.TryParse<VariableType>(importedVarData?.Type ?? "Text", true, out var type) ? type : VariableType.Text,
-                        CreatedAt = DateTime.UtcNow,
-                        PromptTemplateId = prompt.Id // Will be set by EF if relationship is configured
+                        CreatedAt = DateTime.UtcNow
+                        // Don't set PromptTemplateId - let EF handle it through navigation properties
                     });
                 }
 
@@ -945,15 +945,19 @@ public class PromptService : IPromptService
                             ResolvedPrompt = executionData.ResolvedPrompt ?? "",
                             ExecutedAt = executionData.ExecutedAt,
                             AiProvider = "Imported",
-                            Model = "N/A",
-                            PromptTemplateId = prompt.Id // Will be set by EF
+                            Model = "N/A"
+                            // Don't set PromptTemplateId - let EF handle it through navigation properties
                         });
                     }
                 }
-                // Add the fully constructed prompt to the context (or to the collection's navigation property if already tracked)
-                _context.PromptTemplates.Add(prompt);
+                // Add the fully constructed prompt to the collection's navigation property
+                targetCollection.PromptTemplates.Add(prompt);
             }
-        }        await _context.SaveChangesAsync(); // Save all prompts, variables, executions
-        return await GetCollectionByIdAsync(targetCollection.Id); // Return the re-fetched collection with all includes
+        }        // Save all entities in one transaction
+        await _context.SaveChangesAsync();
+        
+        // After saving, the targetCollection.Id will be populated by EF
+        // Return the re-fetched collection with all includes
+        return await GetCollectionByIdAsync(targetCollection.Id);
     }
 }

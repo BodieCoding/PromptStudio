@@ -2,7 +2,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using PromptStudio.Core.Domain;
 using PromptStudio.Core.Interfaces;
-using PromptStudio.Core.Data;
+using PromptStudio.Data;
 using PromptStudio.Core.Services;
 using Xunit;
 using Xunit.Abstractions;
@@ -14,18 +14,17 @@ namespace PromptStudio.Tests.Unit;
 /// Based on the PowerShell test scripts: test_csv_simple.ps1 and test_csv_mcp_functionality.ps1
 /// </summary>
 public class CsvFunctionalityTests : IDisposable
-{
-    private readonly PromptStudio.Core.Data.PromptStudioDbContext _context;
+{    private readonly PromptStudioDbContext _context;
     private readonly IPromptService _promptService;
     private readonly ITestOutputHelper _output;
 
     public CsvFunctionalityTests(ITestOutputHelper output)
     {
         _output = output;
-          var options = new DbContextOptionsBuilder<PromptStudio.Core.Data.PromptStudioDbContext>()
+          var options = new DbContextOptionsBuilder<PromptStudioDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-              _context = new PromptStudio.Core.Data.PromptStudioDbContext(options);
+              _context = new PromptStudioDbContext(options);
         _promptService = new PromptService(_context);
         
         // Ensure database is created

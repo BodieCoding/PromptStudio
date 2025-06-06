@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using PromptStudio.Core.Data;
+using PromptStudio.Data;
 using PromptStudio.Core.Services;
 using PromptStudio.Core.Interfaces;
 
@@ -7,14 +7,25 @@ using PromptStudio.Core.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure services
-{
-    // Add MVC, API Controllers, and Razor Pages
+{    // Add MVC, API Controllers, and Razor Pages
     builder.Services.AddControllers();
-    builder.Services.AddRazorPages();    // Configure Entity Framework with SQL Server
-    builder.Services.AddDbContext<PromptStudioDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    builder.Services.AddRazorPages();
+    
+    // Configure Entity Framework - conditionally register database provider
+    // Use in-memory database for testing environment, SQL Server for others
+    if (builder.Environment.EnvironmentName == "Testing")
+    {
+        builder.Services.AddDbContext<PromptStudioDbContext>(options =>
+            options.UseInMemoryDatabase(databaseName: "PromptStudioTestDb"));
+    }
+    else
+    {
+        builder.Services.AddDbContext<PromptStudioDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    }
 
     // Register application services
+    builder.Services.AddScoped<IPromptStudioDbContext>(provider => provider.GetRequiredService<PromptStudioDbContext>());
     builder.Services.AddScoped<IPromptService, PromptStudio.Core.Services.PromptService>();
 }
 

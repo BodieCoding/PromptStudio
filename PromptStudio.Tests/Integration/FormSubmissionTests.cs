@@ -11,7 +11,6 @@ namespace PromptStudio.Tests.Integration;
 
 /// <summary>
 /// Integration tests for form submission functionality
-/// Based on the PowerShell test script: test_form_submission.ps1
 /// </summary>
 public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFactory>
 {
@@ -37,12 +36,14 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
         });
 
         // Act
-        var response = await _client.PostAsync("/Collections/Create", formData);        // Assert
+        var response = await _client.PostAsync("/Collections/Create", formData);
+
+        // Assert
         response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.Redirect);
 
         // Verify the collection was created
         await VerifyCollectionExists("Test Collection Form");
-        
+
         _output.WriteLine("✓ Collection form submission successful");
     }
 
@@ -51,7 +52,7 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
     {
         // Arrange - First create a collection
         var collectionId = await CreateTestCollectionAsync();
-        
+
         var formData = new FormUrlEncodedContent(new[]
         {
             new KeyValuePair<string, string>("Name", "Test Prompt Form"),
@@ -61,12 +62,14 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
         });
 
         // Act
-        var response = await _client.PostAsync("/Prompts/Create", formData);        // Assert
+        var response = await _client.PostAsync("/Prompts/Create", formData);
+
+        // Assert
         response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.Redirect);
 
         // Verify the prompt was created
         await VerifyPromptExists("Test Prompt Form", collectionId);
-        
+
         _output.WriteLine("✓ Prompt form submission successful");
     }
 
@@ -76,9 +79,9 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
         // Arrange - Create collection and prompt first
         var collectionId = await CreateTestCollectionAsync();
         var promptId = await CreateTestPromptAsync(collectionId);
-        
+
         var csvData = "language,framework\nC#,ASP.NET\nJavaScript,React\nPython,Django";
-        
+
         var formData = new FormUrlEncodedContent(new[]
         {
             new KeyValuePair<string, string>("Name", "Test Variable Collection"),
@@ -90,11 +93,12 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
         // Act
         var response = await _client.PostAsync("/VariableCollections/Create", formData);
 
-        // Assert        response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.Redirect);
+        // Assert        
+        response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.Redirect);
 
         // Verify the variable collection was created
         await VerifyVariableCollectionExists("Test Variable Collection", promptId);
-        
+
         _output.WriteLine("✓ Variable collection form submission successful");
     }
 
@@ -117,7 +121,8 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
 
         // Assert
         if (string.IsNullOrEmpty(name))
-        {            // Should fail validation for empty name
+        {
+            // Should fail validation for empty name
             response.StatusCode.Should().BeOneOf(HttpStatusCode.BadRequest, HttpStatusCode.OK);
         }
         else
@@ -125,7 +130,7 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
             // Should succeed for valid name
             response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.Redirect);
         }
-        
+
         _output.WriteLine($"✓ Form validation test: {expectedBehavior}");
     }
 
@@ -145,15 +150,15 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
             });
 
             var collectionResponse = await _client.PostAsync("/Collections/Create", collectionFormData);
-            var collectionSuccess = collectionResponse.StatusCode == HttpStatusCode.OK || 
+            var collectionSuccess = collectionResponse.StatusCode == HttpStatusCode.OK ||
                                   collectionResponse.StatusCode == HttpStatusCode.Redirect;
-            testResults.Add(("Create Collection Form", collectionSuccess, 
+            testResults.Add(("Create Collection Form", collectionSuccess,
                 $"Status: {collectionResponse.StatusCode}"));
 
             if (collectionSuccess)
             {
                 var collectionId = await GetCollectionIdByName("Workflow Test Collection");
-                
+
                 // Step 2: Create Prompt
                 var promptFormData = new FormUrlEncodedContent(new[]
                 {
@@ -164,15 +169,15 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
                 });
 
                 var promptResponse = await _client.PostAsync("/Prompts/Create", promptFormData);
-                var promptSuccess = promptResponse.StatusCode == HttpStatusCode.OK || 
+                var promptSuccess = promptResponse.StatusCode == HttpStatusCode.OK ||
                                   promptResponse.StatusCode == HttpStatusCode.Redirect;
-                testResults.Add(("Create Prompt Form", promptSuccess, 
+                testResults.Add(("Create Prompt Form", promptSuccess,
                     $"Status: {promptResponse.StatusCode}"));
 
                 if (promptSuccess)
                 {
                     var promptId = await GetPromptIdByName("Workflow Test Prompt");
-                    
+
                     // Step 3: Create Variable Collection
                     var variableFormData = new FormUrlEncodedContent(new[]
                     {
@@ -183,9 +188,9 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
                     });
 
                     var variableResponse = await _client.PostAsync("/VariableCollections/Create", variableFormData);
-                    var variableSuccess = variableResponse.StatusCode == HttpStatusCode.OK || 
+                    var variableSuccess = variableResponse.StatusCode == HttpStatusCode.OK ||
                                         variableResponse.StatusCode == HttpStatusCode.Redirect;
-                    testResults.Add(("Create Variable Collection Form", variableSuccess, 
+                    testResults.Add(("Create Variable Collection Form", variableSuccess,
                         $"Status: {variableResponse.StatusCode}"));
                 }
             }
@@ -199,11 +204,11 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
                 _output.WriteLine($"[{status}] {testName}: {details}");
                 if (success) successCount++;
             }
-            
+
             _output.WriteLine($"\nResults: {successCount} PASSED, {testResults.Count - successCount} FAILED out of {testResults.Count} tests");
 
             // Assert that the complete workflow succeeded
-            successCount.Should().Be(testResults.Count, 
+            successCount.Should().Be(testResults.Count,
                 "All form submission steps should succeed for a complete workflow");
 
             if (successCount == testResults.Count)
@@ -239,7 +244,7 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
 
         dbContext.Collections.Add(collection);
         await dbContext.SaveChangesAsync();
-        
+
         return collection.Id;
     }
 
@@ -249,7 +254,7 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
     private async Task<int> CreateTestPromptAsync(int collectionId)
     {
         using var scope = _factory.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<PromptStudioDbContext>();        var prompt = new PromptTemplate
+        var dbContext = scope.ServiceProvider.GetRequiredService<PromptStudioDbContext>(); var prompt = new PromptTemplate
         {
             Name = $"Test Prompt {Guid.NewGuid()}",
             Content = "Test {{variable1}} and {{variable2}}",
@@ -265,7 +270,7 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
 
         dbContext.PromptTemplates.Add(prompt);
         await dbContext.SaveChangesAsync();
-        
+
         return prompt.Id;
     }
 

@@ -26,32 +26,20 @@ public class PromptStudioWebApplicationFactory : WebApplicationFactory<Program>
             logging.ClearProviders();
             logging.AddConsole();
             logging.AddDebug();
-        });
-        builder.ConfigureServices(services =>
-        {
-            // Ensure we're using in-memory database
-            var descriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<PromptStudioDbContext>));
-            if (descriptor != null)
-            {
-                services.Remove(descriptor);
-            }
-
-            services.AddDbContext<PromptStudioDbContext>(options =>
-            {
-                options.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
-            });
+        });        builder.ConfigureServices(services =>
+        {            // The main Program.cs now handles database provider selection based on environment
+            // Since we're using "Testing" environment, it will automatically use InMemory database
             
             // Explicitly scan for controllers from the Web/API project
             // Find the assembly containing your controllers using a known type
-            // Option 1: Using the DbContext as a reference to find the main assembly
-            var mainAssembly = typeof(PromptStudioDbContext).Assembly;
+            // Option 1: Using the Program class as a reference to find the main assembly
+            var mainAssembly = typeof(Program).Assembly;
             
             // Option 2: If your controllers are in a different assembly, use a controller type
             // var mainAssembly = typeof(YourControllerClassName).Assembly;
             
             // Option 3: Load assembly by name if necessary
-            // var mainAssembly = Assembly.Load("PromptStudio.Web");
+            // var mainAssembly = Assembly.Load("PromptStudio");
             
             services.AddControllers()
                 .AddApplicationPart(mainAssembly);

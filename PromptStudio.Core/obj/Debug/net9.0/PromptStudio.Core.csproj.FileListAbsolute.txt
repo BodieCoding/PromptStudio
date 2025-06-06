@@ -7,6 +7,7 @@ C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.Generated
 C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.AssemblyInfoInputs.cache
 C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.AssemblyInfo.cs
 C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.csproj.CoreCompileInputs.cache
+C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.sourcelink.json
 C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.dll
 C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\refint\PromptStudio.Core.dll
 C:\Code\Promptlet\PromptStudio.Core\obj\Debug\net9.0\PromptStudio.Core.pdb

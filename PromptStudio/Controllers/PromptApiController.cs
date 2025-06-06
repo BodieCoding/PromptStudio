@@ -452,7 +452,7 @@ public class PromptApiController(IPromptService promptService) : ControllerBase
                 collection.Description,
                 collection.CreatedAt,
                 collection.UpdatedAt,
-                PromptCount = 0
+                PromptCount = collection.PromptTemplates?.Count ?? 0
             };
 
             return CreatedAtAction(nameof(GetCollection), new { id = collection.Id }, response);
@@ -468,6 +468,64 @@ public class PromptApiController(IPromptService promptService) : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError, $"Error creating collection: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Import a collection from JSON
+    /// </summary>
+    /// <param name="request">Import request with JSON content</param>
+    /// <returns>Import result</returns>
+    [HttpPost("collections/import")]
+    public async Task<IActionResult> ImportCollection([FromBody] ImportCollectionRequest request)
+    {
+        try
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.JsonContent))
+            {
+                return BadRequest("JSON content is required for import.");
+            }
+
+            var importedCollection = await promptService.ImportCollectionFromJsonAsync(
+                request.JsonContent,
+                request.ImportExecutionHistory,
+                request.OverwriteExisting);
+
+            if (importedCollection != null)
+            {
+                var response = new
+                {
+                    Success = true,
+                    Message = $"Successfully imported collection '{importedCollection.Name}'",
+                    Collection = new
+                    {
+                        importedCollection.Id,
+                        importedCollection.Name,
+                        importedCollection.Description,
+                        importedCollection.CreatedAt,
+                        importedCollection.UpdatedAt,
+                        PromptCount = importedCollection.PromptTemplates?.Count ?? 0
+                    }
+                };
+
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest("Failed to import collection. The JSON format might be invalid or an unexpected error occurred.");
+            }
+        }
+        catch (JsonException jsonEx)
+        {
+            return BadRequest($"Invalid JSON format: {jsonEx.Message}");
+        }
+        catch (ArgumentException argEx)
+        {
+            return BadRequest($"Import error: {argEx.Message}");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"An unexpected error occurred during import: {ex.Message}");
         }
     }
 }
@@ -558,4 +616,25 @@ public class CreateCollectionRequest
     /// Optional description
     /// </summary>
     public string? Description { get; set; }
+}
+
+/// <summary>
+/// Request model for importing a collection from JSON
+/// </summary>
+public class ImportCollectionRequest
+{
+    /// <summary>
+    /// JSON content for import
+    /// </summary>
+    public string JsonContent { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Whether to import execution history
+    /// </summary>
+    public bool ImportExecutionHistory { get; set; } = false;
+
+    /// <summary>
+    /// Whether to overwrite existing collections
+    /// </summary>
+    public bool OverwriteExisting { get; set; } = false;
 }

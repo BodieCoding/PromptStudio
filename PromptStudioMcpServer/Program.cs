@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
-using PromptStudio.Core.Data;
+using PromptStudio.Data;
 using PromptStudio.Mcp.Tools;
 using PromptStudio.Core.Services;
 using PromptStudio.Core.Interfaces;

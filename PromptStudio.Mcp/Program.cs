@@ -4,9 +4,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
 using PromptStudio.Core.Interfaces;
-using PromptStudio.Core.Data;
+using PromptStudio.Data;
 using PromptStudio.Core.Services;
-using PromptStudio.Mcp.Tools;
+// Using fully qualified name for PromptStudioMcpTools to resolve namespace issue
+// using PromptStudio.Mcp.Tools;
 
 // Create host builder for MCP server
 var builder = Host.CreateApplicationBuilder(args);
@@ -30,13 +31,14 @@ builder.Services.AddDbContext<PromptStudioDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 // Register application services
+builder.Services.AddScoped<IPromptStudioDbContext>(provider => provider.GetRequiredService<PromptStudioDbContext>());
 builder.Services.AddScoped<IPromptService, PromptService>();
 
 // Configure native C# MCP server with tools
 builder.Services
     .AddMcpServer()
     .WithStdioServerTransport()
-    .WithTools<DynamicMcpTools>();
+    .WithTools<PromptStudio.Mcp.Tools.PromptStudioMcpTools>();
 
 // Build the host
 var host = builder.Build();
