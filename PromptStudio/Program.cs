@@ -26,7 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     // Register application services
     builder.Services.AddScoped<IPromptStudioDbContext>(provider => provider.GetRequiredService<PromptStudioDbContext>());
-    builder.Services.AddScoped<IPromptService, PromptStudio.Core.Services.PromptService>();
+    builder.Services.AddScoped<IPromptService, PromptService>();
 }
 
 // Build the application

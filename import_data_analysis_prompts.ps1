@@ -1,8 +1,6 @@
 # Import Data Analysis Prompts to PromptStudio
 # This script uses the MCP server to import the data analysis prompt collection
 
-Write-Host "🔍 Data Analysis Prompt Collection Importer" -ForegroundColor Cyan
-Write-Host "==========================================" -ForegroundColor Cyan
 
 # Check if PromptStudio is running
 try {
@@ -10,7 +8,7 @@ try {
     Write-Host "✅ PromptStudio is running" -ForegroundColor Green
 } catch {
     Write-Host "❌ PromptStudio is not running. Please start it first." -ForegroundColor Red
-    Write-Host "Run: cd PromptStudio && dotnet run" -ForegroundColor Yellow
+    Write-Host "Run: cd PromptStudio ; dotnet run" -ForegroundColor Yellow
     exit 1
 }
 

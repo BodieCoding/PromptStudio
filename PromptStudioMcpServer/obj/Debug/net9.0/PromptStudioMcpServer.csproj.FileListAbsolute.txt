@@ -1,6 +1,0 @@
-C:\Code\Promptlet\PromptStudioMcpServer\obj\Debug\net9.0\PromptStudioMcpServer.csproj.AssemblyReference.cache
-C:\Code\Promptlet\PromptStudioMcpServer\obj\Debug\net9.0\PromptStudioMcpServer.GeneratedMSBuildEditorConfig.editorconfig
-C:\Code\Promptlet\PromptStudioMcpServer\obj\Debug\net9.0\PromptStudioMcpServer.AssemblyInfoInputs.cache
-C:\Code\Promptlet\PromptStudioMcpServer\obj\Debug\net9.0\PromptStudioMcpServer.AssemblyInfo.cs
-C:\Code\Promptlet\PromptStudioMcpServer\obj\Debug\net9.0\PromptStudioMcpServer.csproj.CoreCompileInputs.cache
-C:\Code\Promptlet\PromptStudioMcpServer\obj\Debug\net9.0\PromptStudioMcpServer.sourcelink.json

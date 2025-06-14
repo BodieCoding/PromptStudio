@@ -4,12 +4,11 @@ using PromptStudio.Core.Attributes;
 using System.ComponentModel;
 using System.Reflection;
 using ModelContextProtocol.Server;
-using PromptStudio.Mcp.Interfaces;
 
-namespace PromptStudio.Mcp.Tools;
+namespace PromptStudioMcpServer.Tools;
 
 [McpServerToolType]
-public class PromptStudioMcpTools : IPromptStudioMcpTools
+public class PromptStudioMcpTools
 {
     private readonly IPromptService _promptService;
     private readonly ILogger<PromptStudioMcpTools> _logger;
@@ -43,7 +42,8 @@ public class PromptStudioMcpTools : IPromptStudioMcpTools
                 await task;
                 if (task.GetType().IsGenericType)
                 {
-                    var resultProperty = task.GetType().GetProperty("Result");
+                    var resultProperty = task.GetType()
+                                             .GetProperty("Result");
                     var actualResult = resultProperty?.GetValue(task);
                     return attribute?.WrapInEnvelope == true
                         ? new { success = true, data = actualResult }

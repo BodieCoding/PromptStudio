@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using PromptStudio.Core.Interfaces;
+using PromptStudio.Core.Extensions;
 using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
 
 namespace PromptStudio.Controllers;
 
@@ -21,6 +23,9 @@ public class PromptApiController(IPromptService promptService) : ControllerBase
         try
         {
             var collections = await promptService.GetCollectionsAsync();
+
+            if (collections.HasNoElements())
+                return NotFound("No collections found.");
 
             var response = collections.Select(c => new
             {
@@ -99,6 +104,9 @@ public class PromptApiController(IPromptService promptService) : ControllerBase
         try
         {
             var templates = await promptService.GetPromptTemplatesAsync(collectionId);
+
+            if (templates.HasNoElements())
+                return NotFound($"Prompt templates for collection Id {collectionId} not found.");
 
             var response = templates.Select(pt => new
             {
@@ -258,6 +266,9 @@ public class PromptApiController(IPromptService promptService) : ControllerBase
         {
             var executions = await promptService.GetExecutionHistoryAsync(promptId, limit);
 
+            if (executions.HasNoElements())
+                return NotFound($"No execution history found for prompt ID {promptId}.");
+
             var response = executions.Select(pe => new
             {
                 pe.Id,
@@ -297,6 +308,9 @@ public class PromptApiController(IPromptService promptService) : ControllerBase
         try
         {
             var collections = await promptService.GetVariableCollectionsAsync(promptId);
+
+            if (collections.HasNoElements())
+                return NotFound($"No variable collections found for prompt ID {promptId}.");
 
             var response = collections.Select(vc => new
             {
@@ -341,7 +355,9 @@ public class PromptApiController(IPromptService promptService) : ControllerBase
         {
             return StatusCode(StatusCodes.Status500InternalServerError, $"Error executing batch: {ex.Message}");
         }
-    }    /// <summary>
+    }   
+    
+    /// <summary>
     /// Generate a CSV template for a prompt template
     /// </summary>
     /// <param name="templateId">Prompt template ID</param>
@@ -358,18 +374,20 @@ public class PromptApiController(IPromptService promptService) : ControllerBase
         try
         {
             var template = await promptService.GetPromptTemplateByIdAsync(templateId);
+            
             if (template == null)
-            {
                 return NotFound($"Prompt template with ID {templateId} not found");
-            }
+            
 
             var csvContent = promptService.GenerateVariableCsvTemplate(template);
 
             var cleanName = template.Name?.Replace(" ", "_") ?? "untitled";
+
             foreach (var invalidChar in Path.GetInvalidFileNameChars())
             {
                 cleanName = cleanName.Replace(invalidChar, '_');
             }
+
             var fileName = $"{cleanName}_variables.csv";
 
             return File(
