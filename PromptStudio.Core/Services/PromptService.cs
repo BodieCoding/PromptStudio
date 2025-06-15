@@ -741,9 +741,7 @@ public class PromptService(IPromptStudioDbContext context) : IPromptService
             Variables = variableValues,
             ExecutionId = execution.Id
         };
-    }
-
-    /// <summary>
+    }    /// <summary>
     /// Get execution history for prompts
     /// </summary>
     /// <param name="promptId">Optional prompt ID to filter by</param>
@@ -753,6 +751,7 @@ public class PromptService(IPromptStudioDbContext context) : IPromptService
     {
         var query = _context.PromptExecutions
             .Include(e => e.PromptTemplate)
+                .ThenInclude(pt => pt.Collection)
             .AsQueryable();
 
         if (promptId.HasValue)
@@ -777,6 +776,7 @@ public class PromptService(IPromptStudioDbContext context) : IPromptService
     {
         var query = _context.PromptExecutions
             .Include(e => e.PromptTemplate)
+                .ThenInclude(pt => pt.Collection)
             .AsQueryable();
 
         if (promptId.HasValue)

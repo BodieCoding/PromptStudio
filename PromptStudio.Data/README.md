@@ -31,15 +31,7 @@ The SQLite database file (`promptstudio.db`) is stored in this project directory
 ### From Web Application
 ```csharp
 // In PromptStudio/Program.cs
-builder.Services.AddDbContext<PromptStudioDbContext>(options =>
-    options.UseSqlite("Data Source=../PromptStudio.Data/promptstudio.db"));
-```
-
-### From MCP Server
-```csharp
-// In PromptStudio.Mcp/Program.cs
-builder.Services.AddDbContext<PromptStudioDbContext>(options =>
-    options.UseSqlite("Data Source=../PromptStudio.Data/promptstudio.db"));
+builder.Services.AddDbContext<PromptStudioDbContext>(options =>    options.UseSqlite("Data Source=../PromptStudio.Data/promptstudio.db"));
 ```
 
 ## Migrations

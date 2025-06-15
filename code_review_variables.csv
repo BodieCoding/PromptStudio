@@ -1,0 +1,113 @@
+language,project_type,project_name,module_name,framework,review_focus,business_requirement,architectural_pattern,coding_standards,security_concerns,performance_requirements,test_strategy,integration_points,specific_concerns,target_audience,priority_level,effort_estimation_unit,code_snippet
+C#,Web API,PromptStudio,Authentication Controller,.NET Core 8,Security and Performance,Secure user authentication with JWT tokens,Clean Architecture,Microsoft C# Coding Conventions,OWASP Top 10,<200ms response time,Unit and Integration Testing,External Identity Providers,Token refresh mechanism and rate limiting,Senior Developer,High,hours,"[HttpPost(""login"")]
+public async Task<IActionResult> Login([FromBody] LoginRequest request)
+{
+    var user = await _userService.ValidateUser(request.Username, request.Password);
+    if (user != null)
+    {
+        var token = _tokenService.GenerateToken(user);
+        return Ok(new { Token = token });
+    }
+    return Unauthorized();
+}"
+C#,Microservice,PaymentService,Payment Processing,.NET Core 8,Performance and Reliability,Process high-volume payment transactions,CQRS with Event Sourcing,Microsoft C# Coding Conventions,PCI DSS Compliance,<100ms for payment processing,Unit and End-to-End Testing,Payment Gateway APIs,Transaction rollback and idempotency,DevOps Team,Critical,hours,"public async Task<PaymentResult> ProcessPayment(PaymentRequest request)
+{
+    using var transaction = await _dbContext.Database.BeginTransactionAsync();
+    try
+    {
+        var payment = new Payment { Amount = request.Amount, UserId = request.UserId };
+        _dbContext.Payments.Add(payment);
+        await _dbContext.SaveChangesAsync();
+        
+        var result = await _paymentGateway.ChargeCard(request.CardToken, request.Amount);
+        if (result.Success)
+        {
+            payment.Status = PaymentStatus.Completed;
+            await _dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return PaymentResult.Success(payment.Id);
+        }
+        else
+        {
+            await transaction.RollbackAsync();
+            return PaymentResult.Failed(result.ErrorMessage);
+        }
+    }
+    catch (Exception ex)
+    {
+        await transaction.RollbackAsync();
+        throw;
+    }
+}"
+JavaScript,React SPA,TaskManager,Task Component,React 18,Code Quality and Maintainability,Display and manage user tasks with real-time updates,Component-based Architecture,Airbnb JavaScript Style Guide,XSS Prevention,<100ms UI updates,Jest and React Testing Library,WebSocket for real-time updates,State management complexity and prop drilling,Frontend Team,Medium,hours,"function TaskList({ userId, onTaskUpdate }) {
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await fetch(`/api/users/${userId}/tasks`);
+        const data = await response.json();
+        setTasks(data);
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchTasks();
+    
+    const ws = new WebSocket(`ws://localhost:3001/tasks/${userId}`);
+    ws.onmessage = (event) => {
+      const updatedTask = JSON.parse(event.data);
+      setTasks(prev => prev.map(task => 
+        task.id === updatedTask.id ? updatedTask : task
+      ));
+      onTaskUpdate(updatedTask);
+    };
+    
+    return () => ws.close();
+  }, [userId]);
+  
+  if (loading) return <div>Loading...</div>;
+  
+  return (
+    <div>
+      {tasks.map(task => (
+        <TaskItem key={task.id} task={task} />
+      ))}
+    </div>
+  );
+}"
+Python,Data Pipeline,DataAnalyzer,ETL Pipeline,Apache Airflow,Performance and Data Quality,Process large datasets for analytics,ETL Pattern,PEP 8,Data Privacy Compliance,Process 1M records in <10 minutes,Unit Testing with pytest,AWS S3 and Redshift,Error handling for large dataset processing and memory optimization,Data Engineering Team,High,hours,"import pandas as pd
+from sqlalchemy import create_engine
+import logging
+
+def process_user_data(input_file_path, output_connection_string):
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # Read data in chunks to handle large files
+        chunk_size = 10000
+        engine = create_engine(output_connection_string)
+        
+        for chunk_df in pd.read_csv(input_file_path, chunksize=chunk_size):
+            # Data cleaning and transformation
+            chunk_df['email'] = chunk_df['email'].str.lower().str.strip()
+            chunk_df['created_date'] = pd.to_datetime(chunk_df['created_date'])
+            
+            # Remove duplicates
+            chunk_df = chunk_df.drop_duplicates(subset=['email'])
+            
+            # Validate data
+            chunk_df = chunk_df[chunk_df['email'].str.contains('@')]
+            
+            # Write to database
+            chunk_df.to_sql('processed_users', engine, if_exists='append', index=False)
+            
+            logger.info(f'Processed {len(chunk_df)} records')
+            
+    except Exception as e:
+        logger.error(f'Error processing data: {str(e)}')
+        raise"

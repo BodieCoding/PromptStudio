@@ -21,8 +21,6 @@ The project is organized into several main components:
 *   **`PromptStudio/`**: The main ASP.NET Core web application for managing and experimenting with prompts.
 *   **`PromptStudio.Core/`**: Contains the core business logic, domain models, and interfaces for the Promptlet application.
 *   **`PromptStudio.Data/`**: Handles data access, including the Entity Framework Core setup, database context, and migrations.
-*   **`PromptStudio.Mcp/`**: An ASP.NET Core project implementing a Model Context Protocol (MCP) server.
-*   **`PromptStudioMcpServer/`**: Another ASP.NET Core project, likely related to MCP server functionalities.
 *   **`mcp-server/`**: A Node.js-based MCP server implementation.
 
 The solution is managed by `PromptStudio.sln` and can be opened in Visual Studio. For VS Code users, the `PromptStudio.code-workspace` file is provided.
@@ -139,17 +137,13 @@ curl -X POST http://localhost:5131/api/prompts/execute \
 This workspace is configured with several tasks to help you run and debug the applications. You can access these tasks from the Command Palette (Ctrl+Shift+P) by typing "Tasks: Run Task". Key tasks include:
 
 *   **`Run PromptStudio`**: Starts the main PromptStudio web application at http://localhost:5131
-*   **`Run MCP Server`**: Starts the `PromptStudio.Mcp` server
+*   **`Run MCP Server`**: Starts the Node.js MCP server
 *   **`build`**: Builds the entire solution
 
 #### Using .NET CLI
 *   To run the PromptStudio web application:
     ```bash
     dotnet run --project PromptStudio/PromptStudio.csproj
-    ```
-*   To run the PromptStudio.Mcp server:
-    ```bash
-    dotnet run --project PromptStudio.Mcp/PromptStudio.Mcp.csproj
     ```
 *   To run the Node.js mcp-server:
     ```bash
@@ -160,11 +154,9 @@ This workspace is configured with several tasks to help you run and debug the ap
 
 ## 🔌 Model Context Protocol (MCP) Integration
 
-PromptStudio includes multiple MCP server implementations for seamless integration with AI development workflows:
+PromptStudio includes a Node.js-based MCP server for seamless integration with AI development workflows:
 
-- **PromptStudio.Mcp**: ASP.NET Core MCP server
-- **PromptStudioMcpServer**: Alternative ASP.NET Core implementation
-- **mcp-server**: Node.js-based MCP server
+- **mcp-server**: Node.js-based MCP server (recommended)
 
 Configure your AI development environment to use these MCP servers for enhanced prompt management capabilities.
 

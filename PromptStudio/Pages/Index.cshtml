@@ -5,10 +5,10 @@
 }
 
 <div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar like professional testing tools -->
-        <div class="col-md-3 bg-light border-end vh-100">
-            <div class="p-3">                <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="row">        <!-- Sidebar like professional testing tools -->
+        <div class="col-md-3 bg-light border-end vh-100 d-flex flex-column">
+            <div class="p-3 border-bottom">
+                <div class="d-flex justify-content-between align-items-center mb-0">
                     <h5 class="mb-0">Collections</h5>
                     <div class="btn-group">
                         <a asp-page="/Collections/Create" class="btn btn-sm btn-primary">
@@ -24,6 +24,9 @@
                         </ul>
                     </div>
                 </div>
+            </div>
+            
+            <div class="flex-grow-1 overflow-auto p-3 collections-scroll-area" style="max-height: calc(100vh - 120px);">
                 
                 @if (Model.Collections.Any())
                 {
@@ -38,7 +41,8 @@
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                         <i class="bi bi-three-dots"></i>
-                                    </button>                                    <ul class="dropdown-menu">
+                                    </button>                                    
+                                    <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" asp-page="/Collections/Edit" asp-route-id="@collection.Id">Edit</a></li>
                                         <li><a class="dropdown-item" asp-page="/Prompts/Create" asp-route-collectionId="@collection.Id">Add Prompt</a></li>
                                         <li><hr class="dropdown-divider"></li>
@@ -111,8 +115,7 @@
                         <h6 class="text-muted mt-3">No Collections Yet</h6>
                         <p class="text-muted small">Create your first collection to get started</p>
                         <a asp-page="/Collections/Create" class="btn btn-primary">
-                            <i class="bi bi-plus-lg"></i> Create Collection
-                        </a>
+                            <i class="bi bi-plus-lg"></i> Create Collection                        </a>
                     </div>
                 }
             </div>
@@ -182,6 +185,7 @@
     border-radius: 0.375rem;
     padding: 1rem;
     background: white;
+    margin-bottom: 1rem;
 }
 
 .prompt-item {
@@ -192,5 +196,39 @@
 
 .prompt-item:hover {
     border-left-color: #0d6efd;
+}
+
+/* Custom scrollbar for collections area */
+.collections-scroll-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.collections-scroll-area::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 3px;
+}
+
+.collections-scroll-area::-webkit-scrollbar-thumb {
+    background: #dee2e6;
+    border-radius: 3px;
+}
+
+.collections-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: #adb5bd;
+}
+
+/* Firefox scrollbar styling */
+.collections-scroll-area {
+    scrollbar-width: thin;
+    scrollbar-color: #dee2e6 #f8f9fa;
+}
+
+/* Ensure proper spacing for scrollable content */
+.collections-scroll-area {
+    padding-right: 8px;
+}
+
+.collection-item {
+    margin-bottom: 1.25rem !important;
 }
 </style>

@@ -1,0 +1,129 @@
+{
+  "exportedAt": "2025-06-13T00:00:00.0000000Z",
+  "exportVersion": "1.0",
+  "collection": {
+    "name": "Code Review Templates",
+    "description": "Comprehensive collection of reusable code review prompts with variables for different types of code analysis, security reviews, performance assessments, and quality checks",
+    "createdAt": "2025-06-13T00:00:00.0000000Z",
+    "prompts": [
+      {
+        "name": "Comprehensive Code Review",
+        "description": "A thorough code review template covering functionality, security, performance, and maintainability",
+        "content": "Please perform a comprehensive code review for the following {{language}} code in the {{project_type}} project:\n\n**Project Context:**\n- Project: {{project_name}}\n- Module/Component: {{module_name}}\n- Framework/Technology: {{framework}}\n- Review Focus: {{review_focus}}\n\n**Code to Review:**\n```{{language}}\n{{code_snippet}}\n```\n\n**Review Requirements:**\n\n1. **Functionality Analysis:**\n   - Does the code fulfill the {{business_requirement}}?\n   - Are there any logical errors or edge cases not handled?\n   - Is the implementation aligned with {{architectural_pattern}}?\n\n2. **Code Quality:**\n   - Adherence to {{coding_standards}} coding standards\n   - Code readability and maintainability\n   - Appropriate use of design patterns\n   - Variable and function naming conventions\n\n3. **Security Assessment:**\n   - Potential security vulnerabilities (focus on {{security_concerns})\n   - Input validation and sanitization\n   - Authentication and authorization checks\n   - Data exposure risks\n\n4. **Performance Evaluation:**\n   - Algorithm efficiency (target: {{performance_requirements}})\n   - Memory usage optimization\n   - Database query optimization (if applicable)\n   - Potential bottlenecks\n\n5. **Testing & Error Handling:**\n   - Error handling completeness\n   - Exception management\n   - Testability of the code\n   - Missing test scenarios for {{test_strategy}}\n\n6. **Dependencies & Architecture:**\n   - Dependency management\n   - Coupling and cohesion\n   - SOLID principles adherence\n   - Integration with {{integration_points}}\n\n**Specific Concerns:**\n{{specific_concerns}}\n\n**Target Audience:** {{target_audience}}\n**Priority Level:** {{priority_level}}\n\nPlease provide:\n- Severity classification (Critical/High/Medium/Low) for each issue\n- Specific line references where applicable\n- Concrete improvement suggestions\n- Code examples for recommended fixes\n- Estimated effort for fixes ({{effort_estimation_unit}})",
+        "variables": [
+          { "name": "language", "description": "Programming language (e.g., C#, JavaScript, Python)", "defaultValue": "C#", "type": 0 },
+          { "name": "project_type", "description": "Type of project (e.g., Web API, Desktop App, Microservice)", "defaultValue": "Web Application", "type": 0 },
+          { "name": "project_name", "description": "Name of the project being reviewed", "defaultValue": "", "type": 0 },
+          { "name": "module_name", "description": "Specific module or component name", "defaultValue": "", "type": 0 },
+          { "name": "framework", "description": "Framework or technology stack", "defaultValue": ".NET Core", "type": 0 },
+          { "name": "review_focus", "description": "Primary focus area (e.g., Security, Performance, Maintainability)", "defaultValue": "General Quality", "type": 0 },
+          { "name": "code_snippet", "description": "The actual code to be reviewed", "defaultValue": "", "type": 0 },
+          { "name": "business_requirement", "description": "The business requirement this code should fulfill", "defaultValue": "", "type": 0 },
+          { "name": "architectural_pattern", "description": "Architectural pattern being followed", "defaultValue": "MVC", "type": 0 },
+          { "name": "coding_standards", "description": "Coding standards to check against", "defaultValue": "Microsoft C# Coding Conventions", "type": 0 },
+          { "name": "security_concerns", "description": "Specific security areas to focus on", "defaultValue": "OWASP Top 10", "type": 0 },
+          { "name": "performance_requirements", "description": "Performance requirements or benchmarks", "defaultValue": "sub-second response time", "type": 0 },
+          { "name": "test_strategy", "description": "Testing strategy being used", "defaultValue": "Unit and Integration Testing", "type": 0 },
+          { "name": "integration_points", "description": "External systems or services this code integrates with", "defaultValue": "", "type": 0 },
+          { "name": "specific_concerns", "description": "Any specific concerns or areas to focus on", "defaultValue": "", "type": 0 },
+          { "name": "target_audience", "description": "Who will receive this review", "defaultValue": "Development Team", "type": 0 },
+          { "name": "priority_level", "description": "Priority level of this review", "defaultValue": "Medium", "type": 0 },
+          { "name": "effort_estimation_unit", "description": "Unit for effort estimation", "defaultValue": "hours", "type": 0 }
+        ],
+        "executionHistory": []
+      },
+      {
+        "name": "Security-Focused Code Review",
+        "description": "Specialized prompt for security-focused code reviews with emphasis on vulnerability detection",
+        "content": "Perform a security-focused code review for the following {{language}} code:\n\n**Security Context:**\n- Application Type: {{application_type}}\n- Security Framework: {{security_framework}}\n- Compliance Requirements: {{compliance_requirements}}\n- Data Sensitivity: {{data_sensitivity_level}}\n\n**Code Under Review:**\n```{{language}}\n{{code_snippet}}\n```\n\n**Security Analysis Focus:**\n\n1. **OWASP Top 10 Vulnerabilities:**\n   - Injection attacks (SQL, NoSQL, LDAP, etc.)\n   - Broken authentication and session management\n   - Sensitive data exposure\n   - XML external entities (XXE)\n   - Broken access control\n   - Security misconfiguration\n   - Cross-site scripting (XSS)\n   - Insecure deserialization\n   - Using components with known vulnerabilities\n   - Insufficient logging and monitoring\n\n2. **Input Validation & Sanitization:**\n   - User input validation for {{input_sources}}\n   - Output encoding and escaping\n   - Parameter tampering protection\n   - File upload security\n\n3. **Authentication & Authorization:**\n   - Authentication mechanism strength\n   - Authorization checks at {{authorization_levels}}\n   - Session management security\n   - Token handling (JWT, API keys, etc.)\n\n4. **Data Protection:**\n   - Encryption in transit and at rest\n   - PII/PHI handling for {{data_types}}\n   - Key management practices\n   - Data retention policies\n\n5. **Error Handling & Logging:**\n   - Information disclosure in error messages\n   - Security event logging\n   - Audit trail completeness\n   - Debug information exposure\n\n6. **{{language}}-Specific Security Concerns:**\n   {{language_specific_concerns}}\n\n**Threat Model Context:**\n- Threat Actors: {{threat_actors}}\n- Attack Vectors: {{attack_vectors}}\n- Asset Protection: {{protected_assets}}\n\n**Risk Assessment Criteria:**\n- Impact Level: {{impact_level}}\n- Likelihood: {{likelihood}}\n- Risk Tolerance: {{risk_tolerance}}\n\nProvide:\n- CVSS scores where applicable\n- Specific attack scenarios\n- Mitigation strategies\n- Security testing recommendations\n- Compliance gap analysis for {{compliance_requirements}}",
+        "variables": [
+          { "name": "language", "description": "Programming language", "defaultValue": "C#", "type": 0 },
+          { "name": "application_type", "description": "Type of application (web, mobile, API, etc.)", "defaultValue": "Web Application", "type": 0 },
+          { "name": "security_framework", "description": "Security framework being used", "defaultValue": "ASP.NET Core Identity", "type": 0 },
+          { "name": "compliance_requirements", "description": "Compliance standards to check against", "defaultValue": "GDPR", "type": 0 },
+          { "name": "data_sensitivity_level", "description": "Level of data sensitivity", "defaultValue": "High", "type": 0 },
+          { "name": "code_snippet", "description": "Code to be reviewed", "defaultValue": "", "type": 0 },
+          { "name": "input_sources", "description": "Sources of user input", "defaultValue": "web forms, API endpoints", "type": 0 },
+          { "name": "authorization_levels", "description": "Levels where authorization is checked", "defaultValue": "controller and service level", "type": 0 },
+          { "name": "data_types", "description": "Types of sensitive data handled", "defaultValue": "personal information", "type": 0 },
+          { "name": "language_specific_concerns", "description": "Language-specific security concerns", "defaultValue": "", "type": 0 },
+          { "name": "threat_actors", "description": "Potential threat actors", "defaultValue": "external attackers", "type": 0 },
+          { "name": "attack_vectors", "description": "Potential attack vectors", "defaultValue": "web-based attacks", "type": 0 },
+          { "name": "protected_assets", "description": "Assets that need protection", "defaultValue": "user data, business logic", "type": 0 },
+          { "name": "impact_level", "description": "Potential impact level", "defaultValue": "High", "type": 0 },
+          { "name": "likelihood", "description": "Likelihood of exploitation", "defaultValue": "Medium", "type": 0 },
+          { "name": "risk_tolerance", "description": "Organization's risk tolerance", "defaultValue": "Low", "type": 0 }
+        ],
+        "executionHistory": []
+      },
+      {
+        "name": "Performance-Focused Code Review",
+        "description": "Specialized prompt for performance analysis and optimization recommendations",
+        "content": "Analyze the following {{language}} code for performance optimization opportunities:\n\n**Performance Context:**\n- Application Type: {{application_type}}\n- Expected Load: {{expected_load}}\n- Performance SLA: {{performance_sla}}\n- Resource Constraints: {{resource_constraints}}\n\n**Code for Performance Review:**\n```{{language}}\n{{code_snippet}}\n```\n\n**Performance Analysis Areas:**\n\n1. **Algorithm Efficiency:**\n   - Time complexity analysis\n   - Space complexity assessment\n   - Algorithm choice optimization\n   - Big O notation evaluation\n\n2. **Memory Management:**\n   - Memory allocation patterns\n   - Object lifecycle management\n   - Garbage collection impact\n   - Memory leaks detection\n\n3. **Data Access Patterns:**\n   - Database query optimization\n   - N+1 query problems\n   - Caching opportunities for {{caching_scenarios}}\n   - Connection pooling usage\n\n4. **Concurrency & Parallelism:**\n   - Thread safety analysis\n   - Async/await usage patterns\n   - Parallel processing opportunities\n   - Deadlock prevention\n\n5. **Resource Utilization:**\n   - CPU usage optimization\n   - I/O operation efficiency\n   - Network call optimization\n   - File system access patterns\n\n6. **Framework-Specific Optimizations:**\n   - {{framework}} best practices\n   - ORM optimization (if applicable)\n   - Middleware efficiency\n   - Serialization performance\n\n7. **Scalability Considerations:**\n   - Horizontal scaling readiness\n   - State management\n   - Session handling\n   - Load balancing compatibility\n\n**Performance Metrics to Consider:**\n- Response Time: {{target_response_time}}\n- Throughput: {{target_throughput}}\n- Resource Usage: {{resource_limits}}\n- Concurrent Users: {{concurrent_users}}\n\n**Profiling Context:**\n- Production Environment: {{production_environment}}\n- Testing Environment: {{testing_environment}}\n- Monitoring Tools: {{monitoring_tools}}\n\nProvide:\n- Performance bottleneck identification\n- Optimization recommendations with expected impact\n- Code refactoring suggestions\n- Performance testing strategies\n- Monitoring and alerting recommendations\n- Before/after performance estimations",
+        "variables": [
+          { "name": "language", "description": "Programming language", "defaultValue": "C#", "type": 0 },
+          { "name": "application_type", "description": "Type of application", "defaultValue": "Web API", "type": 0 },
+          { "name": "expected_load", "description": "Expected system load", "defaultValue": "1000 requests/minute", "type": 0 },
+          { "name": "performance_sla", "description": "Performance service level agreement", "defaultValue": "99.9% uptime, <200ms response", "type": 0 },
+          { "name": "resource_constraints", "description": "Resource limitations", "defaultValue": "2GB RAM, 2 CPU cores", "type": 0 },
+          { "name": "code_snippet", "description": "Code to analyze for performance", "defaultValue": "", "type": 0 },
+          { "name": "caching_scenarios", "description": "Scenarios where caching might be beneficial", "defaultValue": "database queries, API calls", "type": 0 },
+          { "name": "framework", "description": "Framework being used", "defaultValue": ".NET Core", "type": 0 },
+          { "name": "target_response_time", "description": "Target response time", "defaultValue": "<200ms", "type": 0 },
+          { "name": "target_throughput", "description": "Target throughput", "defaultValue": "1000 requests/second", "type": 0 },
+          { "name": "resource_limits", "description": "Resource usage limits", "defaultValue": "80% CPU, 70% memory", "type": 0 },
+          { "name": "concurrent_users", "description": "Expected concurrent users", "defaultValue": "500", "type": 0 },
+          { "name": "production_environment", "description": "Production environment details", "defaultValue": "Azure App Service", "type": 0 },
+          { "name": "testing_environment", "description": "Testing environment setup", "defaultValue": "Local development", "type": 0 },
+          { "name": "monitoring_tools", "description": "Available monitoring tools", "defaultValue": "Application Insights", "type": 0 }
+        ],
+        "executionHistory": []
+      },
+      {
+        "name": "Code Quality & Maintainability Review",
+        "description": "Focus on code structure, readability, maintainability, and technical debt assessment",
+        "content": "Evaluate the following {{language}} code for quality and maintainability:\n\n**Quality Assessment Context:**\n- Team Size: {{team_size}}\n- Project Maturity: {{project_maturity}}\n- Maintenance Frequency: {{maintenance_frequency}}\n- Development Methodology: {{development_methodology}}\n\n**Code Under Review:**\n```{{language}}\n{{code_snippet}}\n```\n\n**Quality Assessment Criteria:**\n\n1. **Code Structure & Organization:**\n   - Single Responsibility Principle adherence\n   - Separation of concerns\n   - Dependency injection usage\n   - Module cohesion and coupling\n\n2. **Readability & Documentation:**\n   - Code self-documentation\n   - Comment quality and necessity\n   - Variable and method naming clarity\n   - Code formatting consistency with {{coding_style}}\n\n3. **SOLID Principles Evaluation:**\n   - Single Responsibility Principle\n   - Open/Closed Principle\n   - Liskov Substitution Principle\n   - Interface Segregation Principle\n   - Dependency Inversion Principle\n\n4. **Design Patterns Usage:**\n   - Appropriate pattern selection\n   - Pattern implementation correctness\n   - Overengineering assessment\n   - Missing pattern opportunities\n\n5. **Error Handling & Resilience:**\n   - Exception handling strategy\n   - Graceful degradation\n   - Retry mechanisms\n   - Circuit breaker patterns (if applicable)\n\n6. **Testing Considerations:**\n   - Testability assessment\n   - Mock-friendly design\n   - Test coverage gaps\n   - Integration testing readiness\n\n7. **Technical Debt Analysis:**\n   - Code duplication identification\n   - Complexity metrics (cyclomatic complexity)\n   - Refactoring opportunities\n   - Legacy code integration\n\n8. **Maintainability Factors:**\n   - Change impact assessment\n   - Extension points availability\n   - Configuration flexibility\n   - Backward compatibility considerations\n\n**Code Quality Metrics:**\n- Complexity Threshold: {{complexity_threshold}}\n- Code Coverage Target: {{coverage_target}}\n- Technical Debt Tolerance: {{debt_tolerance}}\n\n**Team Considerations:**\n- Developer Experience Level: {{developer_experience}}\n- Code Review Process: {{review_process}}\n- Documentation Standards: {{documentation_standards}}\n\nProvide:\n- Quality score assessment (1-10 scale)\n- Refactoring priorities (High/Medium/Low)\n- Technical debt quantification\n- Maintainability recommendations\n- Training or documentation needs\n- Long-term sustainability assessment",
+        "variables": [
+          { "name": "language", "description": "Programming language", "defaultValue": "C#", "type": 0 },
+          { "name": "team_size", "description": "Size of the development team", "defaultValue": "5-10 developers", "type": 0 },
+          { "name": "project_maturity", "description": "Project maturity level", "defaultValue": "Mature", "type": 0 },
+          { "name": "maintenance_frequency", "description": "How often code is maintained", "defaultValue": "Weekly", "type": 0 },
+          { "name": "development_methodology", "description": "Development methodology used", "defaultValue": "Agile/Scrum", "type": 0 },
+          { "name": "code_snippet", "description": "Code to review for quality", "defaultValue": "", "type": 0 },
+          { "name": "coding_style", "description": "Coding style guide followed", "defaultValue": "Microsoft C# Style Guide", "type": 0 },
+          { "name": "complexity_threshold", "description": "Maximum acceptable complexity", "defaultValue": "10", "type": 0 },
+          { "name": "coverage_target", "description": "Target code coverage percentage", "defaultValue": "80%", "type": 0 },
+          { "name": "debt_tolerance", "description": "Technical debt tolerance level", "defaultValue": "Low", "type": 0 },
+          { "name": "developer_experience", "description": "Team's experience level", "defaultValue": "Mixed (Junior to Senior)", "type": 0 },
+          { "name": "review_process", "description": "Current code review process", "defaultValue": "Pull Request based", "type": 0 },
+          { "name": "documentation_standards", "description": "Documentation standards followed", "defaultValue": "XML documentation", "type": 0 }
+        ],
+        "executionHistory": []
+      },
+      {
+        "name": "API Design Review",
+        "description": "Specialized review for REST API endpoints, focusing on design principles and best practices",
+        "content": "Review the following {{api_type}} API implementation for design quality and best practices:\n\n**API Context:**\n- API Type: {{api_type}}\n- API Version: {{api_version}}\n- Authentication Method: {{auth_method}}\n- Target Consumers: {{api_consumers}}\n\n**API Code/Configuration:**\n```{{language}}\n{{code_snippet}}\n```\n\n**API Design Review Areas:**\n\n1. **RESTful Design Principles:**\n   - HTTP verb usage appropriateness\n   - Resource naming conventions\n   - URL structure and hierarchy\n   - Statelessness adherence\n\n2. **Request/Response Design:**\n   - Request payload structure\n   - Response format consistency\n   - HTTP status code usage\n   - Content-Type handling\n\n3. **Error Handling:**\n   - Error response format standardization\n   - Meaningful error messages\n   - Error code consistency\n   - Exception to HTTP status mapping\n\n4. **Security Implementation:**\n   - Authentication mechanism\n   - Authorization checks at {{authorization_levels}}\n   - Input validation for {{input_types}}\n   - Rate limiting implementation\n\n5. **Performance Considerations:**\n   - Pagination support for {{large_datasets}}\n   - Caching headers usage\n   - Response compression\n   - Query optimization\n\n6. **API Documentation & Discoverability:**\n   - OpenAPI/Swagger specification\n   - Endpoint documentation completeness\n   - Example request/response pairs\n   - API versioning strategy\n\n7. **Validation & Data Handling:**\n   - Input validation rules\n   - Data transformation consistency\n   - Null value handling\n   - Data type enforcement\n\n8. **Integration Considerations:**\n   - Backward compatibility\n   - Breaking change management\n   - Client SDK compatibility\n   - Third-party integration readiness\n\n**API Quality Standards:**\n- Response Time SLA: {{response_time_sla}}\n- Availability Target: {{availability_target}}\n- Rate Limiting: {{rate_limits}}\n- Data Format: {{data_format}}\n\n**Consumer Experience:**\n- Target Client Types: {{client_types}}\n- Usage Patterns: {{usage_patterns}}\n- Integration Complexity: {{integration_complexity}}\n\nProvide:\n- RESTful design compliance score\n- Security vulnerability assessment\n- Performance optimization recommendations\n- Breaking change risk analysis\n- Developer experience improvements\n- API governance compliance check",
+        "variables": [
+          { "name": "api_type", "description": "Type of API (REST, GraphQL, gRPC)", "defaultValue": "REST", "type": 0 },
+          { "name": "api_version", "description": "API version being reviewed", "defaultValue": "v1", "type": 0 },
+          { "name": "auth_method", "description": "Authentication method used", "defaultValue": "JWT Bearer Token", "type": 0 },
+          { "name": "api_consumers", "description": "Who will consume this API", "defaultValue": "Web and Mobile Applications", "type": 0 },
+          { "name": "language", "description": "Programming language", "defaultValue": "C#", "type": 0 },
+          { "name": "code_snippet", "description": "API implementation code", "defaultValue": "", "type": 0 },
+          { "name": "authorization_levels", "description": "Levels where authorization is enforced", "defaultValue": "Controller and Action level", "type": 0 },
+          { "name": "input_types", "description": "Types of input being validated", "defaultValue": "JSON payloads, query parameters", "type": 0 },
+          { "name": "large_datasets", "description": "Scenarios with large data sets", "defaultValue": "user lists, transaction history", "type": 0 },
+          { "name": "response_time_sla", "description": "Response time service level agreement", "defaultValue": "<500ms", "type": 0 },
+          { "name": "availability_target", "description": "Availability target", "defaultValue": "99.9%", "type": 0 },
+          { "name": "rate_limits", "description": "Rate limiting configuration", "defaultValue": "1000 requests/hour per client", "type": 0 },
+          { "name": "data_format", "description": "Data format standard", "defaultValue": "JSON", "type": 0 },
+          { "name": "client_types", "description": "Types of clients consuming the API", "defaultValue": "Web browsers, mobile apps", "type": 0 },
+          { "name": "usage_patterns", "description": "Expected usage patterns", "defaultValue": "CRUD operations, real-time updates", "type": 0 },
+          { "name": "integration_complexity", "description": "Expected integration complexity", "defaultValue": "Medium", "type": 0 }
+        ],
+        "executionHistory": []
+      }
+    ]
+  }
+}

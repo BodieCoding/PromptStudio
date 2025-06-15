@@ -64,6 +64,7 @@ class PromptStudioClient {
     });
     return response.data;
   }
+  
   async generateCsvTemplate(templateId: number): Promise<string> {
     const response = await axios.get(`${this.baseURL}/api/prompts/prompt-templates/${templateId}/csv-template`, {
       responseType: 'text'

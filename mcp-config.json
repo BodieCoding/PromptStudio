@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "promptstudio": {
-      "command": "dotnet",
-      "args": ["run", "--project", "PromptStudio.Mcp\\PromptStudio.Mcp.csproj"],
-      "cwd": "c:\\Code\\Promptlet"
-    }
-  }
-}

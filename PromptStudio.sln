@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PromptStudio.Core", "Prompt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PromptStudio.Data", "PromptStudio.Data\PromptStudio.Data.csproj", "{7055DC6B-39A3-4519-9D79-9818CC9E0D35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PromptStudio.Mcp", "PromptStudio.Mcp\PromptStudio.Mcp.csproj", "{61C4BC9E-D9F8-4A84-A549-57ACB8758E0B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PromptStudio.Tests", "PromptStudio.Tests\PromptStudio.Tests.csproj", "{5D570419-BE2B-4877-9204-88C56EE4720E}"
 EndProject
 Global
@@ -31,10 +29,6 @@ Global
 		{7055DC6B-39A3-4519-9D79-9818CC9E0D35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7055DC6B-39A3-4519-9D79-9818CC9E0D35}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7055DC6B-39A3-4519-9D79-9818CC9E0D35}.Release|Any CPU.Build.0 = Release|Any CPU
-		{61C4BC9E-D9F8-4A84-A549-57ACB8758E0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{61C4BC9E-D9F8-4A84-A549-57ACB8758E0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{61C4BC9E-D9F8-4A84-A549-57ACB8758E0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{61C4BC9E-D9F8-4A84-A549-57ACB8758E0B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5D570419-BE2B-4877-9204-88C56EE4720E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D570419-BE2B-4877-9204-88C56EE4720E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D570419-BE2B-4877-9204-88C56EE4720E}.Release|Any CPU.ActiveCfg = Release|Any CPU
