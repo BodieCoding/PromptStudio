@@ -583,3 +583,5 @@ docker-compose.override.yml
 
 # MCP specific files
 mcp-config.local.json
+create-github-issues.ps1
+github-issues-data.json
