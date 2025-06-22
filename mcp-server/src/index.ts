@@ -9,6 +9,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import axios from 'axios';
 import { z } from 'zod';
+import { createServer } from 'http';
 
 // Configuration
 const PROMPTSTUDIO_BASE_URL = process.env.PROMPTSTUDIO_URL || 'http://localhost:5131';
@@ -511,6 +512,28 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   try {
     console.error('Starting PromptStudio MCP server...');
+      // Start HTTP health check server
+    const healthPort = parseInt(process.env.MCP_SERVER_PORT || '3001', 10);
+    const healthServer = createServer((req, res) => {
+      if (req.url === '/health') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ 
+          status: 'healthy', 
+          timestamp: new Date().toISOString(),
+          service: 'promptstudio-mcp-server',
+          version: '1.0.0'
+        }));
+      } else {
+        res.writeHead(404);
+        res.end('Not Found');
+      }
+    });
+    
+    healthServer.listen(healthPort, '0.0.0.0', () => {
+      console.error(`Health check server running on http://0.0.0.0:${healthPort}/health`);
+    });
+    
+    // Start stdio MCP server
     const transport = new StdioServerTransport();
     console.error('Created transport, connecting...');
     await server.connect(transport);

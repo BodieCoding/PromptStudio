@@ -1,0 +1,173 @@
+@page
+@model PromptStudio.Pages.Flows.IndexModel
+@{
+    ViewData["Title"] = "Visual Flow Builder";
+}
+
+<div class="container-fluid h-100">
+    <div class="row h-100">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="h3 mb-0">
+                    <i class="bi bi-diagram-3"></i>
+                    Visual Flow Builder
+                </h1>
+                <div>
+                    <button type="button" class="btn btn-outline-primary me-2" id="saveFlowBtn">
+                        <i class="bi bi-save"></i> Save Flow
+                    </button>
+                    <button type="button" class="btn btn-primary" id="executeFlowBtn">
+                        <i class="bi bi-play-fill"></i> Execute
+                    </button>
+                </div>
+            </div>
+
+            <!-- Flow Builder Container -->
+            <div id="visual-flow-builder"
+                style="height: calc(100vh - 200px); border: 1px solid #ddd; border-radius: 8px;">
+                <!-- React Flow Canvas will be mounted here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading indicator -->
+<div id="loading-indicator" class="d-none">
+    <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- React Flow Builder Scripts -->
+    <script src="~/dist/vendors.bundle.js"></script>
+    <script src="~/dist/main.bundle.js"></script>
+    <script>
+        // Initialize the visual flow builder when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check if the React app is loaded
+            if (window.PromptStudioFlowBuilder) {
+                window.PromptStudioFlowBuilder.init('visual-flow-builder');
+            } else {
+                console.warn('Visual Flow Builder not loaded. Building frontend...');
+                // Show loading indicator
+                document.getElementById('visual-flow-builder').innerHTML =
+                    '<div class="d-flex flex-column justify-content-center align-items-center h-100 text-muted">' +
+                    '<i class="bi bi-diagram-3 display-1 mb-3"></i>' +
+                    '<h4>Visual Flow Builder</h4>' +
+                    '<p>Building frontend assets... Please run <code>npm run build</code> in the wwwroot directory.</p>' +
+                    '<small>This is a one-time setup step.</small>' +
+                    '</div>';
+            }
+        });
+
+        // Save flow functionality
+        document.getElementById('saveFlowBtn').addEventListener('click', function () {
+            if (window.PromptStudioFlowBuilder && window.PromptStudioFlowBuilder.getCurrentFlow) {
+                const flow = window.PromptStudioFlowBuilder.getCurrentFlow();
+                saveFlow(flow);
+            }
+        });
+
+        // Execute flow functionality
+        document.getElementById('executeFlowBtn').addEventListener('click', function () {
+            if (window.PromptStudioFlowBuilder && window.PromptStudioFlowBuilder.getCurrentFlow) {
+                const flow = window.PromptStudioFlowBuilder.getCurrentFlow();
+                executeFlow(flow);
+            }
+        });
+
+        async function saveFlow(flow) {
+            try {
+                const response = await fetch('/api/flows', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: flow.name || 'Untitled Flow',
+                        description: flow.description || '',
+                        flowData: {
+                            variables: flow.variables || {},
+                            nodes: flow.nodes || [],
+                            edges: flow.edges || []
+                        },
+                        tags: flow.tags || []
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Flow saved successfully!');
+                    console.log('Saved flow:', result);
+                } else {
+                    throw new Error('Failed to save flow');
+                }
+            } catch (error) {
+                console.error('Error saving flow:', error);
+                alert('Failed to save flow. Please try again.');
+            }
+        }
+
+        async function executeFlow(flow) {
+            try {
+                // For now, show a simple execution dialog
+                const variables = prompt('Enter execution variables (JSON format):', '{}');
+                if (variables === null) return;
+
+                let parsedVariables;
+                try {
+                    parsedVariables = JSON.parse(variables);
+                } catch (e) {
+                    alert('Invalid JSON format for variables');
+                    return;
+                }
+
+                // Create a temporary flow if it doesn't have an ID
+                let flowId = flow.id;
+                if (!flowId) {
+                    const saveResponse = await fetch('/api/flows', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: flow.name || 'Temp Flow for Execution',
+                            description: 'Temporary flow for execution',
+                            flowData: {
+                                variables: flow.variables || {},
+                                nodes: flow.nodes || [],
+                                edges: flow.edges || []
+                            }
+                        })
+                    });
+                    const savedFlow = await saveResponse.json();
+                    flowId = savedFlow.id;
+                }
+
+                const response = await fetch(`/api/flows/${flowId}/execute`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        variables: parsedVariables
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Flow executed successfully! Check console for details.');
+                    console.log('Execution result:', result);
+                } else {
+                    throw new Error('Failed to execute flow');
+                }
+            } catch (error) {
+                console.error('Error executing flow:', error);
+                alert('Failed to execute flow. Please try again.');
+            }
+        }
+    </script>
+}

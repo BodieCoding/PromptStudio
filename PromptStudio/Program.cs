@@ -11,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
     builder.Services.AddRazorPages();
     
+    // Add health checks
+    builder.Services.AddHealthChecks();
+    
     // Configure Entity Framework - conditionally register database provider
     // Use in-memory database for testing environment, SQL Server for others
     if (builder.Environment.EnvironmentName == "Testing")
@@ -22,11 +25,10 @@ var builder = WebApplication.CreateBuilder(args);
     {
         builder.Services.AddDbContext<PromptStudioDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-    }
-
-    // Register application services
+    }    // Register application services
     builder.Services.AddScoped<IPromptStudioDbContext>(provider => provider.GetRequiredService<PromptStudioDbContext>());
     builder.Services.AddScoped<IPromptService, PromptService>();
+    builder.Services.AddScoped<IFlowService, FlowService>();
 }
 
 // Build the application
@@ -54,11 +56,12 @@ using (var scope = app.Services.CreateScope())
     
     // Enable routing and authorization
     app.UseRouting();
-    app.UseAuthorization();
-
-    // Map API Controllers and Razor Pages
+    app.UseAuthorization();    // Map API Controllers and Razor Pages
     app.MapControllers();
     app.MapRazorPages();
+    
+    // Map health check endpoint
+    app.MapHealthChecks("/health");
 }
 
 // Start the application

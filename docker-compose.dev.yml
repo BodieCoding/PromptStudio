@@ -1,0 +1,24 @@
+# Docker Compose override for development
+# Use: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  promptstudio:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
+      - DOTNET_WATCH_RESTART_ON_RUDE_EDIT=true
+      - Logging__LogLevel__Default=Debug
+      - Logging__LogLevel__Microsoft.AspNetCore=Information
+    
+  mcp-server:
+    environment:
+      - NODE_ENV=development
+      - DEBUG=mcp:*
+      - PROMPTSTUDIO_API_URL=http://promptstudio:80    # Override health check for development
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s

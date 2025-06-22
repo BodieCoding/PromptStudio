@@ -8,18 +8,58 @@ services:
       - "1433:1433"
     networks:
       - prompt-net
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Two3RobotDuckTag! -Q 'SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
   promptstudio:
     build:
       context: .
       dockerfile: PromptStudio/Dockerfile
     depends_on:
-      - sqlserver
+      sqlserver:
+        condition: service_healthy
     environment:
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PromptStudio;User Id=sa;Password=Two3RobotDuckTag!;TrustServerCertificate=true;
+      - MCP_SERVER_URL=http://mcp-server:3001
     ports:
       - "5000:80"
     networks:
       - prompt-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  mcp-server:
+    build:
+      context: ./mcp-server
+      dockerfile: Dockerfile
+    depends_on:
+      promptstudio:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - MCP_SERVER_HOST=0.0.0.0
+      - MCP_SERVER_PORT=3001
+      - PROMPTSTUDIO_API_URL=http://promptstudio:80
+    ports:
+      - "3001:3001"
+    networks:
+      - prompt-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
 networks:
   prompt-net:
     driver: bridge

@@ -25,6 +25,7 @@ PromptStudio is a sophisticated AI-powered prompt management and workflow orches
 - [🚀 Key Features](#-key-features)
 - [🏗️ Architecture & Project Structure](#️-architecture--project-structure)
 - [🚀 Getting Started](#-getting-started)
+- [🐳 Docker Deployment](#-docker-deployment)
 - [🤖 AI Agent Workflows](#-ai-agent-workflows)
 - [🌐 Running the Applications](#-running-the-applications)
 - [🔌 Model Context Protocol (MCP) Integration](#-model-context-protocol-mcp-integration)
@@ -46,6 +47,7 @@ PromptStudio is a sophisticated AI-powered prompt management and workflow orches
 - **🔌 RESTful API**: Comprehensive API for integration and automation
 - **🔗 Model Context Protocol (MCP) Support**: Seamless integration with AI development workflows
 - **📊 GitHub Integration**: Direct issue creation and workflow orchestration via MCP servers
+- **🐳 Docker Support**: Complete containerized deployment with Docker Compose
 
 ## 🏗️ Architecture & Project Structure
 
@@ -77,8 +79,11 @@ PromptStudio/
 - **SQL Server** (LocalDB, SQL Server Express, or full SQL Server)
 - **Node.js 18+** (for MCP server components)
 - **Visual Studio 2022** or **VS Code** (recommended)
+- **Docker & Docker Compose** (optional, for containerized deployment)
 
-### Quick Start
+### Quick Start Options
+
+#### 🐳 **Option 1: Docker Compose (Recommended for Production)**
 
 1. **📂 Clone the repository**
    ```bash
@@ -86,7 +91,29 @@ PromptStudio/
    cd promptstudio
    ```
 
-2. **🗄️ Database Setup**
+2. **🚀 Launch with Docker Compose**
+   ```bash
+   # Production deployment
+   docker-compose up -d
+   
+   # Development with hot reload
+   docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+   ```
+
+3. **🌐 Access the applications**
+   - **PromptStudio Web UI**: http://localhost:5000
+   - **MCP Server**: http://localhost:3001
+   - **SQL Server**: localhost:1433
+
+#### 💻 **Option 2: Local Development**
+
+1. **📂 Clone the repository**
+   ```bash
+   git clone https://github.com/BodieCoding/promptstudio.git
+   cd promptstudio
+   ```
+
+2. **🗄️ Database Setup**2. **🗄️ Database Setup**
    The application includes comprehensive seed data with enterprise-grade AI agent prompt templates:
    ```bash
    dotnet ef database update --startup-project PromptStudio/PromptStudio.csproj --project PromptStudio.Data/PromptStudio.Data.csproj
@@ -105,6 +132,11 @@ PromptStudio/
    dotnet run --project PromptStudio/PromptStudio.csproj
    ```
    Access the application at **`http://localhost:5131`**
+
+6. **🔗 Run MCP Server (Optional)**
+   ```bash
+   cd mcp-server && npm install && npm start
+   ```
 
 ## 🤖 AI Agent Workflows
 
@@ -149,6 +181,69 @@ Advanced prompt templates for complex multi-step AI automation:
 Basic templates to get you started:
 - Code Review templates
 - Basic prompt structures
+
+## 🐳 Docker Deployment
+
+PromptStudio provides complete containerized deployment with Docker Compose, including the web application, SQL Server database, and MCP server.
+
+### Services Included
+
+- **🌐 PromptStudio Web Application**: ASP.NET Core app running on port 5000
+- **💾 SQL Server**: Microsoft SQL Server 2019 on port 1433
+- **🔗 MCP Server**: Node.js-based MCP server on port 3001
+
+### Production Deployment
+
+```bash
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
+```
+
+### Development with Hot Reload
+
+```bash
+# Development mode with file watching
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+# Rebuild specific service
+docker-compose build promptstudio
+docker-compose up -d promptstudio
+```
+
+### Service URLs
+
+- **PromptStudio**: http://localhost:5000
+- **MCP Server**: http://localhost:3001  
+- **SQL Server**: localhost:1433 (sa/Two3RobotDuckTag!)
+
+### Environment Variables
+
+The Docker setup includes pre-configured environment variables:
+
+- **Database Connection**: Automatically configured for containerized SQL Server
+- **MCP Integration**: Services can communicate via internal Docker network
+- **API URLs**: Cross-service communication configured
+
+### Troubleshooting
+
+```bash
+# Check service status
+docker-compose ps
+
+# View specific service logs
+docker-compose logs promptstudio
+docker-compose logs mcp-server
+docker-compose logs sqlserver
+
+# Restart specific service
+docker-compose restart promptstudio
+```
 
 ## Running the Applications
 
