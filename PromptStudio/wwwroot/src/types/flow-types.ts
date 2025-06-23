@@ -9,7 +9,8 @@ export enum NodeType {
   TRANSFORM = 'transform',
   OUTPUT = 'output',
   LLM_CALL = 'llm_call',
-  TEMPLATE = 'template'
+  TEMPLATE = 'template',
+  FOR_EACH = 'for_each'
 }
 
 // Base interfaces
@@ -91,6 +92,14 @@ export interface LLMCallNodeData extends BaseNodeData {
 export interface TemplateNodeData extends BaseNodeData {
   templateId: string;
   variables: Record<string, any>;
+  onUpdate?: (data: TemplateNodeData) => void;
+}
+
+export interface ForEachNodeData extends BaseNodeData {
+  sourceVariable: string;  // Variable containing the list/array
+  itemVariable: string;    // Name for each item in the loop (e.g., "TestFirstName", "TestLastName")
+  iterationMode: 'sequential' | 'parallel';  // How to process items
+  itemProperties?: string[]; // For complex objects, which properties to extract
 }
 
 // Union type for all node data
@@ -101,7 +110,8 @@ export type FlowNodeData =
   | TransformNodeData 
   | OutputNodeData 
   | LLMCallNodeData 
-  | TemplateNodeData;
+  | TemplateNodeData
+  | ForEachNodeData;
 
 // Flow-specific types
 export interface FlowNode {
@@ -273,4 +283,74 @@ export interface LLMResponse {
   };
   cost: number;
   latency: number;
+}
+
+// Data type system for intelligent flow orchestration
+export enum DataType {
+  TEXT = 'text',
+  NUMBER = 'number',
+  BOOLEAN = 'boolean',
+  LIST = 'list',
+  OBJECT = 'object',
+  JSON = 'json',
+  IMAGE = 'image',
+  AUDIO = 'audio',
+  FILE = 'file',
+  ANY = 'any'
+}
+
+export enum OutputFormat {
+  PLAIN_TEXT = 'plain_text',
+  STRUCTURED_LIST = 'structured_list',
+  JSON_OBJECT = 'json_object',
+  CSV = 'csv',
+  MARKDOWN = 'markdown',
+  HTML = 'html',
+  BULLET_POINTS = 'bullet_points',
+  NUMBERED_LIST = 'numbered_list'
+}
+
+export interface DataSchema {
+  type: DataType;
+  format?: OutputFormat;
+  properties?: Record<string, DataSchema>;
+  items?: DataSchema;
+  required?: string[];
+  examples?: any[];
+  description?: string;
+}
+
+export interface NodePort {
+  id: string;
+  name: string;
+  type: 'input' | 'output';
+  dataType: DataType;
+  schema?: DataSchema;
+  required?: boolean;
+  description?: string;
+}
+
+export interface ConnectionRule {
+  sourceType: NodeType;
+  targetType: NodeType;
+  sourcePort?: string;
+  targetPort?: string;
+  condition?: (sourceNode: FlowNode, targetNode: FlowNode) => boolean;
+  suggestion?: string;
+}
+
+export interface FlowSuggestion {
+  nodeType: NodeType;
+  reason: string;
+  priority: number;
+  autoConnect?: boolean;
+  defaultConfig?: Partial<FlowNodeData>;
+}
+
+// Enhanced node interfaces with ports and data contracts
+export interface EnhancedNodeData extends BaseNodeData {
+  inputs: NodePort[];
+  outputs: NodePort[];
+  category: 'input' | 'processing' | 'control' | 'output';
+  suggestedNext?: NodeType[];
 }

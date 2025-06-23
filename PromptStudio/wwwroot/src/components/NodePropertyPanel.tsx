@@ -17,7 +17,7 @@ import {
   FormControlLabel
 } from '@mui/material';
 import { Close, Save } from '@mui/icons-material';
-import { FlowNode, NodeType, PromptNodeData, VariableNodeData, ConditionalNodeData, NodePropertyPanelProps } from '../types/flow-types';
+import { FlowNode, NodeType, PromptNodeData, VariableNodeData, ConditionalNodeData, ForEachNodeData, NodePropertyPanelProps } from '../types/flow-types';
 
 const NodePropertyPanel: React.FC<NodePropertyPanelProps> = ({ node, onUpdate, onClose }) => {
   const [localData, setLocalData] = useState(node.data);
@@ -27,11 +27,17 @@ const NodePropertyPanel: React.FC<NodePropertyPanelProps> = ({ node, onUpdate, o
     setLocalData(node.data);
     setHasChanges(false);
   }, [node]);
-
   const handleDataChange = (field: string, value: any) => {
     const newData = { ...localData, [field]: value };
     setLocalData(newData);
     setHasChanges(true);
+    
+    // Immediately apply the change to the node
+    const updatedNode: FlowNode = {
+      ...node,
+      data: newData
+    };
+    onUpdate(updatedNode);
   };
 
   const handleNestedDataChange = (parentField: string, field: string, value: any) => {
@@ -44,6 +50,13 @@ const NodePropertyPanel: React.FC<NodePropertyPanelProps> = ({ node, onUpdate, o
     };
     setLocalData(newData);
     setHasChanges(true);
+    
+    // Immediately apply the change to the node
+    const updatedNode: FlowNode = {
+      ...node,
+      data: newData
+    };
+    onUpdate(updatedNode);
   };
 
   const handleSave = () => {
@@ -215,6 +228,50 @@ const NodePropertyPanel: React.FC<NodePropertyPanelProps> = ({ node, onUpdate, o
     </>
   );
 
+  const renderForEachNodeFields = (data: ForEachNodeData) => (
+    <>
+      <TextField
+        label="Source Variable (List/Array)"
+        value={data.sourceVariable || ''}
+        onChange={(e) => handleDataChange('sourceVariable', e.target.value)}
+        fullWidth
+        sx={{ mb: 2 }}
+        helperText="The variable containing the list or array to iterate over"
+      />
+
+      <TextField
+        label="Item Variable Name"
+        value={data.itemVariable || ''}
+        onChange={(e) => handleDataChange('itemVariable', e.target.value)}
+        fullWidth
+        sx={{ mb: 2 }}
+        helperText="Name for each item in the loop (e.g., 'item', 'row', 'person')"
+      />
+
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel>Iteration Mode</InputLabel>
+        <Select
+          value={data.iterationMode || 'sequential'}
+          label="Iteration Mode"
+          onChange={(e) => handleDataChange('iterationMode', e.target.value)}
+        >
+          <MenuItem value="sequential">Sequential</MenuItem>
+          <MenuItem value="parallel">Parallel</MenuItem>
+        </Select>
+      </FormControl>
+
+      <TextField
+        label="Item Properties (comma-separated)"
+        value={data.itemProperties?.join(', ') || ''}
+        onChange={(e) => handleDataChange('itemProperties', e.target.value.split(',').map(s => s.trim()).filter(s => s))}
+        fullWidth
+        sx={{ mb: 2 }}
+        helperText="For objects: specify which properties to extract (e.g., 'FirstName, LastName')"
+        multiline
+      />
+    </>
+  );
+
   const renderGenericFields = () => (
     <>
       <TextField
@@ -242,17 +299,38 @@ const NodePropertyPanel: React.FC<NodePropertyPanelProps> = ({ node, onUpdate, o
       case NodeType.PROMPT:
         return renderPromptNodeFields(localData as PromptNodeData);
       case NodeType.VARIABLE:
-        return renderVariableNodeFields(localData as VariableNodeData);
-      case NodeType.CONDITIONAL:
+        return renderVariableNodeFields(localData as VariableNodeData);      case NodeType.CONDITIONAL:
         return renderConditionalNodeFields(localData as ConditionalNodeData);
+      case NodeType.FOR_EACH:
+        return renderForEachNodeFields(localData as ForEachNodeData);
       default:
         return null;
     }
   };
-
   return (
-    <Paper className="node-property-panel" elevation={2} sx={{ borderRadius: 0 }}>
-      <Box className="panel-header">
+    <Paper 
+      className="node-property-panel" 
+      elevation={2} 
+      sx={{ 
+        borderRadius: 0,
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden'
+      }}
+    >
+      <Box 
+        className="panel-header"
+        sx={{
+          p: 2,
+          borderBottom: '1px solid #e0e0e0',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          backgroundColor: '#f5f5f5',
+          minHeight: 'auto'
+        }}
+      >
         <Typography variant="h6" component="div">
           {node.type.charAt(0).toUpperCase() + node.type.slice(1)} Properties
         </Typography>
@@ -261,7 +339,14 @@ const NodePropertyPanel: React.FC<NodePropertyPanelProps> = ({ node, onUpdate, o
         </IconButton>
       </Box>
 
-      <Box className="panel-content">
+      <Box 
+        className="panel-content"
+        sx={{
+          flex: 1,
+          overflow: 'auto',
+          p: 2
+        }}
+      >
         <Box sx={{ mb: 2 }}>
           <Chip
             label={node.type}
@@ -273,14 +358,23 @@ const NodePropertyPanel: React.FC<NodePropertyPanelProps> = ({ node, onUpdate, o
 
         <Divider sx={{ mb: 2 }} />
 
-        {renderGenericFields()}
-        
+        {renderGenericFields()}        
         <Divider sx={{ mb: 2 }} />
         
         {renderNodeSpecificFields()}
       </Box>
 
-      <Box className="panel-actions">
+      <Box 
+        className="panel-actions"
+        sx={{
+          p: 2,
+          borderTop: '1px solid #e0e0e0',
+          backgroundColor: '#f5f5f5',
+          display: 'flex',
+          gap: 1,
+          justifyContent: 'flex-end'
+        }}
+      >
         <Button
           variant="outlined"
           onClick={onClose}

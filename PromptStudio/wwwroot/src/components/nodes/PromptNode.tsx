@@ -1,6 +1,6 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { Handle, Position } from 'reactflow';
-import { Paper, Typography, Box, Chip } from '@mui/material';
+import { Paper, Typography, Box, Chip, Tooltip } from '@mui/material';
 import { ChatBubbleOutline } from '@mui/icons-material';
 import { PromptNodeData } from '../../types/flow-types';
 
@@ -9,36 +9,57 @@ interface PromptNodeProps {
   selected: boolean;
 }
 
-const PromptNode: React.FC<PromptNodeProps> = memo(({ data, selected }) => {
+const PromptNode: React.FC<PromptNodeProps> = ({ data, selected }) => {
+  console.log('PromptNode rendering with data:', data);
+  
   const truncateText = (text: string, maxLength: number = 50) => {
     return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
   };
-
   return (
-    <Paper
-      elevation={selected ? 4 : 2}
-      className={`custom-node node-prompt ${selected ? 'selected' : ''}`}
-      sx={{
-        minWidth: 200,
-        maxWidth: 300,
-        border: selected ? '2px solid #1976d2' : '2px solid transparent',
-        transition: 'all 0.2s ease',
-      }}
-    >
+    <Tooltip title="Right-click or Ctrl+Click for smart suggestions" placement="top">
+      <Paper
+        elevation={selected ? 4 : 2}
+        className={`custom-node node-prompt ${selected ? 'selected' : ''}`}
+        sx={{
+          minWidth: 200,
+          maxWidth: 300,
+          border: selected ? '2px solid #1976d2' : '2px solid transparent',
+          transition: 'all 0.2s ease',
+          cursor: 'pointer',
+          '&:hover': {
+            elevation: 3,
+            borderColor: '#1976d2',
+            '& .smart-chip': {
+              opacity: 1
+            }
+          }
+        }}
+      >
       <Handle
         type="target"
         position={Position.Top}
         className="custom-node-handle"
         style={{ top: -6 }}
-      />
-
-      <Box className="custom-node-header">
+      />      <Box className="custom-node-header">
         <Box className="custom-node-icon">
           <ChatBubbleOutline sx={{ fontSize: 18, color: '#2196f3' }} />
         </Box>
         <Typography variant="subtitle2" component="div">
           {data.label || 'Prompt Node'}
-        </Typography>
+        </Typography>        <Chip 
+          label="Smart" 
+          size="small" 
+          variant="outlined" 
+          className="smart-chip"
+          sx={{ 
+            fontSize: '0.6rem', 
+            height: 16, 
+            ml: 'auto',
+            borderColor: '#2196f3',
+            color: '#2196f3',
+            opacity: 0.7
+          }} 
+        />
       </Box>
 
       <Box className="custom-node-content">
@@ -75,12 +96,11 @@ const PromptNode: React.FC<PromptNodeProps> = memo(({ data, selected }) => {
       <Handle
         type="source"
         position={Position.Bottom}
-        className="custom-node-handle"
-        style={{ bottom: -6 }}
-      />
+        className="custom-node-handle"        style={{ bottom: -6 }}      />
     </Paper>
+    </Tooltip>
   );
-});
+};
 
 PromptNode.displayName = 'PromptNode';
 

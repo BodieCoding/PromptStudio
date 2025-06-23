@@ -35,12 +35,18 @@ public class PromptStudioDbContext : DbContext, IPromptStudioDbContext
     /// <summary>
     /// Gets or sets the prompt executions in the database
     /// </summary>
-    public DbSet<PromptExecution> PromptExecutions { get; set; }
-
-    /// <summary>
+    public DbSet<PromptExecution> PromptExecutions { get; set; }    /// <summary>
     /// Gets or sets the variable collections in the database
     /// </summary>
-    public DbSet<VariableCollection> VariableCollections { get; set; }
+    public DbSet<VariableCollection> VariableCollections { get; set; }    /// <summary>
+    /// Gets or sets the prompt flows in the database
+    /// </summary>
+    public DbSet<PromptFlow> PromptFlows { get; set; }
+
+    /// <summary>
+    /// Gets or sets the flow executions in the database
+    /// </summary>
+    public DbSet<FlowExecution> FlowExecutions { get; set; }
 
     /// <summary>
     /// Configures the database model
@@ -120,10 +126,41 @@ public class PromptStudioDbContext : DbContext, IPromptStudioDbContext
             entity.HasOne(e => e.PromptTemplate)
                   .WithMany(pt => pt.VariableCollections)
                   .HasForeignKey(e => e.PromptTemplateId)
+                  .OnDelete(DeleteBehavior.Cascade);            entity.HasIndex(e => e.PromptTemplateId);
+            entity.HasIndex(e => e.Name);
+        });        // PromptFlow configuration
+        modelBuilder.Entity<PromptFlow>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.Version).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UserId).HasMaxLength(100);
+            entity.Property(e => e.Tags).HasMaxLength(1000);
+            entity.Property(e => e.FlowData).IsRequired();
+
+            entity.HasIndex(e => e.Name);
+            entity.HasIndex(e => e.UserId);
+            entity.HasIndex(e => e.CreatedAt);
+        });
+
+        // FlowExecution configuration
+        modelBuilder.Entity<FlowExecution>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.InputVariables).IsRequired();
+            entity.Property(e => e.OutputResult);
+            entity.Property(e => e.Status).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.ErrorMessage).HasMaxLength(2000);
+
+            entity.HasOne(e => e.Flow)
+                  .WithMany()
+                  .HasForeignKey(e => e.FlowId)
                   .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasIndex(e => e.PromptTemplateId);
-            entity.HasIndex(e => e.Name);
+            entity.HasIndex(e => e.FlowId);
+            entity.HasIndex(e => e.CreatedAt);
+            entity.HasIndex(e => e.Status);
         });
 
         // Seed initial data

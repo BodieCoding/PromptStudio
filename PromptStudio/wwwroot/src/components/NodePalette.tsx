@@ -18,7 +18,8 @@ import {
   Output,
   Cloud,
   Description,
-  Close
+  Close,
+  Loop
 } from '@mui/icons-material';
 import { NodeType } from '../types/flow-types';
 
@@ -62,13 +63,19 @@ const paletteItems: PaletteItem[] = [
     icon: <Transform />,
     description: 'Transform data or text',
     color: '#9c27b0'
-  },
-  {
+  },  {
     type: NodeType.OUTPUT,
     label: 'Output',
     icon: <Output />,
     description: 'Format and output results',
     color: '#f44336'
+  },
+  {
+    type: NodeType.FOR_EACH,
+    label: 'For Each',
+    icon: <Loop />,
+    description: 'Iterate over lists/arrays',
+    color: '#9c27b0'
   },
   {
     type: NodeType.LLM_CALL,

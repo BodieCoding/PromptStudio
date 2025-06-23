@@ -12,7 +12,7 @@ public class FlowExecutionOptions
 
     /// <summary>
     /// Whether to run in debug mode with detailed trace
-    /// </summary>
+    /// </summary> 
     public bool Debug { get; set; } = false;
 
     /// <summary>

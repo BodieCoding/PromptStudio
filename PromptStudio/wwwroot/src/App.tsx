@@ -4,6 +4,7 @@ import { PlayArrow, Save, Settings, Help } from '@mui/icons-material';
 import FlowCanvas from './components/FlowCanvas';
 import NodePalette from './components/NodePalette';
 import NodePropertyPanel from './components/NodePropertyPanel';
+import FlowExecutionDialog from './components/FlowExecutionDialog';
 import { PromptFlow, FlowNode, FlowEdge } from './types/flow-types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -25,10 +26,10 @@ const App = forwardRef<AppRef>((props, ref) => {
     updatedAt: new Date(),
     tags: []
   });
-
   const [selectedNode, setSelectedNode] = useState<FlowNode | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
   const [showPalette, setShowPalette] = useState(true);
+  const [showExecutionDialog, setShowExecutionDialog] = useState(false);
 
   // Expose methods to parent components
   useImperativeHandle(ref, () => ({
@@ -56,24 +57,31 @@ const App = forwardRef<AppRef>((props, ref) => {
       console.error('Failed to save flow:', error);
     }
   }, [currentFlow]);
-
   const handleExecuteFlow = useCallback(async () => {
     if (isExecuting) return;
-    
+    setShowExecutionDialog(true);
+  }, [isExecuting]);
+
+  const handleExecuteFlowWithVariables = useCallback(async (variables: Record<string, any>) => {
     setIsExecuting(true);
+    setShowExecutionDialog(false);
+    
     try {
-      // TODO: Implement flow execution
-      console.log('Executing flow:', currentFlow);
-      // await flowApi.executeFlow(currentFlow, {});
+      console.log('Executing flow with variables:', currentFlow, variables);
+      
+      // TODO: Call API to execute flow
+      // const result = await flowApi.executeFlow(currentFlow.id, variables);
       
       // Simulate execution delay
       await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      console.log('Flow execution completed');
     } catch (error) {
       console.error('Failed to execute flow:', error);
     } finally {
       setIsExecuting(false);
     }
-  }, [currentFlow, isExecuting]);
+  }, [currentFlow]);
 
   return (
     <Box className="visual-builder-container">
@@ -133,25 +141,47 @@ const App = forwardRef<AppRef>((props, ref) => {
               <Typography>Executing flow...</Typography>
             </Box>
           )}
-        </Box>
-
-        {selectedNode && (
-          <NodePropertyPanel
-            node={selectedNode}            onUpdate={(updatedNode: FlowNode) => {
-              const updatedNodes = currentFlow.nodes.map(node => 
-                node.id === updatedNode.id ? updatedNode : node
-              );
-              handleFlowChange({
-                ...currentFlow,
-                nodes: updatedNodes,
-                updatedAt: new Date()
-              });
-            }}
-            onClose={() => setSelectedNode(null)}
-          />
+        </Box>        {selectedNode && (
+          <Box sx={{ 
+            width: 400, 
+            minWidth: 400,
+            maxWidth: 500,
+            height: '100%',
+            borderLeft: '1px solid #e0e0e0',
+            backgroundColor: '#fafafa',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <NodePropertyPanel
+              node={selectedNode}
+              onUpdate={(updatedNode: FlowNode) => {
+                console.log('Updating node:', updatedNode.id, updatedNode.data);
+                const updatedNodes = currentFlow.nodes.map(node => 
+                  node.id === updatedNode.id ? updatedNode : node
+                );
+                
+                // Update the selected node to reflect changes immediately
+                setSelectedNode(updatedNode);
+                
+                handleFlowChange({
+                  ...currentFlow,
+                  nodes: updatedNodes,
+                  updatedAt: new Date()
+                });
+              }}
+              onClose={() => setSelectedNode(null)}
+            />          </Box>
         )}
       </Box>
-    </Box>  );
+
+      <FlowExecutionDialog
+        open={showExecutionDialog}
+        onClose={() => setShowExecutionDialog(false)}
+        flow={currentFlow}
+        onExecute={handleExecuteFlowWithVariables}
+      />
+    </Box>);
 });
 
 export default App;

@@ -29,6 +29,14 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<IPromptStudioDbContext>(provider => provider.GetRequiredService<PromptStudioDbContext>());
     builder.Services.AddScoped<IPromptService, PromptService>();
     builder.Services.AddScoped<IFlowService, FlowService>();
+    
+    // Register model providers
+    builder.Services.AddHttpClient(); // For model providers that need HTTP
+    builder.Services.AddScoped<CopilotModelProvider>();
+    builder.Services.AddScoped<McpModelProvider>();
+    builder.Services.AddScoped<IModelProvider, CopilotModelProvider>(provider => provider.GetRequiredService<CopilotModelProvider>());
+    builder.Services.AddScoped<IModelProvider, McpModelProvider>(provider => provider.GetRequiredService<McpModelProvider>());
+    builder.Services.AddScoped<IModelProviderManager, ModelProviderManager>();
 }
 
 // Build the application
