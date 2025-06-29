@@ -3,40 +3,105 @@ using System.ComponentModel.DataAnnotations;
 namespace PromptStudio.Core.Domain;
 
 /// <summary>
-/// Represents a connection/edge between nodes in a workflow
-/// Defines the flow of data and control through the workflow graph
+/// Represents a directed connection between nodes in a visual workflow graph.
+/// FlowEdges define the data flow, control flow, and conditional routing pathways
+/// that enable complex LLM workflow orchestration and execution control.
 /// </summary>
+/// <remarks>
+/// FlowEdge entities encapsulate the routing logic, conditions, and data transformation
+/// rules that govern how information flows between workflow nodes. They support
+/// conditional branching, data filtering, transformation, and sophisticated
+/// workflow control patterns essential for enterprise LLM applications.
+/// </remarks>
 public class FlowEdge : AuditableEntity
 {
     /// <summary>
-    /// Reference to the parent workflow
+    /// Gets or sets the unique identifier of the parent workflow containing this edge.
+    /// Establishes the hierarchical relationship and ensures edge isolation within workflows.
     /// </summary>
+    /// <value>The GUID of the PromptFlow that contains this edge.</value>
+    /// <remarks>
+    /// Workflow membership ensures proper isolation and enables workflow-scoped
+    /// operations like validation, execution, and version control.
+    /// </remarks>
     public Guid FlowId { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the navigation property to the parent workflow.
+    /// Provides access to workflow-level configuration and execution context.
+    /// </summary>
+    /// <value>The PromptFlow entity that owns this edge.</value>
     public virtual PromptFlow Flow { get; set; } = null!;
     
     /// <summary>
-    /// Source node for this edge
+    /// Gets or sets the unique identifier of the source node for this edge.
+    /// Defines the originating node where data or control flow begins.
     /// </summary>
+    /// <value>The GUID of the FlowNode that serves as the source of this connection.</value>
+    /// <remarks>
+    /// Source node identification is critical for execution ordering and
+    /// dependency resolution during workflow processing.
+    /// </remarks>
     public Guid SourceNodeId { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the navigation property to the source node.
+    /// Provides access to the originating node's configuration and execution state.
+    /// </summary>
+    /// <value>The FlowNode entity that originates this edge.</value>
     public virtual FlowNode SourceNode { get; set; } = null!;
     
     /// <summary>
-    /// Target node for this edge
+    /// Gets or sets the unique identifier of the target node for this edge.
+    /// Defines the destination node where data or control flow is directed.
     /// </summary>
+    /// <value>The GUID of the FlowNode that receives data through this connection.</value>
+    /// <remarks>
+    /// Target node identification determines execution dependencies and
+    /// enables proper workflow traversal during execution.
+    /// </remarks>
     public Guid TargetNodeId { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the navigation property to the target node.
+    /// Provides access to the destination node's configuration and input requirements.
+    /// </summary>
+    /// <value>The FlowNode entity that receives data through this edge.</value>
     public virtual FlowNode TargetNode { get; set; } = null!;
     
     /// <summary>
-    /// Source handle/port identifier
-    /// Identifies which output port of the source node this edge connects from
+    /// Gets or sets the source handle identifier specifying which output port connects to this edge.
+    /// Enables multiple output ports per node for complex routing scenarios.
     /// </summary>
+    /// <value>
+    /// A string identifier for the source node's output port (e.g., "output", "success", "error").
+    /// Defaults to "output". Maximum length is 50 characters.
+    /// </value>
+    /// <example>
+    /// Examples: "output" (default), "success", "error", "result", "fallback", "validation"
+    /// </example>
+    /// <remarks>
+    /// Handle identification enables sophisticated node designs with multiple
+    /// output paths for different execution outcomes or data types.
+    /// </remarks>
     [StringLength(50)]
     public string SourceHandle { get; set; } = "output";
     
     /// <summary>
-    /// Target handle/port identifier
-    /// Identifies which input port of the target node this edge connects to
+    /// Gets or sets the target handle identifier specifying which input port receives this connection.
+    /// Enables multiple input ports per node for complex data aggregation scenarios.
     /// </summary>
+    /// <value>
+    /// A string identifier for the target node's input port (e.g., "input", "primary", "secondary").
+    /// Defaults to "input". Maximum length is 50 characters.
+    /// </value>
+    /// <example>
+    /// Examples: "input" (default), "primary", "secondary", "condition", "data", "context"
+    /// </example>
+    /// <remarks>
+    /// Handle identification supports complex node architectures requiring
+    /// multiple data inputs or specialized input types.
+    /// </remarks>
     [StringLength(50)]
     public string TargetHandle { get; set; } = "input";
     

@@ -4,31 +4,78 @@ using System.ComponentModel.DataAnnotations;
 namespace PromptStudio.Core.Domain;
 
 /// <summary>
-/// A PromptLab is the top-level organizational unit for prompt engineering work.
-/// Similar to research labs or GCP projects, it provides isolation, ownership, and governance.
-/// PromptLabs contain PromptLibraries, which contain PromptTemplates and PromptFlows.
+/// Represents the top-level organizational unit for prompt engineering work in enterprise LLMOps.
+/// PromptLabs provide complete isolation, ownership, governance, and collaboration boundaries
+/// for prompt development teams, similar to research labs, GitHub organizations, or GCP projects.
+/// Each lab contains libraries, templates, workflows, and associated governance policies.
 /// </summary>
+/// <remarks>
+/// PromptLab serves as the primary tenant boundary in multi-tenant LLMOps environments,
+/// providing security isolation, resource management, and collaborative workspaces.
+/// Labs enable organizations to separate different projects, teams, or business units
+/// while maintaining centralized governance and analytics capabilities.
+/// </remarks>
 public class PromptLab
 {
     /// <summary>
-    /// Unique identifier for the PromptLab.
-    /// Using Guid for global uniqueness, security, and distributed system compatibility.
+    /// Gets or sets the unique identifier for this PromptLab.
+    /// Provides globally unique identification for distributed systems and security.
     /// </summary>
+    /// <value>
+    /// A GUID that uniquely identifies this lab across all systems and environments.
+    /// Auto-generated on creation to ensure global uniqueness.
+    /// </value>
+    /// <remarks>
+    /// GUID-based identifiers enable secure, distributed operation and prevent
+    /// enumeration attacks while supporting database sharding and replication.
+    /// </remarks>
     public Guid Id { get; set; } = Guid.NewGuid();
     
+    /// <summary>
+    /// Gets or sets the human-readable name of the PromptLab.
+    /// Provides a descriptive identifier for display and organizational purposes.
+    /// </summary>
+    /// <value>
+    /// A descriptive name that should be meaningful to users and administrators.
+    /// Required field with maximum length of 100 characters.
+    /// </value>
+    /// <example>
+    /// Examples: "Customer Service AI", "Marketing Content Generation", "Legal Document Review"
+    /// </example>
     [Required]
     [StringLength(100)]
     public string Name { get; set; } = string.Empty;
     
+    /// <summary>
+    /// Gets or sets an optional description explaining the lab's purpose and scope.
+    /// Provides context for lab discovery and understanding of its intended use.
+    /// </summary>
+    /// <value>
+    /// A detailed description of the lab's objectives, team, and intended use cases.
+    /// Optional field with maximum length of 500 characters.
+    /// </value>
+    /// <example>
+    /// "Collaborative workspace for developing and testing AI-powered customer service responses, escalation procedures, and multilingual support templates"
+    /// </example>
     [StringLength(500)]
     public string? Description { get; set; }
 
     /// <summary>
-    /// Lab identifier - unique, URL-friendly identifier (like GitHub repo names)
-    /// Format: lowercase, hyphens allowed, 3-50 characters
-    /// Examples: my-chatbot-prompts, sales-ai-workflows, content-generation
-    /// This provides human-readable URLs while maintaining Guid-based internal references
+    /// Gets or sets the URL-friendly unique identifier for this lab.
+    /// Provides human-readable URLs and API endpoints while maintaining GUID-based internal references.
     /// </summary>
+    /// <value>
+    /// A lowercase, hyphen-separated identifier that must be unique across the platform.
+    /// Required field with length between 3-50 characters, following specific format rules.
+    /// </value>
+    /// <example>
+    /// Examples: "customer-support-ai", "marketing-content-gen", "legal-document-review"
+    /// </example>
+    /// <remarks>
+    /// Lab IDs enable friendly URLs (e.g., /labs/customer-support-ai) while maintaining
+    /// security through GUID-based internal operations. Format restrictions ensure
+    /// URL compatibility and consistent naming conventions.
+    /// </remarks>
     [Required]
     [StringLength(50, MinimumLength = 3)]
     [RegularExpression(@"^[a-z][a-z0-9-]*[a-z0-9]$", 
@@ -36,8 +83,18 @@ public class PromptLab
     public string LabId { get; set; } = string.Empty;
 
     /// <summary>
-    /// Owner of the lab - will be expanded to support users/teams later
-    /// For enterprise scale, this will become a foreign key to User/Team entities
+    /// Gets or sets the identifier of the lab owner for ownership and access control.
+    /// Will be expanded to support user and team entities in future enterprise implementations.
+    /// </summary>
+    /// <value>
+    /// An identifier for the lab owner (user ID, email, or team identifier).
+    /// Will become a foreign key reference to User/Team entities in enterprise versions.
+    /// Required field with maximum length of 100 characters.
+    /// </value>
+    /// <remarks>
+    /// Owner identification is critical for access control, governance, and administrative operations.
+    /// Future versions will implement proper user management with role-based access control.
+    /// </remarks>
     /// </summary>
     [StringLength(100)]
     public string? Owner { get; set; }
