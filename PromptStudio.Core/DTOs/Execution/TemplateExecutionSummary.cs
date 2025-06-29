@@ -3,9 +3,9 @@ using PromptStudio.Core.DTOs.Common;
 namespace PromptStudio.Core.DTOs.Execution;
 
 /// <summary>
-/// Enhanced template execution summary
+///  Template execution summary
 /// </summary>
-public class EnhancedTemplateExecutionSummary
+public class TemplateExecutionSummary
 {
     public Guid TemplateId { get; set; }
     public string TemplateName { get; set; } = string.Empty;

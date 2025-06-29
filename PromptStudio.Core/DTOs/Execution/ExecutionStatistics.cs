@@ -3,9 +3,9 @@ using PromptStudio.Core.DTOs.Common;
 namespace PromptStudio.Core.DTOs.Execution;
 
 /// <summary>
-/// Enhanced execution statistics
+///  Execution statistics
 /// </summary>
-public class EnhancedExecutionStatistics
+public class ExecutionStatistics
 {
     public long TotalExecutions { get; set; }
     public long SuccessfulExecutions { get; set; }
