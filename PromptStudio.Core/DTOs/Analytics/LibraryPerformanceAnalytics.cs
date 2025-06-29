@@ -1,5 +1,4 @@
-namespace PromptStudio.Core.Domain;
-
+namespace PromptStudio.Core.DTOs.Analytics;
 
 /// <summary>
 /// Library performance analytics

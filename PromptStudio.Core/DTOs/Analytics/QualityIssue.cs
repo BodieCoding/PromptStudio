@@ -1,4 +1,4 @@
-namespace PromptStudio.Core.Domain;
+namespace PromptStudio.Core.DTOs.Analytics;
 
 /// <summary>
 /// Quality issue
@@ -11,5 +11,3 @@ public class QualityIssue
     public string Location { get; set; } = string.Empty;
     public Dictionary<string, object> Details { get; set; } = new();
 }
-
-

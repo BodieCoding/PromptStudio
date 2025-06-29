@@ -1,4 +1,4 @@
-namespace PromptStudio.Core.Domain;
+namespace PromptStudio.Core.DTOs.Analytics;
 
 /// <summary>
 /// Statistics for a prompt library

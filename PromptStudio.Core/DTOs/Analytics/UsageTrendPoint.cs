@@ -1,4 +1,4 @@
-namespace PromptStudio.Core.Domain;
+namespace PromptStudio.Core.DTOs.Analytics;
 
 /// <summary>
 /// Usage trend data point
@@ -11,5 +11,3 @@ public class UsageTrendPoint
     public double SuccessRate { get; set; }
     public TimeSpan AverageExecutionTime { get; set; }
 }
-
-

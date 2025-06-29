@@ -1,7 +1,8 @@
-namespace PromptStudio.Core.Domain;
+namespace PromptStudio.Core.DTOs.Analytics;
 
 /// <summary>
-/// Lab activity trend data
+/// Lab activity trend data - calculated analytics for time-series reporting
+/// This represents aggregated data computed from multiple domain entities
 /// </summary>
 public class LabActivityTrendData
 {
@@ -46,7 +47,7 @@ public class LabActivityTrendData
     public double SuccessRate { get; set; }
 
     /// <summary>
-    /// Token usage for this period
+    /// Token usage for this period (references Analytics TokenUsage)
     /// </summary>
     public TokenUsage? TokenUsage { get; set; }
 

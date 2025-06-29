@@ -1,4 +1,4 @@
-namespace PromptStudio.Core.Domain;
+namespace PromptStudio.Core.DTOs.Analytics;
 
 public class TokenUsageInfo
 {

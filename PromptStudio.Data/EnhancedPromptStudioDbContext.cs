@@ -925,22 +925,50 @@ public class EnhancedPromptStudioDbContext : DbContext, IPromptStudioDbContext
     {
         // Configure enum-to-string conversions for better database portability
         
-        // Core enums
-        ConfigureEnumConversion<LabStatus>(modelBuilder);
-        ConfigureEnumConversion<LabVisibility>(modelBuilder);
-        ConfigureEnumConversion<LibraryCategory>(modelBuilder);
-        ConfigureEnumConversion<LibraryVisibility>(modelBuilder);
-        ConfigureEnumConversion<LibraryStatus>(modelBuilder);
+        // Flow/Workflow enums
+        ConfigureEnumConversion<EdgeType>(modelBuilder);
+        ConfigureEnumConversion<EdgeValidationStatus>(modelBuilder);
+        ConfigureEnumConversion<FlowExecutionStatus>(modelBuilder);
+        ConfigureEnumConversion<FlowNodeType>(modelBuilder);
+        ConfigureEnumConversion<FlowStorageMode>(modelBuilder);
+        ConfigureEnumConversion<NodeExecutionStatus>(modelBuilder);
+        ConfigureEnumConversion<NodeValidationStatus>(modelBuilder);
+        ConfigureEnumConversion<WorkflowCategory>(modelBuilder);
+        ConfigureEnumConversion<WorkflowStatus>(modelBuilder);
+        ConfigureEnumConversion<SuggestionType>(modelBuilder);
+        ConfigureEnumConversion<SuggestionStatus>(modelBuilder);
+        ConfigureEnumConversion<SuggestionPriority>(modelBuilder);
+        
+        // Template/Prompt enums
         ConfigureEnumConversion<TemplateCategory>(modelBuilder);
         ConfigureEnumConversion<TemplateStatus>(modelBuilder);
         ConfigureEnumConversion<TemplateSize>(modelBuilder);
+        ConfigureEnumConversion<ExecutionStatus>(modelBuilder);
+        ConfigureEnumConversion<CollectionStatus>(modelBuilder);
+        ConfigureEnumConversion<TrendGranularity>(modelBuilder);
+        
+        // Library/Lab enums
+        ConfigureEnumConversion<LibraryCategory>(modelBuilder);
+        ConfigureEnumConversion<LibraryStatus>(modelBuilder);
+        ConfigureEnumConversion<LibraryVisibility>(modelBuilder);
+        ConfigureEnumConversion<LabStatus>(modelBuilder);
+        ConfigureEnumConversion<LabVisibility>(modelBuilder);
+        ConfigureEnumConversion<LabMemberRole>(modelBuilder);
+        
+        // Variable/Version enums
         ConfigureEnumConversion<VariableType>(modelBuilder);
-        ConfigureEnumConversion<WorkflowCategory>(modelBuilder);
-        ConfigureEnumConversion<WorkflowStatus>(modelBuilder);
-        ConfigureEnumConversion<NodeType>(modelBuilder);
+        ConfigureEnumConversion<VersionApprovalStatus>(modelBuilder);
+        ConfigureEnumConversion<VersionChangeType>(modelBuilder);
+        
+        // Security/Permission enums
         ConfigureEnumConversion<PermissionLevel>(modelBuilder);
         ConfigureEnumConversion<PrincipalType>(modelBuilder);
         ConfigureEnumConversion<DataClassification>(modelBuilder);
+        
+        // Testing/Analytics enums
+        ConfigureEnumConversion<ABTestStatus>(modelBuilder);
+        ConfigureEnumConversion<TestEntityType>(modelBuilder);
+        ConfigureEnumConversion<VariantStatus>(modelBuilder);
     }
 
     private void ConfigureEnumConversion<TEnum>(ModelBuilder modelBuilder) where TEnum : struct, Enum

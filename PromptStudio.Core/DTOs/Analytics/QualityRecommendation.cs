@@ -1,4 +1,4 @@
-namespace PromptStudio.Core.Domain;
+namespace PromptStudio.Core.DTOs.Analytics;
 
 /// <summary>
 /// Quality recommendation
@@ -12,5 +12,3 @@ public class QualityRecommendation
     public double ExpectedImpact { get; set; }
     public List<string> ActionItems { get; set; } = new();
 }
-
-

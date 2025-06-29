@@ -1,9 +1,9 @@
-namespace PromptStudio.Core.Domain;
+namespace PromptStudio.Core.DTOs.Library;
 
 /// <summary>
-///     Represents a target for sharing templates or libraries
-///     This class is used to specify who can access shared content, such as users, teams, or groups.
-///     It includes properties for the target ID, type, and an optional message.
+/// Represents a target for sharing templates or libraries
+/// This class is used to specify who can access shared content, such as users, teams, or groups.
+/// It includes properties for the target ID, type, and an optional message.
 /// </summary>
 public class ShareTarget
 {

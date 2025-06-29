@@ -1,4 +1,4 @@
-namespace PromptStudio.Core.Domain;
+namespace PromptStudio.Core.DTOs.Analytics;
 
 /// <summary>
 /// Library quality analysis
@@ -12,5 +12,3 @@ public class LibraryQualityAnalysis
     public List<QualityRecommendation> Recommendations { get; set; } = new();
     public Dictionary<string, object> DetailedAnalysis { get; set; } = new();
 }
-
-

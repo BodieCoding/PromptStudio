@@ -1,7 +1,7 @@
-namespace PromptStudio.Core.Domain;
+namespace PromptStudio.Core.DTOs.Analytics;
 
 /// <summary>
-/// Library performance summary for lab analytics
+/// Library performance summary for lab analytics - calculated data
 /// </summary>
 public class LibraryPerformanceSummary
 {

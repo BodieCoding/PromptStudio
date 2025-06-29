@@ -23,6 +23,21 @@ PromptStudio.Core/DTOs/
 
 #### Analytics DTOs
 - `LabStatistics` → `DTOs/Analytics/LabStatistics.cs`
+- `LabActivityTrendData` → `DTOs/Analytics/LabActivityTrendData.cs`
+- `LibraryPerformanceSummary` → `DTOs/Analytics/LibraryPerformanceSummary.cs`
+- `LibraryPerformanceAnalytics` → `DTOs/Analytics/LibraryPerformanceAnalytics.cs`
+- `LibraryStatistics` → `DTOs/Analytics/LibraryStatistics.cs`
+- `LibraryUsageTrends` → `DTOs/Analytics/LibraryUsageTrends.cs`
+- `LibraryQualityAnalysis` → `DTOs/Analytics/LibraryQualityAnalysis.cs`
+- `ModelPerformanceMetrics` → `DTOs/Analytics/ModelPerformanceMetrics.cs`
+- `PerformanceInsight` → `DTOs/Analytics/PerformanceInsight.cs`
+- `QualityIssue` → `DTOs/Analytics/QualityIssue.cs`
+- `QualityRecommendation` → `DTOs/Analytics/QualityRecommendation.cs`
+- `UsageTrendPoint` → `DTOs/Analytics/UsageTrendPoint.cs`
+- `TrendInsight` → `DTOs/Analytics/TrendInsight.cs`
+- `TokenUsageInfo` → `DTOs/Analytics/TokenUsageInfo.cs`
+- `TemplatePerformanceMetrics` → `DTOs/Analytics/TemplatePerformanceMetrics.cs`
+- `TemplateUsageAnalytics` → `DTOs/Analytics/TemplateUsageAnalytics.cs`
 - `VariableUsageAnalytics` → `DTOs/Variables/VariableUsageAnalytics.cs`
 - `FlowExecutionStatistics` → `DTOs/Analytics/FlowExecutionStatistics.cs`
 
@@ -65,6 +80,7 @@ PromptStudio.Core/DTOs/
 - `LibraryExportOptions` → `DTOs/Library/LibraryExportOptions.cs`
 - `LibraryExportResult` → `DTOs/Library/LibraryExportResult.cs`
 - `LibraryValidationResult` → `DTOs/Library/LibraryValidationResult.cs`
+- `ShareTarget` → `DTOs/Library/ShareTarget.cs`
 
 #### Model DTOs
 - `ModelRequest` → `DTOs/Model/ModelRequest.cs`
@@ -101,6 +117,40 @@ PromptStudio.Core/DTOs/
 - `PromptStudio.Core/Domain/LabEntities/LabValidationResult.cs` ✓
 - `PromptStudio.Core/Domain/LabEntities/LibraryValidationSummary.cs` ✓
 - `PromptStudio.Core/Domain/LabEntities/WorkflowValidationSummary.cs` ✓
+
+### Latest Domain Files Removed (Session 2)
+- `PromptStudio.Core/Domain/LibraryEntities/LibraryPerformanceAnalytics.cs` ✓
+- `PromptStudio.Core/Domain/LibraryEntities/LibraryStatistics.cs` ✓  
+- `PromptStudio.Core/Domain/LibraryEntities/LibraryUsageTrends.cs` ✓
+- `PromptStudio.Core/Domain/LibraryEntities/LibraryQualityAnalysis.cs` ✓
+- `PromptStudio.Core/Domain/LibraryEntities/ModelPerformanceMetrics.cs` ✓
+- `PromptStudio.Core/Domain/LibraryEntities/PerformanceInsight.cs` ✓
+- `PromptStudio.Core/Domain/LibraryEntities/QualityIssue.cs` ✓
+- `PromptStudio.Core/Domain/LibraryEntities/QualityRecommendation.cs` ✓
+- `PromptStudio.Core/Domain/LibraryEntities/UsageTrendPoint.cs` ✓
+- `PromptStudio.Core/Domain/LibraryEntities/TokenUsageInfo.cs` ✓
+- `PromptStudio.Core/Domain/LibraryEntities/LibraryCloneOptions.cs` ✓ (duplicate)
+- `PromptStudio.Core/Domain/LibraryEntities/LibraryImportOptions.cs` ✓ (duplicate)
+- `PromptStudio.Core/Domain/LibraryEntities/LibraryImportResult.cs` ✓ (duplicate)
+- `PromptStudio.Core/Domain/LibraryEntities/LibrarySharingResult.cs` ✓ (duplicate)
+- `PromptStudio.Core/Domain/LibraryEntities/ShareTarget.cs` ✓
+- `PromptStudio.Core/Domain/LibraryEntities/QualityMetrics.cs` ✓ (duplicate)
+- `PromptStudio.Core/Domain/PromptEntities/TemplatePerformanceMetrics.cs` ✓
+- `PromptStudio.Core/Domain/PromptEntities/TemplateUsageAnalytics.cs` ✓
+- `PromptStudio.Core/Domain/PromptEntities/QualityMetrics.cs` ✓ (duplicate, kept clean version)
+
+### Remaining Domain Structure (Only Persistent Entities)
+```
+PromptStudio.Core/Domain/
+├── FlowEntities/ (all persistent entities with AuditableEntity base)
+├── GovernanceEntities/ (persistent entities)
+├── LabEntities/ (persistent entities + enums)
+├── LibraryEntities/ (persistent entities + enums only)
+├── PermissionEntities/ (persistent entities)
+├── PromptEntities/ (persistent entities + enums + QualityMetrics value object)
+├── TestEntities/ (persistent entities)
+└── VariableEntities/ (persistent entities + enums)
+```
 
 ## Next Steps Required
 

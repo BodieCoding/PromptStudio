@@ -1,4 +1,4 @@
-namespace PromptStudio.Core.Domain;
+namespace PromptStudio.Core.DTOs.Analytics;
 
 /// <summary>
 /// Performance insight
@@ -13,5 +13,3 @@ public class PerformanceInsight
     public Dictionary<string, object> Data { get; set; } = new();
     public List<string> Recommendations { get; set; } = new();
 }
-
-

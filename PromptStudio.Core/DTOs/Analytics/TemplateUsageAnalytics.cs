@@ -1,3 +1,5 @@
+namespace PromptStudio.Core.DTOs.Analytics;
+
 /// <summary>
 /// Usage analytics for a template
 /// </summary>

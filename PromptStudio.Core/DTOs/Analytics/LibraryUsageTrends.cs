@@ -1,4 +1,4 @@
-namespace PromptStudio.Core.Domain;
+namespace PromptStudio.Core.DTOs.Analytics;
 
 /// <summary>
 /// Library usage trends
@@ -11,5 +11,3 @@ public class LibraryUsageTrends
     public List<TrendInsight> Insights { get; set; } = new();
     public Dictionary<string, object> Forecasts { get; set; } = new();
 }
-
-
