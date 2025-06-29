@@ -81,6 +81,11 @@ public class EnhancedPromptStudioDbContext : DbContext, IPromptStudioDbContext
     public DbSet<WorkflowLibrary> WorkflowLibraries { get; set; }
 
     /// <summary>
+    /// Workflow Categories - Flexible categorization system for workflows
+    /// </summary>
+    public DbSet<WorkflowCategory> WorkflowCategories { get; set; }
+
+    /// <summary>
     /// Flow Nodes - Individual workflow components
     /// </summary>
     public DbSet<FlowNode> FlowNodes { get; set; }
@@ -572,6 +577,54 @@ public class EnhancedPromptStudioDbContext : DbContext, IPromptStudioDbContext
                 .WithMany(pl => pl.WorkflowLibraries)
                 .HasForeignKey(e => e.PromptLabId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.WorkflowCategory)
+                .WithMany()
+                .HasForeignKey(e => e.WorkflowCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // WorkflowCategory configuration
+        modelBuilder.Entity<WorkflowCategory>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(e => e.Description)
+                .HasMaxLength(500);
+
+            entity.Property(e => e.IconName)
+                .HasMaxLength(50);
+
+            entity.Property(e => e.Color)
+                .HasMaxLength(7);
+
+            entity.Property(e => e.CategoryType)
+                .HasConversion<string>()
+                .HasMaxLength(50);
+
+            // Self-referencing relationship for hierarchy
+            entity.HasOne(e => e.ParentCategory)
+                .WithMany(e => e.ChildCategories)
+                .HasForeignKey(e => e.ParentCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Indexes
+            entity.HasIndex(e => e.Name)
+                .HasDatabaseName("IX_WorkflowCategories_Name");
+
+            entity.HasIndex(e => e.ParentCategoryId)
+                .HasDatabaseName("IX_WorkflowCategories_ParentCategory");
+
+            entity.HasIndex(e => e.IsSystemDefined)
+                .HasDatabaseName("IX_WorkflowCategories_IsSystemDefined");
+
+            entity.HasIndex(e => e.CategoryType)
+                .HasDatabaseName("IX_WorkflowCategories_CategoryType");
         });
 
         // PromptFlow configuration
@@ -594,10 +647,6 @@ public class EnhancedPromptStudioDbContext : DbContext, IPromptStudioDbContext
             entity.Property(e => e.Tags)
                 .HasMaxLength(1000);
 
-            entity.Property(e => e.Category)
-                .HasConversion<string>()
-                .HasMaxLength(50);
-
             entity.Property(e => e.Status)
                 .HasConversion<string>()
                 .HasMaxLength(20);
@@ -614,6 +663,9 @@ public class EnhancedPromptStudioDbContext : DbContext, IPromptStudioDbContext
             entity.Property(e => e.AiConfidenceScore)
                 .HasColumnType("decimal(3,2)");
 
+            entity.Property(e => e.FlowHash)
+                .HasMaxLength(64);
+
             // Relationships
             entity.HasOne(e => e.WorkflowLibrary)
                 .WithMany(wl => wl.PromptFlows)
@@ -625,12 +677,17 @@ public class EnhancedPromptStudioDbContext : DbContext, IPromptStudioDbContext
                 .HasForeignKey(e => e.BaseFlowId)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            entity.HasOne(e => e.WorkflowCategory)
+                .WithMany(wc => wc.PromptFlows)
+                .HasForeignKey(e => e.WorkflowCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // Indexes
             entity.HasIndex(e => e.Name)
                 .HasDatabaseName("IX_PromptFlows_Name");
 
-            entity.HasIndex(e => e.Category)
-                .HasDatabaseName("IX_PromptFlows_Category");
+            entity.HasIndex(e => e.WorkflowCategoryId)
+                .HasDatabaseName("IX_PromptFlows_WorkflowCategory");
 
             entity.HasIndex(e => e.Status)
                 .HasDatabaseName("IX_PromptFlows_Status");
@@ -933,7 +990,6 @@ public class EnhancedPromptStudioDbContext : DbContext, IPromptStudioDbContext
         ConfigureEnumConversion<FlowStorageMode>(modelBuilder);
         ConfigureEnumConversion<NodeExecutionStatus>(modelBuilder);
         ConfigureEnumConversion<NodeValidationStatus>(modelBuilder);
-        ConfigureEnumConversion<WorkflowCategory>(modelBuilder);
         ConfigureEnumConversion<WorkflowStatus>(modelBuilder);
         ConfigureEnumConversion<SuggestionType>(modelBuilder);
         ConfigureEnumConversion<SuggestionStatus>(modelBuilder);

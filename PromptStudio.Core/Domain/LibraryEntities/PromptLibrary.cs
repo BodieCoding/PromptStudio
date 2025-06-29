@@ -68,7 +68,12 @@ public class PromptLibrary : AuditableEntity
     /// Categories facilitate library discovery, permissions management,
     /// and organizational structure within prompt lab environments.
     /// </remarks>
-    public LibraryCategory Category { get; set; } = LibraryCategory.General;
+    public LibraryCategory Category { get; set; } = new LibraryCategory
+    {
+        CategoryType = LibraryCategoryType.General,
+        Name = "General",
+        Description = "General purpose library for miscellaneous templates"
+    };
     
     /// <summary>
     /// Gets or sets the color identifier for visual representation in user interfaces.

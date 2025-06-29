@@ -12,5 +12,7 @@ public enum WorkflowStatus
     Published = 4,
     Deprecated = 5,
     Archived = 6,
-    Suspended = 7
+    Suspended = 7,
+    Rejected = 8,
+    Error = 9
 }
