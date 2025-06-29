@@ -3,40 +3,111 @@ using System.ComponentModel.DataAnnotations;
 namespace PromptStudio.Core.Domain;
 
 /// <summary>
-/// Represents an execution of a prompt template with specific variable values
-/// Enhanced with enterprise features, analytics, and performance tracking
+/// Represents a single execution instance of a prompt template with specific variable values.
+/// PromptExecution provides comprehensive tracking of LLM interactions including request parameters,
+/// responses, performance metrics, costs, and quality assessments for enterprise analytics and optimization.
 /// </summary>
+/// <remarks>
+/// PromptExecution serves as the fundamental audit and analytics unit in LLMOps,
+/// capturing every interaction with language models for compliance, optimization,
+/// and quality management. Each execution record enables detailed performance analysis,
+/// cost tracking, and continuous improvement of prompt engineering efforts.
+/// </remarks>
 public class PromptExecution : AuditableEntity
 {
-    // Foreign key - updated to Guid
+    /// <summary>
+    /// Gets or sets the unique identifier of the prompt template used for this execution.
+    /// Links this execution to the specific template version and configuration used.
+    /// </summary>
+    /// <value>The GUID of the PromptTemplate that was executed.</value>
+    /// <remarks>
+    /// Template linkage is critical for performance analysis, A/B testing,
+    /// and understanding the impact of template changes on execution outcomes.
+    /// </remarks>
     public Guid PromptTemplateId { get; set; }
     
     /// <summary>
-    /// The final prompt text after variable substitution
+    /// Gets or sets the final prompt text after all variable substitutions have been applied.
+    /// Represents the exact text that was sent to the language model for processing.
     /// </summary>
+    /// <value>
+    /// The complete, resolved prompt text with all variables replaced by actual values.
+    /// Required field as it represents the core input to the LLM execution.
+    /// </value>
+    /// <remarks>
+    /// Storing the resolved prompt enables exact reproduction of executions,
+    /// debugging of variable substitution issues, and compliance auditing
+    /// of actual content sent to external AI providers.
+    /// </remarks>
     [Required]
     public string ResolvedPrompt { get; set; } = string.Empty;
     
     /// <summary>
-    /// JSON string containing the variable values used in this execution
+    /// Gets or sets the variable values used for template substitution in JSON format.
+    /// Contains the key-value pairs that were used to resolve template variables.
     /// </summary>
+    /// <value>
+    /// A JSON string containing variable names and their corresponding values used in this execution.
+    /// Null if the template contained no variables or if variable tracking is disabled.
+    /// </value>
+    /// <example>
+    /// {"customer_name": "John Doe", "issue_type": "billing", "priority": "high", "language": "en"}
+    /// </example>
+    /// <remarks>
+    /// Variable value tracking enables analysis of input patterns, performance correlation
+    /// with specific inputs, and reproduction of execution scenarios for testing.
+    /// </remarks>
     public string? VariableValues { get; set; }
     
     /// <summary>
-    /// The AI provider used (OpenAI, Claude, etc.)
+    /// Gets or sets the AI provider used for this execution.
+    /// Identifies the specific LLM service provider that processed the request.
     /// </summary>
+    /// <value>
+    /// The provider identifier (e.g., "openai", "anthropic", "azure-openai", "bedrock").
+    /// Optional field with maximum length of 50 characters.
+    /// </value>
+    /// <example>
+    /// Examples: "openai", "anthropic", "azure-openai", "bedrock", "huggingface", "cohere"
+    /// </example>
+    /// <remarks>
+    /// Provider tracking enables cost analysis, performance comparison across providers,
+    /// and strategic decisions about provider selection and optimization.
+    /// </remarks>
     [StringLength(50)]
     public string? AiProvider { get; set; }
     
     /// <summary>
-    /// The model used (gpt-4, claude-3, etc.)
+    /// Gets or sets the specific model used for this execution.
+    /// Identifies the exact language model that generated the response.
     /// </summary>
+    /// <value>
+    /// The model identifier (e.g., "gpt-4", "gpt-3.5-turbo", "claude-3-opus").
+    /// Optional field with maximum length of 50 characters.
+    /// </value>
+    /// <example>
+    /// Examples: "gpt-4", "gpt-3.5-turbo", "claude-3-opus", "claude-3-sonnet", "llama-2-70b"
+    /// </example>
+    /// <remarks>
+    /// Model tracking is essential for performance analysis, cost optimization,
+    /// and understanding the capabilities and limitations of different models.
+    /// </remarks>
     [StringLength(50)]
     public string? Model { get; set; }
     
     /// <summary>
-    /// The response from the AI provider
+    /// Gets or sets the response generated by the AI provider.
+    /// Contains the complete output from the language model for this execution.
     /// </summary>
+    /// <value>
+    /// The full text response generated by the AI model. Can be null if execution failed
+    /// or if response storage is disabled for privacy or storage optimization reasons.
+    /// </value>
+    /// <remarks>
+    /// Response storage enables quality analysis, content auditing, and customer support.
+    /// For sensitive applications, responses may be truncated, hashed, or omitted entirely
+    /// while preserving metadata for analytics purposes.
+    /// </remarks>
     public string? Response { get; set; }
     
     /// <summary>
