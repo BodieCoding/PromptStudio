@@ -5,7 +5,7 @@
 }
 
 <div class="container-fluid">
-    <div class="row">        <!-- Sidebar like professional testing tools -->
+    <div class="row"> <!-- Sidebar like professional testing tools -->
         <div class="col-md-3 bg-light border-end vh-100 d-flex flex-column">
             <div class="p-3 border-bottom">
                 <div class="d-flex justify-content-between align-items-center mb-0">
@@ -14,20 +14,22 @@
                         <a asp-page="/Collections/Create" class="btn btn-sm btn-primary">
                             <i class="bi bi-plus-lg"></i> New
                         </a>
-                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                        <button type="button"
+                            class="btn btn-sm btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+                            data-bs-toggle="dropdown">
                             <span class="visually-hidden">Toggle Dropdown</span>
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" asp-page="/Collections/Import">
-                                <i class="bi bi-upload"></i> Import Collection
-                            </a></li>
+                                    <i class="bi bi-upload"></i> Import Collection
+                                </a></li>
                         </ul>
                     </div>
                 </div>
             </div>
-            
+
             <div class="flex-grow-1 overflow-auto p-3 collections-scroll-area" style="max-height: calc(100vh - 120px);">
-                
+
                 @if (Model.Collections.Any())
                 {
                     @foreach (var collection in Model.Collections)
@@ -39,33 +41,42 @@
                                     @collection.Name
                                 </h6>
                                 <div class="dropdown">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                        data-bs-toggle="dropdown">
                                         <i class="bi bi-three-dots"></i>
-                                    </button>                                    
+                                    </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" asp-page="/Collections/Edit" asp-route-id="@collection.Id">Edit</a></li>
-                                        <li><a class="dropdown-item" asp-page="/Prompts/Create" asp-route-collectionId="@collection.Id">Add Prompt</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" asp-page="/Collections/Export" asp-route-id="@collection.Id">Export</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-danger" asp-page="/Collections/Delete" asp-route-id="@collection.Id">Delete</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Collections/Edit"
+                                                asp-route-id="@collection.Id">Edit</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Prompts/Create"
+                                                asp-route-collectionId="@collection.Id">Add Prompt</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" asp-page="/Collections/Export"
+                                                asp-route-id="@collection.Id">Export</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item text-danger" asp-page="/Collections/Delete"
+                                                asp-route-id="@collection.Id">Delete</a></li>
                                     </ul>
                                 </div>
                             </div>
-                            
+
                             @if (collection.Description != null)
                             {
                                 <small class="text-muted d-block mb-2">@collection.Description</small>
                             }
-                            
+
                             @if (collection.PromptTemplates.Any())
                             {
-                                <div class="prompts-list">                                    @foreach (var prompt in collection.PromptTemplates)
+                                <div class="prompts-list"> @foreach (var prompt in collection.PromptTemplates)
                                     {
                                         <div class="prompt-item">
                                             <div class="d-flex justify-content-between align-items-center p-2 rounded hover-bg-light">
-                                                <a asp-page="/Prompts/Execute" asp-route-id="@prompt.Id" 
-                                                   class="text-decoration-none flex-grow-1">
+                                                <a asp-page="/Prompts/Execute" asp-route-id="@prompt.Id"
+                                                    class="text-decoration-none flex-grow-1">
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         <span>
                                                             <i class="bi bi-lightning text-warning"></i>
@@ -79,14 +90,22 @@
                                                     }
                                                 </a>
                                                 <div class="dropdown ms-2">
-                                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                                        data-bs-toggle="dropdown">
                                                         <i class="bi bi-three-dots-vertical"></i>
-                                                    </button>                                                    <ul class="dropdown-menu">
-                                                        <li><a class="dropdown-item" asp-page="/Prompts/Execute" asp-route-id="@prompt.Id">Execute</a></li>
-                                                        <li><a class="dropdown-item" asp-page="/Prompts/Edit" asp-route-id="@prompt.Id">Edit</a></li>
-                                                        <li><a class="dropdown-item" asp-page="/Prompts/Duplicate" asp-route-id="@prompt.Id">Duplicate</a></li>
-                                                        <li><hr class="dropdown-divider"></li>
-                                                        <li><a class="dropdown-item text-danger" asp-page="/Prompts/Delete" asp-route-id="@prompt.Id">Delete</a></li>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" asp-page="/Prompts/Execute"
+                                                                asp-route-id="@prompt.Id">Execute</a></li>
+                                                        <li><a class="dropdown-item" asp-page="/Prompts/Edit"
+                                                                asp-route-id="@prompt.Id">Edit</a></li>
+                                                        <li><a class="dropdown-item" asp-page="/Prompts/Duplicate"
+                                                                asp-route-id="@prompt.Id">Duplicate</a></li>
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                        <li><a class="dropdown-item text-danger" asp-page="/Prompts/Delete"
+                                                                asp-route-id="@prompt.Id">Delete</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -99,8 +118,8 @@
                                 <div class="text-center py-3">
                                     <small class="text-muted">No prompts yet</small>
                                     <br>
-                                    <a asp-page="/Prompts/Create" asp-route-collectionId="@collection.Id" 
-                                       class="btn btn-sm btn-outline-primary mt-2">
+                                    <a asp-page="/Prompts/Create" asp-route-collectionId="@collection.Id"
+                                        class="btn btn-sm btn-outline-primary mt-2">
                                         Add First Prompt
                                     </a>
                                 </div>
@@ -115,12 +134,12 @@
                         <h6 class="text-muted mt-3">No Collections Yet</h6>
                         <p class="text-muted small">Create your first collection to get started</p>
                         <a asp-page="/Collections/Create" class="btn btn-primary">
-                            <i class="bi bi-plus-lg"></i> Create Collection                        </a>
+                            <i class="bi bi-plus-lg"></i> Create Collection </a>
                     </div>
                 }
             </div>
         </div>
-        
+
         <!-- Main content area -->
         <div class="col-md-9">
             <div class="p-4">
@@ -130,18 +149,20 @@
                     </div>
                     <h2 class="text-primary mb-3">Welcome to Prompt Studio</h2>
                     <p class="text-muted mb-4 lead">Your Professional Prompt Management Platform</p>
-                    
+
                     <div class="row justify-content-center">
                         <div class="col-md-8">
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Get Started</h5>
-                                    <p class="card-text">Organize your prompts into collections, define variables, and test them with different AI providers.</p>
-                                    
+                                    <p class="card-text">Organize your prompts into collections, define variables, and
+                                        test them with different AI providers.</p>
+
                                     <div class="row text-start">
                                         <div class="col-md-6">
                                             <h6><i class="bi bi-1-circle text-primary"></i> Create Collections</h6>
-                                            <p class="small text-muted">Group related prompts together like project folders</p>
+                                            <p class="small text-muted">Group related prompts together like project
+                                                folders</p>
                                         </div>
                                         <div class="col-md-6">
                                             <h6><i class="bi bi-2-circle text-primary"></i> Define Variables</h6>
@@ -153,10 +174,11 @@
                                         </div>
                                         <div class="col-md-6">
                                             <h6><i class="bi bi-4-circle text-primary"></i> Track History</h6>
-                                            <p class="small text-muted">See execution history and performance metrics</p>
+                                            <p class="small text-muted">See execution history and performance metrics
+                                            </p>
                                         </div>
                                     </div>
-                                    
+
                                     @if (!Model.Collections.Any())
                                     {
                                         <div class="mt-3">
@@ -176,59 +198,59 @@
 </div>
 
 <style>
-.hover-bg-light:hover {
-    background-color: #f8f9fa !important;
-}
+    .hover-bg-light:hover {
+        background-color: #f8f9fa !important;
+    }
 
-.collection-item {
-    border: 1px solid #e9ecef;
-    border-radius: 0.375rem;
-    padding: 1rem;
-    background: white;
-    margin-bottom: 1rem;
-}
+    .collection-item {
+        border: 1px solid #e9ecef;
+        border-radius: 0.375rem;
+        padding: 1rem;
+        background: white;
+        margin-bottom: 1rem;
+    }
 
-.prompt-item {
-    margin-left: 1rem;
-    border-left: 2px solid #e9ecef;
-    margin-bottom: 0.25rem;
-}
+    .prompt-item {
+        margin-left: 1rem;
+        border-left: 2px solid #e9ecef;
+        margin-bottom: 0.25rem;
+    }
 
-.prompt-item:hover {
-    border-left-color: #0d6efd;
-}
+    .prompt-item:hover {
+        border-left-color: #0d6efd;
+    }
 
-/* Custom scrollbar for collections area */
-.collections-scroll-area::-webkit-scrollbar {
-    width: 6px;
-}
+    /* Custom scrollbar for collections area */
+    .collections-scroll-area::-webkit-scrollbar {
+        width: 6px;
+    }
 
-.collections-scroll-area::-webkit-scrollbar-track {
-    background: #f8f9fa;
-    border-radius: 3px;
-}
+    .collections-scroll-area::-webkit-scrollbar-track {
+        background: #f8f9fa;
+        border-radius: 3px;
+    }
 
-.collections-scroll-area::-webkit-scrollbar-thumb {
-    background: #dee2e6;
-    border-radius: 3px;
-}
+    .collections-scroll-area::-webkit-scrollbar-thumb {
+        background: #dee2e6;
+        border-radius: 3px;
+    }
 
-.collections-scroll-area::-webkit-scrollbar-thumb:hover {
-    background: #adb5bd;
-}
+    .collections-scroll-area::-webkit-scrollbar-thumb:hover {
+        background: #adb5bd;
+    }
 
-/* Firefox scrollbar styling */
-.collections-scroll-area {
-    scrollbar-width: thin;
-    scrollbar-color: #dee2e6 #f8f9fa;
-}
+    /* Firefox scrollbar styling */
+    .collections-scroll-area {
+        scrollbar-width: thin;
+        scrollbar-color: #dee2e6 #f8f9fa;
+    }
 
-/* Ensure proper spacing for scrollable content */
-.collections-scroll-area {
-    padding-right: 8px;
-}
+    /* Ensure proper spacing for scrollable content */
+    .collections-scroll-area {
+        padding-right: 8px;
+    }
 
-.collection-item {
-    margin-bottom: 1.25rem !important;
-}
+    .collection-item {
+        margin-bottom: 1.25rem !important;
+    }
 </style>

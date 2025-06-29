@@ -8,19 +8,45 @@ using System.Text.Json;
 namespace PromptStudio.Core.Services;
 
 /// <summary>
-/// Implementation of the prompt service for managing prompts and variables
-/// This is a domain service that implements business logic for prompt processing
+/// Primary service that coordinates prompt operations across specialized services
+/// This acts as a facade/coordinator for the underlying specialized services
+/// and maintains backward compatibility for MCP and legacy operations
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the PromptService
-/// </remarks>
-/// <param name="context">Database context for data access</param>
-public class PromptService(IPromptStudioDbContext context) : IPromptService
+public class PromptService : IPromptService
 {
     #region Private Fields
 
-    private static readonly Regex VariablePattern = new(@"\{\{([^{}]+)\}\}", RegexOptions.Compiled);
-    private readonly IPromptStudioDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly IPromptStudioDbContext _context;
+    private readonly IPromptTemplateService _promptTemplateService;
+    private readonly IPromptLibraryService _promptLibraryService;
+    private readonly IPromptExecutionService _promptExecutionService;
+    private readonly IVariableService _variableService;
+
+    #endregion
+
+    #region Constructor
+
+    /// <summary>
+    /// Initializes a new instance of the PromptService
+    /// </summary>
+    /// <param name="context">Database context for data access</param>
+    /// <param name="promptTemplateService">Service for template operations</param>
+    /// <param name="promptLibraryService">Service for library operations</param>
+    /// <param name="promptExecutionService">Service for execution operations</param>
+    /// <param name="variableService">Service for variable operations</param>
+    public PromptService(
+        IPromptStudioDbContext context,
+        IPromptTemplateService promptTemplateService,
+        IPromptLibraryService promptLibraryService,
+        IPromptExecutionService promptExecutionService,
+        IVariableService variableService)
+    {
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _promptTemplateService = promptTemplateService ?? throw new ArgumentNullException(nameof(promptTemplateService));
+        _promptLibraryService = promptLibraryService ?? throw new ArgumentNullException(nameof(promptLibraryService));
+        _promptExecutionService = promptExecutionService ?? throw new ArgumentNullException(nameof(promptExecutionService));
+        _variableService = variableService ?? throw new ArgumentNullException(nameof(variableService));
+    }
 
     #endregion
 

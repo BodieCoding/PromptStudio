@@ -208,14 +208,13 @@ public class FlowService : IFlowService
             // Get the flow
             var flow = await GetFlowByIdAsync(flowId);
             if (flow == null)
-            {
-                return new FlowExecutionResult
+            {                return new FlowExecutionResult
                 {
                     Success = false,
                     ExecutionId = executionId,
                     Error = "Flow not found",
                     ExecutionTime = (long)(DateTime.UtcNow - startTime).TotalMilliseconds,
-                    NodeExecutions = new List<NodeExecution>()
+                    NodeExecutions = new List<NodeExecutionInfo>()
                 };
             }
 
@@ -243,7 +242,7 @@ public class FlowService : IFlowService
                 ExecutionId = executionId,
                 Error = ex.Message,
                 ExecutionTime = (long)(DateTime.UtcNow - startTime).TotalMilliseconds,
-                NodeExecutions = new List<NodeExecution>()
+                NodeExecutions = new List<NodeExecutionInfo>()
             };
         }
     }
@@ -255,7 +254,7 @@ public class FlowService : IFlowService
         Guid executionId)
     {
         var startTime = DateTime.UtcNow;
-        var nodeExecutions = new List<NodeExecution>();
+        var nodeExecutions = new List<NodeExecutionInfo>();
         var flowVariables = new Dictionary<string, object>(variables);
         
         try
@@ -277,16 +276,20 @@ public class FlowService : IFlowService
                 var currentNode = nodesToExecute.Dequeue();
                 
                 if (executedNodes.Contains(currentNode.Id))
-                    continue;
-
-                var nodeExecution = await ExecuteNode(currentNode, flowVariables);
-                nodeExecutions.Add(nodeExecution);
+                    continue;                var nodeExecution = await ExecuteNode(currentNode, flowVariables);
+                var nodeStatus = ConvertToNodeExecutionInfo(nodeExecution);
+                nodeExecutions.Add(nodeStatus);
                 executedNodes.Add(currentNode.Id);
 
                 // Update flow variables with node output
-                if (nodeExecution.Output != null)
+                if (nodeExecution.OutputData != null && nodeExecution.OutputData != "{}")
                 {
-                    flowVariables[$"node_{currentNode.Id}_output"] = nodeExecution.Output;
+                    // Parse output data and extract output value
+                    var outputData = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(nodeExecution.OutputData);
+                    if (outputData?.ContainsKey("output") == true)
+                    {
+                        flowVariables[$"node_{currentNode.Id}_output"] = outputData["output"];
+                    }
                 }
 
                 // Find next nodes to execute
@@ -306,9 +309,7 @@ public class FlowService : IFlowService
                         }
                     }
                 }
-            }
-
-            // Determine final output
+            }            // Determine final output
             var outputNode = nodeExecutions.LastOrDefault(ne => ne.Status == "completed");
             var finalOutput = outputNode?.Output ?? "Flow completed successfully";
 
@@ -330,17 +331,16 @@ public class FlowService : IFlowService
                 NodeExecutions = nodeExecutions
             };
         }
-    }
-
-    private async Task<NodeExecution> ExecuteNode(FlowNodeInfo node, Dictionary<string, object> variables)
+    }    private async Task<NodeExecution> ExecuteNode(FlowNodeInfo node, Dictionary<string, object> variables)
     {
         var startTime = DateTime.UtcNow;
         var nodeExecution = new NodeExecution
         {
-            NodeId = node.Id,
+            NodeKey = node.Id,
+            NodeType = ParseNodeType(node.Type),
             StartTime = startTime,
-            Status = "running",
-            Input = variables
+            Status = NodeExecutionStatus.Running,
+            InputData = JsonSerializer.Serialize(variables)
         };
 
         try
@@ -375,18 +375,82 @@ public class FlowService : IFlowService
             }
 
             nodeExecution.EndTime = DateTime.UtcNow;
-            nodeExecution.Status = "completed";
-            nodeExecution.Output = output;
+            nodeExecution.Status = NodeExecutionStatus.Completed;
+            nodeExecution.OutputData = JsonSerializer.Serialize(new { output = output });
+            nodeExecution.ExecutionTimeMs = (int)(nodeExecution.EndTime.Value - nodeExecution.StartTime).TotalMilliseconds;
         }
         catch (Exception ex)
         {
             nodeExecution.EndTime = DateTime.UtcNow;
-            nodeExecution.Status = "failed";
-            nodeExecution.Error = ex.Message;
+            nodeExecution.Status = NodeExecutionStatus.Failed;
+            nodeExecution.ErrorMessage = ex.Message;
+            nodeExecution.ExecutionTimeMs = (int)(nodeExecution.EndTime.Value - nodeExecution.StartTime).TotalMilliseconds;
             _logger.LogError(ex, "Error executing node {NodeId}", node.Id);
         }
 
         return nodeExecution;
+    }
+
+    private FlowNodeType ParseNodeType(string? nodeType)
+    {
+        return nodeType?.ToLowerInvariant() switch
+        {
+            "input" => FlowNodeType.Input,
+            "prompt" => FlowNodeType.Prompt,
+            "variable" => FlowNodeType.Variable,
+            "conditional" => FlowNodeType.Conditional,
+            "transform" => FlowNodeType.Transform,
+            "output" => FlowNodeType.Output,
+            "llmcall" => FlowNodeType.LlmCall,
+            "template" => FlowNodeType.Template,
+            "loop" => FlowNodeType.Loop,
+            "parallel" => FlowNodeType.Parallel,
+            "apicall" => FlowNodeType.ApiCall,
+            "validation" => FlowNodeType.Validation,
+            "aggregation" => FlowNodeType.Aggregation,
+            _ => FlowNodeType.Prompt
+        };
+    }
+
+    private NodeExecutionInfo ConvertToNodeExecutionInfo(NodeExecution nodeExecution)
+    {
+        var outputData = new Dictionary<string, object>();
+        if (!string.IsNullOrEmpty(nodeExecution.OutputData) && nodeExecution.OutputData != "{}")
+        {
+            try
+            {
+                outputData = JsonSerializer.Deserialize<Dictionary<string, object>>(nodeExecution.OutputData) ?? new();
+            }
+            catch
+            {
+                // If deserialization fails, treat as simple string
+                outputData["output"] = nodeExecution.OutputData;
+            }
+        }
+
+        var inputData = new Dictionary<string, object>();
+        if (!string.IsNullOrEmpty(nodeExecution.InputData) && nodeExecution.InputData != "{}")
+        {
+            try
+            {
+                inputData = JsonSerializer.Deserialize<Dictionary<string, object>>(nodeExecution.InputData) ?? new();
+            }
+            catch
+            {
+                inputData["input"] = nodeExecution.InputData;
+            }
+        }
+
+        return new NodeExecutionInfo
+        {
+            NodeId = nodeExecution.NodeKey,
+            StartTime = nodeExecution.StartTime,
+            EndTime = nodeExecution.EndTime,
+            Input = inputData.Count > 0 ? inputData : null,
+            Output = outputData.ContainsKey("output") ? outputData["output"] : null,
+            Status = nodeExecution.Status.ToString().ToLowerInvariant(),
+            Error = nodeExecution.ErrorMessage
+        };
     }
 
     private async Task<object> ExecutePromptNode(FlowNodeInfo node, Dictionary<string, object> variables)
@@ -414,9 +478,7 @@ public class FlowService : IFlowService
             var processedContent = ReplaceVariables(content!, variables);
             var processedSystemMessage = !string.IsNullOrEmpty(systemMessage) 
                 ? ReplaceVariables(systemMessage, variables) 
-                : null;
-
-            // Execute via model provider
+                : null;            // Execute via model provider
             var request = new ModelRequest
             {
                 ModelId = model!,
@@ -633,29 +695,29 @@ public class FlowService : IFlowService
         try
         {
             // TODO: Implement database query
-            await Task.Delay(100); // Simulate async operation
-
-            // Return mock execution history
+            await Task.Delay(100); // Simulate async operation            // Return mock execution history
             var mockHistory = new List<FlowExecution>
             {
                 new FlowExecution
                 {
                     Id = Guid.NewGuid(),
                     FlowId = flowId,
+                    FlowVersion = "1.0.0",
                     InputVariables = JsonSerializer.Serialize(new { user_input = "Hello, world!" }),
                     OutputResult = JsonSerializer.Serialize("Hello! How can I help you today?"),
-                    ExecutionTime = 1250,
-                    Status = "completed",
+                    TotalExecutionTime = 1250,
+                    Status = FlowExecutionStatus.Completed,
                     CreatedAt = DateTime.UtcNow.AddHours(-1)
                 },
                 new FlowExecution
                 {
                     Id = Guid.NewGuid(),
                     FlowId = flowId,
+                    FlowVersion = "1.0.0",
                     InputVariables = JsonSerializer.Serialize(new { user_input = "What's the weather?" }),
                     OutputResult = JsonSerializer.Serialize("I don't have access to real-time weather data."),
-                    ExecutionTime = 980,
-                    Status = "completed",
+                    TotalExecutionTime = 980,
+                    Status = FlowExecutionStatus.Completed,
                     CreatedAt = DateTime.UtcNow.AddHours(-2)
                 }
             };

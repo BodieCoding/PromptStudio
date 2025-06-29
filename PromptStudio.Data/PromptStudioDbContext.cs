@@ -15,7 +15,15 @@ public class PromptStudioDbContext : DbContext, IPromptStudioDbContext
     /// <param name="options">The options to be used by the context</param>
     public PromptStudioDbContext(DbContextOptions<PromptStudioDbContext> options) : base(options)
     {
-    }
+    }    /// <summary>
+    /// Gets or sets the prompt labs in the database
+    /// </summary>
+    public DbSet<PromptLab> PromptLabs { get; set; }
+
+    /// <summary>
+    /// Gets or sets the prompt libraries in the database
+    /// </summary>
+    public DbSet<PromptLibrary> PromptLibraries { get; set; }
 
     /// <summary>
     /// Gets or sets the collections in the database
@@ -63,6 +71,37 @@ public class PromptStudioDbContext : DbContext, IPromptStudioDbContext
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.HasIndex(e => e.Name);
+        });        // PromptLab configuration
+        modelBuilder.Entity<PromptLab>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.LabId).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.Owner).HasMaxLength(100);
+            entity.Property(e => e.Tags).HasMaxLength(500);
+            entity.Property(e => e.Status).HasConversion<string>();
+            entity.Property(e => e.Visibility).HasConversion<string>();
+
+            entity.HasIndex(e => e.LabId).IsUnique();
+            entity.HasIndex(e => e.Name);
+        });        // PromptLibrary configuration
+        modelBuilder.Entity<PromptLibrary>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.Color).HasMaxLength(7);
+            entity.Property(e => e.Icon).HasMaxLength(50);
+            entity.Property(e => e.Tags).HasMaxLength(500);
+            entity.Property(e => e.Category).HasConversion<string>();
+
+            entity.HasOne(e => e.PromptLab)
+                  .WithMany(pl => pl.PromptLibraries)
+                  .HasForeignKey(e => e.PromptLabId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => new { e.PromptLabId, e.Name }).IsUnique();
         });
 
         // PromptTemplate configuration
@@ -73,12 +112,12 @@ public class PromptStudioDbContext : DbContext, IPromptStudioDbContext
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.Content).IsRequired();
 
-            entity.HasOne(e => e.Collection)
-                  .WithMany(c => c.PromptTemplates)
-                  .HasForeignKey(e => e.CollectionId)
+            entity.HasOne(e => e.PromptLibrary)
+                  .WithMany(pl => pl.PromptTemplates)
+                  .HasForeignKey(e => e.PromptLibraryId)
                   .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasIndex(e => new { e.CollectionId, e.Name });
+            entity.HasIndex(e => new { e.PromptLibraryId, e.Name });
         });
 
         // PromptVariable configuration
@@ -167,25 +206,55 @@ public class PromptStudioDbContext : DbContext, IPromptStudioDbContext
         SeedData(modelBuilder);
     }    /// <summary>
     /// Seeds the database with initial data
-    /// </summary>
-    /// <param name="modelBuilder">The builder being used to construct the model</param>
+    /// </summary>    /// <param name="modelBuilder">The builder being used to construct the model</param>
     private static void SeedData(ModelBuilder modelBuilder)
     {
-        // Seed collections
-        modelBuilder.Entity<Collection>().HasData(
-            new Collection
+        // Seed prompt labs
+        modelBuilder.Entity<PromptLab>().HasData(
+            new PromptLab
             {
                 Id = 1,
-                Name = "Sample Collection",
-                Description = "A sample collection to get you started",
+                Name = "Default Lab",
+                Description = "Default prompt lab for getting started",
+                LabId = "default-lab",
+                Owner = "system",
+                Status = LabStatus.Active,
+                Visibility = LabVisibility.Private,
+                Tags = "sample,default",
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            }
+        );
+
+        // Seed prompt libraries
+        modelBuilder.Entity<PromptLibrary>().HasData(
+            new PromptLibrary
+            {
+                Id = 1,
+                Name = "Sample Library",
+                Description = "A sample library to get you started",
+                PromptLabId = 1,
+                Category = LibraryCategory.General,
+                Color = "#1976d2",
+                Icon = "library_books",
+                Tags = "sample,starter",
+                SortOrder = 0,
+                IsPinned = true,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
-            new Collection
+            new PromptLibrary
             {
                 Id = 1001,
                 Name = "AI Agent Workflows",
                 Description = "Advanced prompt templates designed for AI agents to automate complex multi-step workflows, code analysis, and problem-solving tasks",
+                PromptLabId = 1,
+                Category = LibraryCategory.Development,
+                Color = "#4caf50",
+                Icon = "smart_toy",
+                Tags = "ai,agents,automation,workflows",
+                SortOrder = 1,
+                IsPinned = false,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }
@@ -200,7 +269,7 @@ public class PromptStudioDbContext : DbContext, IPromptStudioDbContext
                 Name = "Code Review",
                 Description = "Review code for best practices and improvements",
                 Content = "Please review the following {{language}} code and provide feedback:\n\n```{{language}}\n{{code}}\n```\n\nFocus on:\n- Code quality\n- Performance\n- Security\n- Best practices",
-                CollectionId = 1,
+                PromptLibraryId = 1,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
@@ -276,7 +345,7 @@ Measure improvements in:
 - Timeline: {{timeline_constraints}}
 - Team Expertise: {{team_capabilities}}
 - Business Requirements: {{business_constraints}}",
-                CollectionId = 1001,
+                PromptLibraryId = 1001,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
@@ -394,7 +463,7 @@ Apply debugging methodology:
 
 **Team Training Needs**:
 {{training_needs}}",
-                CollectionId = 1001,
+                PromptLibraryId = 1001,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
@@ -601,7 +670,7 @@ Test variations of:
 3. **Content Calendar**: {{calendar_timeframe}}
 4. **Performance Dashboard**: {{dashboard_metrics}}
 5. **Optimization Recommendations**: {{optimization_recommendations}}",
-                CollectionId = 1001,
+                PromptLibraryId = 1001,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
@@ -940,7 +1009,7 @@ Test variations of:
 
 **Cost Efficiency Metrics:**
 {{cost_metrics}}",
-                CollectionId = 1001,
+                PromptLibraryId = 1001,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
@@ -1349,7 +1418,7 @@ Test variations of:
 
 **Risk Mitigation:**
 {{risk_mitigation}}",
-                CollectionId = 1001,
+                PromptLibraryId = 1001,
                 CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }

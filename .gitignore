@@ -585,3 +585,6 @@ docker-compose.override.yml
 mcp-config.local.json
 create-github-issues.ps1
 github-issues-data.json
+AUTHENTICATION_IMPLEMENTATION_PLAN.md
+POST_RENAME_AUTOMATION.md
+REPOSITORY_MIGRATION_PLAN.md
