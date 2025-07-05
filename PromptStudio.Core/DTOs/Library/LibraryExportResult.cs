@@ -35,7 +35,7 @@ namespace PromptStudio.Core.DTOs.Library;
 /// if (result.Success) {
 ///     await fileService.SaveAsync(result.JsonContent, filename);
 /// } else {
-///     logger.LogError("Export failed: {Message}", result.Message);
+///     logger.LogError("Export failed: {{Message}}", result.Message);
 /// }
 /// </code>
 /// </example>

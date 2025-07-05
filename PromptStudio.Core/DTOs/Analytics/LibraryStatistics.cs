@@ -36,7 +36,7 @@ namespace PromptStudio.Core.DTOs.Analytics;
 /// // Service layer usage for library optimization
 /// var stats = await libraryAnalyticsService.GetStatisticsAsync(libraryId);
 /// var utilizationScore = stats.AverageExecutionsPerTemplate;
-/// if (stats.SuccessRate < 0.95) {
+/// if (stats.SuccessRate &lt; 0.95) {
 ///     var recommendations = await optimizationService.AnalyzeQualityIssuesAsync(stats.QualityMetrics);
 /// }
 /// </code>

@@ -35,7 +35,7 @@ namespace PromptStudio.Core.DTOs.Analytics;
 /// // Service layer usage for lab comparison and monitoring
 /// var labStats = await analyticsService.GetLabStatisticsAsync(labId);
 /// var utilizationScore = labStats.SuccessRate * (labStats.ActiveTemplates / Math.Max(1, labStats.TotalTemplates));
-/// if (labStats.SuccessRate < 90.0) {
+/// if (labStats.SuccessRate &lt; 90.0) {
 ///     await alertService.NotifyLabQualityIssueAsync(labId, labStats.SuccessRate);
 /// }
 /// </code>

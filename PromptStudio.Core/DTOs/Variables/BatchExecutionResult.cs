@@ -36,7 +36,7 @@ namespace PromptStudio.Core.DTOs.Variables;
 /// // Service layer usage
 /// var batchResult = await batchExecutionService.ExecuteAsync(templateId, variableSets);
 /// var successRate = (double)batchResult.SuccessfulExecutions / batchResult.TotalVariableSets;
-/// if (successRate < 0.95) {
+/// if (successRate &lt; 0.95) {
 ///     await alertService.NotifyQualityIssueAsync(batchResult.ExecutionId, successRate);
 /// }
 /// </code>

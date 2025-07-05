@@ -35,7 +35,7 @@ namespace PromptStudio.Core.DTOs.Templates;
 /// <code>
 /// // Service layer usage
 /// var analysis = await templateAnalysisService.AnalyzeAsync(templateId);
-/// if (analysis.ComplexityScore > 0.8 || analysis.QualityIssues.Any()) {
+/// if (analysis.ComplexityScore &gt; 0.8 || analysis.QualityIssues.Any()) {
 ///     await reviewService.RequestHumanReviewAsync(templateId, analysis);
 /// }
 /// await optimizationService.ApplySuggestionsAsync(templateId, analysis.OptimizationSuggestions);

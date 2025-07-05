@@ -35,7 +35,7 @@ namespace PromptStudio.Core.DTOs.Analytics;
 /// <code>
 /// // Service layer usage for quality assessment
 /// var metrics = await qualityService.CalculateMetricsAsync(templateId, timeRange);
-/// if (metrics.AverageScore < 0.8 || metrics.StandardDeviation > 0.2) {
+/// if (metrics.AverageScore &lt; 0.8 || metrics.StandardDeviation &gt; 0.2) {
 ///     await alertService.NotifyQualityIssueAsync(templateId, metrics);
 /// }
 /// var consistencyScore = 1.0 - metrics.StandardDeviation; // Higher = more consistent

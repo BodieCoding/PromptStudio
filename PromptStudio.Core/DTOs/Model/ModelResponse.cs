@@ -39,7 +39,7 @@ namespace PromptStudio.Core.DTOs.Model;
 ///     await resultService.ProcessContentAsync(response.Content);
 ///     await analyticsService.RecordUsageAsync(response.TokensUsed, response.ExecutionTimeMs);
 /// } else {
-///     logger.LogError("Model execution failed: {Error}", response.ErrorMessage);
+///     logger.LogError("Model execution failed: {{Error}}", response.ErrorMessage);
 /// }
 /// </code>
 /// </example>
