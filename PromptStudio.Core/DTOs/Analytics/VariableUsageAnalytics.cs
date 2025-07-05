@@ -1,83 +1,71 @@
 namespace PromptStudio.Core.DTOs.Analytics;
 
 /// <summary>
-/// Comprehensive analytics data for variable usage patterns, performance metrics, and optimization insights.
-/// 
-/// <para><strong>Service Layer Integration:</strong></para>
-/// This DTO aggregates variable usage data from multiple execution records to provide actionable insights
-/// for template optimization, variable efficiency analysis, and performance improvement recommendations.
-/// Service layers should use this DTO for analytics dashboards, optimization workflows, and reporting systems.
-/// 
-/// <para><strong>Data Aggregation:</strong></para>
-/// Contains pre-computed analytics from execution logs including usage frequencies, success correlations,
-/// performance metrics, and optimization recommendations derived from historical execution data.
+/// Represents comprehensive variable usage analytics, providing insights into variable performance, patterns, and optimization opportunities.
 /// </summary>
 /// <remarks>
-/// <para><strong>Usage in Service Layers:</strong></para>
-/// - Analytics services use this for generating optimization reports
-/// - Template services use this for variable performance insights
-/// - Execution services populate this from aggregated execution data
-/// - Reporting services format this data for dashboard presentation
+/// <para><strong>Service Integration:</strong></para>
+/// <para>Primary analytics DTO for template optimization services, variable performance monitoring, and template design recommendations.
+/// Used by analytics services for optimization insights, template editors for variable suggestions, and governance services for cleanup recommendations.</para>
 /// 
-/// <para><strong>Performance Considerations:</strong></para>
-/// This DTO contains computed analytics that should be cached and refreshed periodically
-/// rather than calculated on every request due to the complex aggregations involved.
+/// <para><strong>Data Contract:</strong></para>
+/// <para>Aggregated variable usage data with performance correlations and optimization insights.
+/// Contains computed analytics from execution logs including usage frequencies, success correlations, and performance metrics.</para>
+/// 
+/// <para><strong>Usage Patterns:</strong></para>
+/// <list type="bullet">
+/// <item>Template optimization and variable cleanup recommendations</item>
+/// <item>Variable performance analysis and bottleneck identification</item>
+/// <item>Template design best practices and pattern identification</item>
+/// <item>Variable usage trend analysis and forecasting</item>
+/// </list>
+/// 
+/// <para><strong>Performance Notes:</strong></para>
+/// <para>Contains pre-computed analytics that should be cached and refreshed periodically rather than calculated on every request.
+/// Dictionary collections may grow large for templates with many variables - consider pagination for detailed views.
+/// TimeSpan serialization may require custom converters in some scenarios.</para>
 /// </remarks>
-/// <example>
-/// <code>
-/// // Service layer usage example
-/// var analytics = await variableAnalyticsService.GetUsageAnalyticsAsync(templateId);
-/// var underutilizedVars = analytics.UnusedVariables;
-/// var optimizationCandidates = analytics.HighPerformingVariables;
-/// </code>
-/// </example>
 public class VariableUsageAnalytics
 {
     /// <summary>
-    /// Template identifier for which usage analytics are calculated.
-    /// Links analytics data to specific template for optimization insights.
+    /// Gets or sets the unique identifier of the template for which analytics are calculated.
     /// </summary>
+    /// <value>A valid GUID representing the template entity being analyzed.</value>
     public Guid TemplateId { get; set; }
     
     /// <summary>
-    /// Usage frequency count for each variable across all template executions.
-    /// Key: variable name, Value: number of times the variable was used.
-    /// Enables identification of frequently used vs. underutilized variables.
+    /// Gets or sets the usage frequency count for each variable across all template executions.
     /// </summary>
+    /// <value>A dictionary mapping variable names to their usage counts, enabling identification of frequently used vs. underutilized variables.</value>
     public Dictionary<string, long> VariableUsageCount { get; set; } = new();
     
     /// <summary>
-    /// Most commonly used values for each variable to identify patterns and defaults.
-    /// Key: variable name, Value: list of most frequent values ordered by usage.
-    /// Supports default value optimization and value validation improvements.
+    /// Gets or sets the most commonly used values for each variable to identify patterns and defaults.
     /// </summary>
+    /// <value>A dictionary mapping variable names to lists of their most frequent values, ordered by usage frequency.</value>
     public Dictionary<string, List<string>> MostCommonValues { get; set; } = new();
     
     /// <summary>
-    /// Success rate correlation for each variable indicating execution quality impact.
-    /// Key: variable name, Value: success rate (0.0 to 1.0) when variable is used.
-    /// Identifies variables that correlate with successful template executions.
+    /// Gets or sets the success rate correlation for each variable indicating execution quality impact.
     /// </summary>
+    /// <value>A dictionary mapping variable names to success rates (0.0 to 1.0) when the variable is used.</value>
     public Dictionary<string, double> VariableSuccessRates { get; set; } = new();
     
     /// <summary>
-    /// Performance impact analysis showing execution time correlation with variables.
-    /// Key: variable name, Value: average additional execution time when variable is used.
-    /// Enables identification of performance-impacting variables for optimization.
+    /// Gets or sets the performance impact analysis showing execution time correlation with variables.
     /// </summary>
+    /// <value>A dictionary mapping variable names to average additional execution time when the variable is used.</value>
     public Dictionary<string, TimeSpan> VariablePerformance { get; set; } = new();
     
     /// <summary>
-    /// List of variables defined but never used in template executions.
-    /// Identifies cleanup opportunities and template complexity reduction possibilities.
-    /// Service layers can use this for template optimization recommendations.
+    /// Gets or sets the list of variables defined but never used in template executions.
     /// </summary>
+    /// <value>A list of variable names that are defined but unused, identifying cleanup opportunities.</value>
     public List<string> UnusedVariables { get; set; } = new();
     
     /// <summary>
-    /// List of variables that consistently correlate with high-performance executions.
-    /// Identifies optimization opportunities and best practice patterns for template design.
-    /// Service layers can promote these variables for similar template development.
+    /// Gets or sets the list of variables that consistently correlate with high-performance executions.
     /// </summary>
+    /// <value>A list of variable names that contribute to optimal template performance, useful for optimization recommendations.</value>
     public List<string> HighPerformingVariables { get; set; } = new();
 }
