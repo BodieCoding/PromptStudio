@@ -1,4 +1,3 @@
-// Enhanced PromptLab with Guid identifier and enterprise-scale considerations
 namespace PromptStudio.Core.Domain;
 
 /// <summary>

@@ -110,26 +110,3 @@ public class LabStatistics
     /// </summary>
     public DateTime? UpdatedAt { get; set; }
 }
-
-/// <summary>
-/// Token usage information
-/// </summary>
-public class TokenUsage
-{
-    public int PromptTokens { get; set; }
-    public int CompletionTokens { get; set; }
-    public int TotalTokens { get; set; }
-    public decimal? Cost { get; set; }
-}
-
-/// <summary>
-/// Library performance summary
-/// </summary>
-public class LibraryPerformanceSummary
-{
-    public Guid LibraryId { get; set; }
-    public string LibraryName { get; set; } = string.Empty;
-    public int ExecutionCount { get; set; }
-    public double SuccessRate { get; set; }
-    public DateTime? LastExecution { get; set; }
-}
