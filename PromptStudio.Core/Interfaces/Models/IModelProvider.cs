@@ -1,4 +1,5 @@
-using PromptStudio.Core.Domain;
+﻿using PromptStudio.Core.Domain;
+using PromptStudio.Core.DTOs.Models;
 
 namespace PromptStudio.Core.Interfaces;
 
@@ -26,43 +27,6 @@ public interface IModelProvider
     /// Check if the provider is currently available
     /// </summary>
     Task<bool> IsAvailableAsync();
-}
-
-/// <summary>
-/// Information about an available model
-/// </summary>
-public class ModelInfo
-{
-    public string Id { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public string Provider { get; set; } = string.Empty;
-    public Dictionary<string, object> Capabilities { get; set; } = new();
-}
-
-/// <summary>
-/// Request to execute a prompt
-/// </summary>
-public class ModelRequest
-{
-    public string ModelId { get; set; } = string.Empty;
-    public string Prompt { get; set; } = string.Empty;
-    public string? SystemMessage { get; set; }
-    public Dictionary<string, object> Parameters { get; set; } = new();
-    public Dictionary<string, object> Variables { get; set; } = new();
-}
-
-/// <summary>
-/// Response from model execution
-/// </summary>
-public class ModelResponse
-{
-    public bool Success { get; set; }
-    public string? Content { get; set; }
-    public string? ErrorMessage { get; set; }
-    public Dictionary<string, object> Metadata { get; set; } = new();
-    public long ExecutionTimeMs { get; set; }
-    public int TokensUsed { get; set; }
 }
 
 /// <summary>

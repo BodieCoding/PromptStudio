@@ -1,4 +1,5 @@
 using PromptStudio.Core.Interfaces;
+using PromptStudio.Core.DTOs.Models;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text;

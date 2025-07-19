@@ -1,4 +1,5 @@
 using PromptStudio.Core.Interfaces;
+using PromptStudio.Core.DTOs.Models;
 using Microsoft.Extensions.Logging;
 
 namespace PromptStudio.Core.Services;

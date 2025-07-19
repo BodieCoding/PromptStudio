@@ -1,15 +1,18 @@
+﻿using PromptStudio.Core.DTOs.Models;
+using PromptStudio.Core.Interfaces.Models;
+
 namespace PromptStudio.Core.Interfaces;
 
 /// <summary>
-/// Extended interface for enhanced model provider management with cost estimation and validation
+/// Extended interface for advanced model provider management with cost estimation and validation
 /// Extends the existing IModelProviderManager from IModelProvider.cs
 /// </summary>
-public interface IEnhancedModelProviderManager : IModelProviderManager
+public interface IAdvancedModelProviderManager : IModelProviderManager
 {
     /// <summary>
     /// Get available models from all providers
     /// </summary>
-    Task<IEnumerable<EnhancedModelInfo>> GetAvailableModelsAsync();
+    Task<IEnumerable<DetailedModelInfo>> GetAvailableModelsAsync();
     
     /// <summary>
     /// Validate model availability and configuration
@@ -22,28 +25,3 @@ public interface IEnhancedModelProviderManager : IModelProviderManager
     Task<decimal> EstimateCostAsync(ModelRequest request);
 }
 
-/// <summary>
-/// Enhanced model information with cost and capability details
-/// </summary>
-public class EnhancedModelInfo : ModelInfo
-{
-    /// <summary>
-    /// Cost per input token
-    /// </summary>
-    public decimal InputTokenCost { get; set; }
-    
-    /// <summary>
-    /// Cost per output token
-    /// </summary>
-    public decimal OutputTokenCost { get; set; }
-    
-    /// <summary>
-    /// Maximum context length in tokens
-    /// </summary>
-    public int MaxTokens { get; set; }
-    
-    /// <summary>
-    /// Supported features (function_calling, vision, etc.)
-    /// </summary>
-    public List<string> Features { get; set; } = new();
-}

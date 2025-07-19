@@ -1,3 +1,5 @@
+using PromptStudio.Core.Domain;
+
 namespace PromptStudio.Core.DTOs.Variables;
 
 /// <summary>
