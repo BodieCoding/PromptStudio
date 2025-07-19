@@ -1,5 +1,4 @@
-using PromptStudio.Core.Domain.VariableEntities;
-using PromptStudio.Core.Domain.PromptEntities;
+using PromptStudio.Core.Domain;
 using PromptStudio.Core.DTOs.Variables;
 using PromptStudio.Core.DTOs.Common;
 
@@ -292,7 +291,7 @@ public interface IVariableManagementService
     ///   <item>Caches validation rules for performance optimization</item>
     /// </list>
     /// </remarks>
-    Task<ValidationResult> ValidateVariableValueAsync(
+    Task<VariableValidationResult> ValidateVariableValueAsync(
         Guid variableId, 
         string value, 
         Guid tenantId, 
@@ -395,6 +394,119 @@ public interface IVariableManagementService
     /// </remarks>
     Task<IEnumerable<VariableSimilarityResult>> GetSimilarVariablesAsync(
         Guid variableId, 
+        Guid tenantId, 
+        CancellationToken cancellationToken = default);
+
+    #endregion
+
+    #region Variable Processing Methods
+
+    /// <summary>
+    /// Extracts variable names from a prompt template content.
+    /// Parses template syntax to identify all variable placeholders and their properties.
+    /// </summary>
+    /// <param name="promptContent">The prompt template content to analyze</param>
+    /// <param name="cancellationToken">Cancellation token for async operation control</param>
+    /// <returns>Collection of variable names found in the template</returns>
+    /// <exception cref="ArgumentException">Thrown when prompt content is invalid</exception>
+    /// <remarks>
+    /// <para><strong>Implementation Notes:</strong></para>
+    /// <list type="bullet">
+    ///   <item>Supports multiple template syntax formats ({{variable}}, {variable}, etc.)</item>
+    ///   <item>Handles nested and conditional variable expressions</item>
+    ///   <item>Validates variable name syntax and constraints</item>
+    ///   <item>Provides detailed parsing diagnostics for template validation</item>
+    /// </list>
+    /// 
+    /// <para><strong>Usage Examples:</strong></para>
+    /// <code>
+    /// var content = "Hello {{customerName}}, your order {{orderId}} is ready!";
+    /// var variables = await service.ExtractVariableNamesAsync(content);
+    /// // Returns: ["customerName", "orderId"]
+    /// </code>
+    /// </remarks>
+    Task<IEnumerable<string>> ExtractVariableNamesAsync(
+        string promptContent, 
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Validates variable values against their definitions and constraints.
+    /// Performs comprehensive validation including type checking, range validation, and business rules.
+    /// </summary>
+    /// <param name="variableValues">Dictionary of variable names and their proposed values</param>
+    /// <param name="templateId">Template identifier for context-specific validation</param>
+    /// <param name="tenantId">Tenant identifier for access control</param>
+    /// <param name="cancellationToken">Cancellation token for async operation control</param>
+    /// <returns>Validation result with detailed error and warning information</returns>
+    /// <exception cref="NotFoundException">Thrown when template or variables are not found</exception>
+    /// <exception cref="UnauthorizedAccessException">Thrown when tenant access is denied</exception>
+    /// <remarks>
+    /// <para><strong>Validation Rules:</strong></para>
+    /// <list type="bullet">
+    ///   <item>All required variables must have values</item>
+    ///   <item>Variable values must conform to their defined types</item>
+    ///   <item>Values must satisfy range and constraint validations</item>
+    ///   <item>Cross-variable dependencies are validated</item>
+    /// </list>
+    /// 
+    /// <para><strong>Implementation Notes:</strong></para>
+    /// <list type="bullet">
+    ///   <item>Uses variable definitions from template association</item>
+    ///   <item>Performs type conversion and validation</item>
+    ///   <item>Provides detailed error messages for validation failures</item>
+    ///   <item>Supports custom validation rules and business logic</item>
+    /// </list>
+    /// </remarks>
+    Task<VariableValidationResult> ValidateVariablesAsync(
+        Dictionary<string, string> variableValues, 
+        Guid templateId, 
+        Guid tenantId, 
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Resolves variable placeholders in a prompt template with provided values.
+    /// Performs variable substitution with comprehensive error handling and validation.
+    /// </summary>
+    /// <param name="promptContent">The template content containing variable placeholders</param>
+    /// <param name="variableValues">Dictionary of variable names and their values</param>
+    /// <param name="tenantId">Tenant identifier for access control</param>
+    /// <param name="cancellationToken">Cancellation token for async operation control</param>
+    /// <returns>Resolved prompt content with variables substituted</returns>
+    /// <exception cref="ArgumentException">Thrown when prompt content or variable values are invalid</exception>
+    /// <exception cref="InvalidOperationException">Thrown when variable resolution fails</exception>
+    /// <exception cref="UnauthorizedAccessException">Thrown when tenant access is denied</exception>
+    /// <remarks>
+    /// <para><strong>Resolution Process:</strong></para>
+    /// <list type="bullet">
+    ///   <item>Validates all required variables are provided</item>
+    ///   <item>Performs type conversion and formatting as needed</item>
+    ///   <item>Applies variable transformations and filters</item>
+    ///   <item>Handles missing variables with default values or errors</item>
+    /// </list>
+    /// 
+    /// <para><strong>Implementation Notes:</strong></para>
+    /// <list type="bullet">
+    ///   <item>Supports multiple template syntax formats</item>
+    ///   <item>Handles conditional and nested variable expressions</item>
+    ///   <item>Provides detailed error reporting for resolution failures</item>
+    ///   <item>Implements caching for frequently used templates</item>
+    /// </list>
+    /// 
+    /// <para><strong>Usage Examples:</strong></para>
+    /// <code>
+    /// var content = "Hello {{customerName}}, your order {{orderId}} is ready!";
+    /// var values = new Dictionary&lt;string, string&gt;
+    /// {
+    ///     ["customerName"] = "John Doe",
+    ///     ["orderId"] = "ORD-12345"
+    /// };
+    /// var resolved = await service.ResolvePromptAsync(content, values, tenantId);
+    /// // Returns: "Hello John Doe, your order ORD-12345 is ready!"
+    /// </code>
+    /// </remarks>
+    Task<string> ResolvePromptAsync(
+        string promptContent, 
+        Dictionary<string, string> variableValues, 
         Guid tenantId, 
         CancellationToken cancellationToken = default);
 

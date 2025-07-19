@@ -1,5 +1,4 @@
 using PromptStudio.Core.Domain;
-using PromptStudio.Core.Domain.PermissionEntities;
 using PromptStudio.Core.DTOs.Common;
 
 namespace PromptStudio.Core.Interfaces.Security;
@@ -313,7 +312,7 @@ public interface ISecurityService
     /// Provides insights into access patterns, permission usage, and security anomalies.
     /// </summary>
     /// <param name="organizationId">Organization context for analytics scope</param>
-    /// <param name="dateRange">Time range for analytics data collection</param>
+    /// <param name="DateTimeRange">Time range for analytics data collection</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Comprehensive security analytics with insights and recommendations</returns>
     /// <exception cref="ArgumentException">Thrown when organization ID or date range is invalid</exception>
@@ -337,7 +336,7 @@ public interface ISecurityService
     /// </remarks>
     Task<SecurityAnalytics> GetSecurityAnalyticsAsync(
         Guid organizationId,
-        DateRange dateRange,
+        DateTimeRange DateTimeRange,
         CancellationToken cancellationToken = default);
 
     #endregion
@@ -412,7 +411,7 @@ public record RoleAssignmentResult(
 /// </summary>
 public record SecurityAnalytics(
     Guid OrganizationId,
-    DateRange DateRange,
+    DateTimeRange DateTimeRange,
     AccessPatternAnalytics AccessPatterns,
     PermissionUsageAnalytics PermissionUsage,
     SecurityIncidentAnalytics SecurityIncidents,

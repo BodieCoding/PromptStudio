@@ -162,7 +162,7 @@ public interface ITestingService
     /// <param name="userId">User identifier for access-controlled results</param>
     /// <param name="status">Optional filter by experiment status</param>
     /// <param name="entityType">Optional filter by target entity type</param>
-    /// <param name="dateRange">Optional filter by experiment creation date</param>
+    /// <param name="DateTimeRange">Optional filter by experiment creation date</param>
     /// <param name="pageRequest">Pagination parameters for large result sets</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Paginated list of experiments accessible to the user</returns>
@@ -190,7 +190,7 @@ public interface ITestingService
         string userId,
         ABTestStatus? status = null,
         TestEntityType? entityType = null,
-        DateRange? dateRange = null,
+        DateTimeRange? DateTimeRange = null,
         PageRequest? pageRequest = null,
         CancellationToken cancellationToken = default);
 
@@ -508,7 +508,7 @@ public interface ITestingService
     /// Provides portfolio-level insights into experimentation effectiveness and optimization opportunities.
     /// </summary>
     /// <param name="organizationId">Organization context for analytics scope</param>
-    /// <param name="dateRange">Time range for analytics data collection</param>
+    /// <param name="DateTimeRange">Time range for analytics data collection</param>
     /// <param name="entityType">Optional filter by target entity type</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Comprehensive testing analytics with insights and recommendations</returns>
@@ -533,7 +533,7 @@ public interface ITestingService
     /// </remarks>
     Task<TestingAnalytics> GetTestingAnalyticsAsync(
         Guid organizationId,
-        DateRange dateRange,
+        DateTimeRange DateTimeRange,
         TestEntityType? entityType = null,
         CancellationToken cancellationToken = default);
 
@@ -920,7 +920,7 @@ public record VariantHealthStatus(
 /// </summary>
 public record TestingAnalytics(
     Guid OrganizationId,
-    DateRange DateRange,
+    DateTimeRange DateTimeRange,
     ExperimentPortfolioAnalytics PortfolioAnalytics,
     StatisticalDesignAnalytics DesignAnalytics,
     MetricPerformanceAnalytics MetricPerformance,

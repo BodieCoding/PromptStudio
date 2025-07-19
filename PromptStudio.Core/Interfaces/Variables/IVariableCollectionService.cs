@@ -1,4 +1,4 @@
-using PromptStudio.Core.Domain.VariableEntities;
+using PromptStudio.Core.Domain;
 using PromptStudio.Core.DTOs.Variables;
 using PromptStudio.Core.DTOs.Common;
 

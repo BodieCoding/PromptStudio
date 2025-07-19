@@ -115,7 +115,7 @@ public interface IGovernanceService
     /// <param name="entityType">Type of entity to retrieve audit trail for</param>
     /// <param name="entityId">Unique identifier of the entity</param>
     /// <param name="organizationId">Organization context for tenant isolation</param>
-    /// <param name="dateRange">Optional date range filter for audit entries</param>
+    /// <param name="DateTimeRange">Optional date range filter for audit entries</param>
     /// <param name="actions">Optional filter by specific actions</param>
     /// <param name="userId">Optional filter by specific user</param>
     /// <param name="pageRequest">Pagination parameters for large audit trails</param>
@@ -144,7 +144,7 @@ public interface IGovernanceService
         string entityType,
         Guid entityId,
         Guid organizationId,
-        DateRange? dateRange = null,
+        DateTimeRange? DateTimeRange = null,
         IEnumerable<string>? actions = null,
         string? userId = null,
         PageRequest? pageRequest = null,
@@ -373,7 +373,7 @@ public interface IGovernanceService
     Task<ComplianceReport> GenerateComplianceReportAsync(
         Guid organizationId,
         ComplianceFramework complianceFramework,
-        DateRange reportPeriod,
+        DateTimeRange reportPeriod,
         ReportFormat reportFormat = ReportFormat.PDF,
         CancellationToken cancellationToken = default);
 
@@ -418,7 +418,7 @@ public interface IGovernanceService
     /// Provides insights into governance effectiveness, compliance trends, and optimization opportunities.
     /// </summary>
     /// <param name="organizationId">Organization context for analytics scope</param>
-    /// <param name="dateRange">Time range for analytics data collection</param>
+    /// <param name="DateTimeRange">Time range for analytics data collection</param>
     /// <param name="analyticsScope">Scope of analytics (audit, compliance, classification, etc.)</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Comprehensive governance analytics with insights and recommendations</returns>
@@ -443,7 +443,7 @@ public interface IGovernanceService
     /// </remarks>
     Task<GovernanceAnalytics> GetGovernanceAnalyticsAsync(
         Guid organizationId,
-        DateRange dateRange,
+        DateTimeRange DateTimeRange,
         GovernanceAnalyticsScope? analyticsScope = null,
         CancellationToken cancellationToken = default);
 
@@ -586,7 +586,7 @@ public record ComplianceRecommendation(
 public record ComplianceReport(
     ComplianceFramework Framework,
     Guid OrganizationId,
-    DateRange ReportPeriod,
+    DateTimeRange ReportPeriod,
     ReportFormat Format,
     ComplianceExecutiveSummary ExecutiveSummary,
     IEnumerable<ComplianceFinding> DetailedFindings,
@@ -715,7 +715,7 @@ public record ComplianceMonitoringRule(
 /// </summary>
 public record GovernanceAnalytics(
     Guid OrganizationId,
-    DateRange DateRange,
+    DateTimeRange DateTimeRange,
     AuditCoverageAnalytics AuditCoverage,
     CompliancePostureAnalytics CompliancePosture,
     DataClassificationAnalytics DataClassification,

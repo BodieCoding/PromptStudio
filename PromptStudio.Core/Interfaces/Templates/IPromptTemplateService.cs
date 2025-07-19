@@ -97,9 +97,9 @@ public interface IPromptTemplateService
     ///     TemplateCategory.CustomerService,
     ///     currentUserId,
     ///     new[] {
-    ///         new VariableDefinition("customerName", VariableType.Text, "Customer's full name"),
-    ///         new VariableDefinition("issue", VariableType.Text, "Customer's issue or inquiry"),
-    ///         new VariableDefinition("response", VariableType.LongText, "Detailed response content")
+    ///         new PromptVariable("customerName", VariableType.Text, "Customer's full name"),
+    ///         new PromptVariable("issue", VariableType.Text, "Customer's issue or inquiry"),
+    ///         new PromptVariable("response", VariableType.LongText, "Detailed response content")
     ///     },
     ///     new[] { "customer-service", "email", "response" },
     ///     false,
@@ -114,7 +114,7 @@ public interface IPromptTemplateService
         string description,
         TemplateCategory category,
         string userId,
-        IEnumerable<VariableDefinition>? variables = null,
+        IEnumerable<PromptVariable>? variables = null,
         IEnumerable<string>? tags = null,
         bool isPublic = false,
         CancellationToken cancellationToken = default);
@@ -206,7 +206,7 @@ public interface IPromptTemplateService
         bool? isPublic = null,
         bool? hasExecutions = null,
         bool includeArchived = false,
-        TemplateSortOption sortBy = TemplateSortOption.Name,
+        string sortBy = "Name",
         int pageNumber = 1,
         int pageSize = 20,
         CancellationToken cancellationToken = default);
@@ -254,7 +254,7 @@ public interface IPromptTemplateService
         string userId,
         string content,
         string changeDescription,
-        IEnumerable<VariableDefinition>? variables = null,
+        IEnumerable<PromptVariable>? variables = null,
         bool majorVersion = false,
         CancellationToken cancellationToken = default);
 
@@ -459,90 +459,88 @@ public interface IPromptTemplateService
         string revertReason,
         CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Soft deletes a prompt template while preserving historical data and audit trails.
+    /// Maintains referential integrity while making template inaccessible for new operations.
+    /// </summary>
+    /// <param name="templateId">Unique template identifier</param>
+    /// <param name="userId">User identifier for authorization validation</param>
+    /// <param name="deleteReason">Reason for deletion for audit purposes</param>
+    /// <param name="cancellationToken">Cancellation token for async operation control</param>
+    /// <returns>True if deletion was successful, false if template was already deleted</returns>
+    /// <exception cref="ArgumentException">Thrown when templateId is invalid</exception>
+    /// <exception cref="NotFoundException">Thrown when template doesn't exist</exception>
+    /// <exception cref="UnauthorizedAccessException">Thrown when user lacks delete permissions</exception>
+    /// <exception cref="InvalidOperationException">Thrown when template has active dependencies</exception>
+    /// <remarks>
+    /// <para><strong>Business Rules:</strong></para>
+    /// <list type="bullet">
+    /// <item><description>User must have delete permissions for the template</description></item>
+    /// <item><description>Templates with active executions require confirmation before deletion</description></item>
+    /// <item><description>Soft deletion preserves execution history and audit trails</description></item>
+    /// <item><description>Delete reason required for compliance and audit purposes</description></item>
+    /// </list>
+    /// 
+    /// <para><strong>Implementation Notes:</strong></para>
+    /// <list type="bullet">
+    /// <item><description>Implements soft deletion to preserve historical data</description></item>
+    /// <item><description>Validates dependencies before allowing deletion</description></item>
+    /// <item><description>Updates search indexes and removes from discovery</description></item>
+    /// <item><description>Notifies stakeholders of template deletion</description></item>
+    /// </list>
+    /// </remarks>
+    Task<bool> DeleteTemplateAsync(
+        Guid templateId,
+        string userId,
+        string deleteReason,
+        CancellationToken cancellationToken = default);
+
     #endregion
 
     #region Template Discovery and Recommendations
 
     /// <summary>
-    /// Searches for templates across accessible libraries with advanced filtering and ranking.
-    /// Implements intelligent discovery with relevance scoring and personalization.
+    /// Searches for templates across accessible libraries with filtering and sorting capabilities.
+    /// Enables template discovery within user's permitted scope.
     /// </summary>
-    /// <param name="userId">User identifier for personalized and access-controlled results</param>
-    /// <param name="searchTerm">Search query with support for natural language and keywords</param>
-    /// <param name="categories">Optional filter by multiple categories</param>
-    /// <param name="tags">Optional filter by tags with AND/OR logic</param>
-    /// <param name="libraries">Optional scope to specific libraries</param>
-    /// <param name="includePublic">Whether to include publicly accessible templates</param>
-    /// <param name="sortBy">Sorting criteria with relevance scoring</param>
+    /// <param name="userId">User identifier for access-controlled results and audit trail</param>
+    /// <param name="searchTerm">Search query to match against template names, descriptions, and content</param>
+    /// <param name="category">Optional filter by template category</param>
+    /// <param name="tags">Optional filter by tags - templates matching any tag will be included</param>
+    /// <param name="libraryId">Optional scope to specific library</param>
+    /// <param name="includeInactive">Whether to include inactive/draft templates</param>
     /// <param name="pageNumber">Page number for pagination (1-based)</param>
     /// <param name="pageSize">Number of results per page (max 50)</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
-    /// <returns>Ranked search results with relevance scores and metadata</returns>
+    /// <returns>Paginated search results with template metadata</returns>
     /// <exception cref="ArgumentException">Thrown when search parameters are invalid</exception>
     /// <exception cref="UnauthorizedAccessException">Thrown when user lacks search permissions</exception>
     /// <remarks>
     /// <para><strong>Business Rules:</strong></para>
     /// <list type="bullet">
     /// <item><description>Results filtered by user access permissions and library visibility</description></item>
-    /// <item><description>Search includes semantic matching and relevance scoring</description></item>
-    /// <item><description>Public templates included based on organization policies</description></item>
-    /// <item><description>Personalization based on user history and preferences</description></item>
+    /// <item><description>Search matches template name, description, and content fields</description></item>
+    /// <item><description>Inactive templates excluded by default for production safety</description></item>
+    /// <item><description>Results sorted by relevance (name matches first, then content matches)</description></item>
     /// </list>
     /// 
     /// <para><strong>Implementation Notes:</strong></para>
     /// <list type="bullet">
-    /// <item><description>Implements full-text search with natural language processing</description></item>
-    /// <item><description>Uses machine learning for relevance ranking and personalization</description></item>
-    /// <item><description>Supports faceted search with dynamic filtering options</description></item>
-    /// <item><description>Provides search analytics and query optimization</description></item>
+    /// <item><description>Implements case-insensitive text search across relevant fields</description></item>
+    /// <item><description>Uses database indexes for optimal search performance</description></item>
+    /// <item><description>Enforces tenant isolation and user access permissions</description></item>
+    /// <item><description>Supports wildcard and phrase matching in search terms</description></item>
     /// </list>
     /// </remarks>
-    Task<PagedResult<TemplateSearchResult>> SearchTemplatesAsync(
+    Task<PagedResult<PromptTemplate>> SearchTemplatesAsync(
         string userId,
         string searchTerm,
-        IEnumerable<TemplateCategory>? categories = null,
+        TemplateCategory? category = null,
         IEnumerable<string>? tags = null,
-        IEnumerable<Guid>? libraries = null,
-        bool includePublic = true,
-        TemplateSortOption sortBy = TemplateSortOption.Relevance,
+        Guid? libraryId = null,
+        bool includeInactive = false,
         int pageNumber = 1,
         int pageSize = 20,
-        CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Provides personalized template recommendations based on user activity and preferences.
-    /// Implements machine learning algorithms for intelligent content discovery.
-    /// </summary>
-    /// <param name="userId">User identifier for personalized recommendations</param>
-    /// <param name="context">Optional context for situational recommendations</param>
-    /// <param name="maxRecommendations">Maximum number of recommendations to return</param>
-    /// <param name="includeSimilar">Whether to include templates similar to recently used ones</param>
-    /// <param name="cancellationToken">Cancellation token for async operation control</param>
-    /// <returns>Personalized template recommendations with confidence scores</returns>
-    /// <exception cref="ArgumentException">Thrown when userId is invalid</exception>
-    /// <exception cref="UnauthorizedAccessException">Thrown when user lacks recommendation access</exception>
-    /// <remarks>
-    /// <para><strong>Business Rules:</strong></para>
-    /// <list type="bullet">
-    /// <item><description>Recommendations based on user activity, preferences, and team patterns</description></item>
-    /// <item><description>Results filtered by access permissions and availability</description></item>
-    /// <item><description>Context-aware recommendations for specific use cases</description></item>
-    /// <item><description>Recommendations cached and refreshed based on activity patterns</description></item>
-    /// </list>
-    /// 
-    /// <para><strong>Implementation Notes:</strong></para>
-    /// <list type="bullet">
-    /// <item><description>Uses machine learning models for preference prediction</description></item>
-    /// <item><description>Implements collaborative filtering with privacy protection</description></item>
-    /// <item><description>Provides explanation for recommendation reasoning</description></item>
-    /// <item><description>Supports feedback collection for model improvement</description></item>
-    /// </list>
-    /// </remarks>
-    Task<IEnumerable<TemplateRecommendation>> GetTemplateRecommendationsAsync(
-        string userId,
-        RecommendationContext? context = null,
-        int maxRecommendations = 10,
-        bool includeSimilar = true,
         CancellationToken cancellationToken = default);
 
     #endregion

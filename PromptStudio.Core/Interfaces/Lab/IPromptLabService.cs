@@ -1,6 +1,7 @@
 using PromptStudio.Core.Domain;
+using PromptStudio.Core.DTOs.Common;
 
-namespace PromptStudio.Core.Interfaces;
+namespace PromptStudio.Core.Interfaces.Lab;
 
 /// <summary>
 /// Interface for prompt lab operations (Updated for Guid-based architecture)

@@ -80,7 +80,7 @@ namespace PromptStudio.Core.Domain;
 /// 
 /// // Analyzing execution performance
 /// var metrics = await analyticsService.GetExecutionMetricsAsync(
-///     templateId, DateRange.LastWeek);
+///     templateId, DateTimeRange.LastDays(7));
 /// </code>
 /// </example>
 public class PromptExecution : AuditableEntity
