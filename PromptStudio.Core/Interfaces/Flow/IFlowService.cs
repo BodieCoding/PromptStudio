@@ -2,7 +2,7 @@
 using PromptStudio.Core.DTOs.Flow;
 using PromptStudio.Core.DTOs.Common;
 
-namespace PromptStudio.Core.Interfaces.Updated;
+namespace PromptStudio.Core.Interfaces;
 
 /// <summary>
 /// Interface for visual prompt flow operations (Updated for Guid-based architecture)
@@ -378,6 +378,80 @@ public interface IFlowService
     /// <returns>List of popular flows</returns>
     Task<List<PromptFlow>> GetPopularFlowsAsync(Guid? labId = null, Guid? tenantId = null, 
         int limit = 10, int daysBack = 30);
+
+    #endregion
+
+    #region Low-Level Repository Operations
+
+    /// <summary>
+    /// Synchronize flow JSON data with relational data (for performance optimization)
+    /// </summary>
+    /// <param name="flowId">Flow ID</param>
+    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
+    /// <returns>Task</returns>
+    Task SyncFlowDataAsync(Guid flowId, Guid? tenantId = null);
+
+    /// <summary>
+    /// Get detailed flow metrics with custom date range
+    /// </summary>
+    /// <param name="flowId">Flow ID</param>
+    /// <param name="from">Start date (optional)</param>
+    /// <param name="to">End date (optional)</param>
+    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
+    /// <returns>Flow metrics</returns>
+    Task<FlowMetrics> GetFlowMetricsAsync(Guid flowId, DateTime? from = null, DateTime? to = null, Guid? tenantId = null);
+
+    /// <summary>
+    /// Update cached flow metrics
+    /// </summary>
+    /// <param name="flowId">Flow ID</param>
+    /// <param name="metrics">Metrics to update</param>
+    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
+    /// <returns>Task</returns>
+    Task UpdateFlowMetricsAsync(Guid flowId, FlowMetrics metrics, Guid? tenantId = null);
+
+    /// <summary>
+    /// Get detailed execution analytics with custom date range
+    /// </summary>
+    /// <param name="flowId">Flow ID</param>
+    /// <param name="from">Start date (optional)</param>
+    /// <param name="to">End date (optional)</param>
+    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
+    /// <returns>Execution analytics</returns>
+    Task<ExecutionAnalytics> GetExecutionAnalyticsAsync(Guid flowId, DateTime? from = null, DateTime? to = null, Guid? tenantId = null);
+
+    /// <summary>
+    /// Create a flow validation session for caching
+    /// </summary>
+    /// <param name="session">Validation session to create</param>
+    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
+    /// <returns>Created validation session</returns>
+    Task<FlowValidationSession> CreateValidationSessionAsync(FlowValidationSession session, Guid? tenantId = null);
+
+    /// <summary>
+    /// Get cached validation session
+    /// </summary>
+    /// <param name="flowId">Flow ID</param>
+    /// <param name="version">Flow version</param>
+    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
+    /// <returns>Validation session or null if not found</returns>
+    Task<FlowValidationSession?> GetValidationSessionAsync(Guid flowId, string version, Guid? tenantId = null);
+
+    /// <summary>
+    /// Get validation history for a flow
+    /// </summary>
+    /// <param name="flowId">Flow ID</param>
+    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
+    /// <returns>List of validation sessions</returns>
+    Task<IEnumerable<FlowValidationSession>> GetValidationHistoryAsync(Guid flowId, Guid? tenantId = null);
+
+    /// <summary>
+    /// Invalidate validation cache for a flow
+    /// </summary>
+    /// <param name="flowId">Flow ID</param>
+    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
+    /// <returns>Task</returns>
+    Task InvalidateValidationCacheAsync(Guid flowId, Guid? tenantId = null);
 
     #endregion
 }

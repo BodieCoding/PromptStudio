@@ -1,3 +1,5 @@
+using PromptStudio.Core.DTOs.Common;
+
 namespace PromptStudio.Core.DTOs.Analytics;
 
 /// <summary>

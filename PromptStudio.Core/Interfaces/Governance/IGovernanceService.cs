@@ -836,3 +836,150 @@ public enum GovernanceAnalyticsScope
     DataClassification,
     PolicyAdherence
 }
+
+/// <summary>
+/// Enumeration of data classification levels for governance control.
+/// </summary>
+public enum DataClassification
+{
+    Public,
+    Internal,
+    Confidential,
+    Restricted
+}
+
+/// <summary>
+/// Assessment scope for compliance evaluation.
+/// </summary>
+public record AssessmentScope(
+    IEnumerable<string> EntityTypes,
+    IEnumerable<Guid> EntityIds,
+    bool IncludeArchived = false,
+    DateTimeRange? TimeRange = null);
+
+/// <summary>
+/// Metadata for compliance assessment execution.
+/// </summary>
+public record AssessmentMetadata(
+    string AssessmentId,
+    string AssessmentVersion,
+    string AssessorId,
+    string AssessmentTool,
+    TimeSpan AssessmentDuration,
+    IEnumerable<string> AssessmentParameters);
+
+/// <summary>
+/// Audit gap identified in audit coverage analysis.
+/// </summary>
+public record AuditGap(
+    string EntityType,
+    Guid EntityId,
+    string GapType,
+    string Description,
+    DateTimeOffset LastAudited,
+    string RiskLevel,
+    string RecommendedAction);
+
+/// <summary>
+/// Metric for audit effectiveness measurement.
+/// </summary>
+public record AuditEffectivenessMetric(
+    string MetricName,
+    double Value,
+    string Unit,
+    string Description,
+    DateTimeOffset MeasuredAt,
+    string Trend);
+
+/// <summary>
+/// Compliance score for specific framework.
+/// </summary>
+public record FrameworkComplianceScore(
+    ComplianceFramework Framework,
+    double Score,
+    ComplianceStatus Status,
+    int TotalRules,
+    int PassedRules,
+    int FailedRules,
+    DateTimeOffset LastAssessed);
+
+/// <summary>
+/// Pattern analysis for compliance violations.
+/// </summary>
+public record ComplianceViolationPattern(
+    string PatternType,
+    string Description,
+    int OccurrenceCount,
+    ComplianceSeverity AverageSeverity,
+    IEnumerable<string> AffectedEntityTypes,
+    string RootCause,
+    string RecommendedMitigation);
+
+/// <summary>
+/// Distribution analysis for data classification.
+/// </summary>
+public record ClassificationDistribution(
+    DataClassification Classification,
+    int EntityCount,
+    double Percentage,
+    string EntityType,
+    IEnumerable<string> TopCategories);
+
+/// <summary>
+/// Effectiveness metric for data classification.
+/// </summary>
+public record ClassificationEffectivenessMetric(
+    string MetricName,
+    double Value,
+    string Unit,
+    string Description,
+    double Confidence,
+    DateTimeOffset MeasuredAt);
+
+/// <summary>
+/// Gap identified in data classification coverage.
+/// </summary>
+public record DataClassificationGap(
+    string EntityType,
+    Guid EntityId,
+    string GapType,
+    string Description,
+    DateTimeOffset CreatedAt,
+    string RiskLevel,
+    string RecommendedAction);
+
+/// <summary>
+/// Metric for policy adherence measurement.
+/// </summary>
+public record PolicyAdherenceMetric(
+    string PolicyId,
+    string PolicyName,
+    double AdherencePercentage,
+    int TotalEntities,
+    int CompliantEntities,
+    int NonCompliantEntities,
+    DateTimeOffset MeasuredAt);
+
+/// <summary>
+/// Pattern analysis for policy violations.
+/// </summary>
+public record PolicyViolationPattern(
+    string PolicyId,
+    string PolicyName,
+    string ViolationType,
+    int OccurrenceCount,
+    IEnumerable<string> CommonCauses,
+    string ImpactLevel,
+    string RecommendedImprovement);
+
+/// <summary>
+/// Effectiveness metric for governance policies.
+/// </summary>
+public record PolicyEffectivenessMetric(
+    string PolicyId,
+    string PolicyName,
+    double EffectivenessScore,
+    string EffectivenessLevel,
+    int EnforcementCount,
+    int ViolationCount,
+    DateTimeOffset LastUpdated);

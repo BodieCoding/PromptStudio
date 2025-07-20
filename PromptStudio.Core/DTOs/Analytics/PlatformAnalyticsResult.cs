@@ -35,7 +35,7 @@ public class PlatformAnalyticsResult
     /// <summary>
     /// Cost and resource utilization analytics
     /// </summary>
-    public ResourceUtilizationAnalytics ResourceUtilization { get; set; } = new();
+    public PlatformCostAnalytics ResourceUtilization { get; set; } = new();
 
     /// <summary>
     /// Business metrics and KPIs
@@ -194,7 +194,7 @@ public class SystemPerformanceAnalytics
 /// <summary>
 /// Resource utilization analytics
 /// </summary>
-public class ResourceUtilizationAnalytics
+public class PlatformCostAnalytics
 {
     /// <summary>
     /// Total cost for the period

@@ -981,6 +981,138 @@ public record TestingRecommendation(
     string ExpectedBenefit);
 
 /// <summary>
+/// Distribution of experiment outcomes for portfolio analysis.
+/// </summary>
+public record ExperimentOutcomeDistribution(
+    string OutcomeType,
+    int Count,
+    double Percentage,
+    string Description);
+
+/// <summary>
+/// Performance metrics by entity type for portfolio analysis.
+/// </summary>
+public record EntityTypePerformance(
+    TestEntityType EntityType,
+    int ExperimentCount,
+    double SuccessRate,
+    double AverageEffectSize,
+    TimeSpan AverageExperimentDuration);
+
+/// <summary>
+/// Power analysis trend over time for design analytics.
+/// </summary>
+public record PowerAnalysisTrend(
+    DateTimeOffset TimePoint,
+    double AveragePower,
+    double MinimumPower,
+    double MaximumPower,
+    int ExperimentCount);
+
+/// <summary>
+/// Design effectiveness metric for statistical analysis.
+/// </summary>
+public record DesignEffectivenessMetric(
+    string MetricName,
+    double Score,
+    string Category,
+    string Description,
+    IEnumerable<string> ImprovementSuggestions);
+
+/// <summary>
+/// Statistical best practice recommendation for design improvement.
+/// </summary>
+public record StatisticalBestPractice(
+    string PracticeName,
+    string Description,
+    string Category,
+    double AdoptionRate,
+    string ImpactLevel,
+    IEnumerable<string> ImplementationSteps);
+
+/// <summary>
+/// Trend analysis for specific metrics over time.
+/// </summary>
+public record MetricTrendAnalysis(
+    string MetricName,
+    TrendDirection OverallTrend,
+    double TrendStrength,
+    IEnumerable<MetricDataPoint> DataPoints,
+    string SeasonalityPattern);
+
+/// <summary>
+/// Data point for metric trend analysis.
+/// </summary>
+public record MetricDataPoint(
+    DateTimeOffset Timestamp,
+    double Value,
+    double MovingAverage,
+    double Variance);
+
+/// <summary>
+/// Correlation analysis between metrics for performance insights.
+/// </summary>
+public record MetricCorrelationAnalysis(
+    string PrimaryMetric,
+    string SecondaryMetric,
+    double CorrelationCoefficient,
+    string CorrelationStrength,
+    string Interpretation,
+    bool IsStatisticallySignificant);
+
+/// <summary>
+/// Optimization opportunity for specific metrics.
+/// </summary>
+public record MetricOptimizationOpportunity(
+    string MetricName,
+    string OpportunityType,
+    string Description,
+    double PotentialImprovement,
+    string Priority,
+    IEnumerable<string> RecommendedActions);
+
+/// <summary>
+/// Resource usage pattern analysis for utilization optimization.
+/// </summary>
+public record ResourceUsagePattern(
+    string PatternType,
+    string Description,
+    TimeSpan Duration,
+    double Frequency,
+    double ResourceIntensity,
+    IEnumerable<string> OptimizationOpportunities);
+
+/// <summary>
+/// Cost effectiveness analysis for resource utilization.
+/// </summary>
+public record CostEffectivenessAnalysis(
+    double TotalCost,
+    double CostPerExperiment,
+    double AverageROI,
+    IEnumerable<CostBreakdown> CostBreakdowns,
+    IEnumerable<string> CostOptimizationRecommendations);
+
+/// <summary>
+/// Cost breakdown by category for analysis.
+/// </summary>
+public record CostBreakdown(
+    string Category,
+    double Amount,
+    double Percentage,
+    string Description);
+
+/// <summary>
+/// Resource optimization opportunity for efficiency improvement.
+/// </summary>
+public record ResourceOptimizationOpportunity(
+    string OpportunityType,
+    string Description,
+    double PotentialSavings,
+    string ImplementationEffort,
+    TimeSpan ExpectedTimeframe,
+    IEnumerable<string> ActionSteps);
+
+/// <summary>
 /// Enumeration of metric types for success measurement.
 /// </summary>
 public enum MetricType

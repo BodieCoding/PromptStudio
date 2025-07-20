@@ -1,7 +1,7 @@
 using PromptStudio.Core.DTOs.Analytics;
 using PromptStudio.Core.DTOs.Common;
 
-namespace PromptStudio.Core.Interfaces.Core;
+namespace PromptStudio.Core.Interfaces.Analytics;
 
 /// <summary>
 /// Enterprise-grade service interface for comprehensive analytics and business intelligence across the PromptStudio

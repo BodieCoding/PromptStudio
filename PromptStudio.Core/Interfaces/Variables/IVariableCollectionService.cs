@@ -1,6 +1,7 @@
 using PromptStudio.Core.Domain;
 using PromptStudio.Core.DTOs.Variables;
 using PromptStudio.Core.DTOs.Common;
+using PromptStudio.Core.DTOs.Execution;
 
 namespace PromptStudio.Core.Interfaces.Variables;
 

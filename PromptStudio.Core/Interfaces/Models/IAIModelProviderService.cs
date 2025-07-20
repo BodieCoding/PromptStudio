@@ -1,4 +1,4 @@
-using PromptStudio.Core.DTOs.Model;
+using PromptStudio.Core.DTOs.Models;
 using PromptStudio.Core.DTOs.Common;
 
 namespace PromptStudio.Core.Interfaces.Models;
