@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using PromptStudio.Core.Domain;
 
-namespace PromptStudio.Core.Domain.FlowEntities;
+namespace PromptStudio.Core.Domain;
 
 /// <summary>
 /// Represents a workflow definition that orchestrates multiple prompts and actions

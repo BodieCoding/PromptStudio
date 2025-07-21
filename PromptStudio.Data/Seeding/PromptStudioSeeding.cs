@@ -1,215 +1,49 @@
 using Microsoft.EntityFrameworkCore;
 using PromptStudio.Core.Domain;
-using PromptStudio.Core.Interfaces.Data;
 
-namespace PromptStudio.Data;
+namespace PromptStudio.Data.Seeding;
 
 /// <summary>
-/// Database context for the PromptStudio application
+/// Static class containing seed data methods preserved from the original PromptStudioDbContext.
+/// Provides comprehensive sample data for development, testing, and demonstration purposes.
 /// </summary>
-public class PromptStudioDbContext : DbContext, IPromptStudioDbContext
+/// <remarks>
+/// <para><strong>Seeding Strategy:</strong></para>
+/// <para>These methods create a complete sample dataset including prompt labs, libraries,
+/// templates with sophisticated AI agent workflows, and related entities. The data is
+/// designed to showcase the full capabilities of the PromptStudio platform.</para>
+/// </remarks>
+public static class PromptStudioSeeding
 {
     /// <summary>
-    /// Initializes a new instance of the PromptStudioDbContext
+    /// Seeds the database with comprehensive initial data including labs, libraries, templates, and variables.
+    /// Creates a complete sample environment with realistic AI workflow examples.
     /// </summary>
-    /// <param name="options">The options to be used by the context</param>
-    public PromptStudioDbContext(DbContextOptions<PromptStudioDbContext> options) : base(options)
+    /// <param name="modelBuilder">The ModelBuilder instance used for seeding</param>
+    /// <remarks>
+    /// <para><strong>Seeded Entities:</strong></para>
+    /// <list type="bullet">
+    /// <item><description>1 Default Prompt Lab with system ownership</description></item>
+    /// <item><description>2 Prompt Libraries (Sample + AI Agent Workflows)</description></item>
+    /// <item><description>6 Prompt Templates with comprehensive AI workflows</description></item>
+    /// <item><description>Sample variables for template parameterization</description></item>
+    /// </list>
+    /// </remarks>
+    public static void SeedData(ModelBuilder modelBuilder)
     {
-    }    /// <summary>
-    /// Gets or sets the prompt labs in the database
-    /// </summary>
-    public DbSet<PromptLab> PromptLabs { get; set; }
+        SeedPromptLabs(modelBuilder);
+        SeedPromptLibraries(modelBuilder);
+        SeedPromptTemplates(modelBuilder);
+        SeedPromptVariables(modelBuilder);
+    }
 
     /// <summary>
-    /// Gets or sets the prompt libraries in the database
+    /// Seeds initial prompt labs with default system lab.
     /// </summary>
-    public DbSet<PromptLibrary> PromptLibraries { get; set; }
-
-    /// <summary>
-    /// Gets or sets the collections in the database
-    /// </summary>
-    public DbSet<Collection> Collections { get; set; }
-
-    /// <summary>
-    /// Gets or sets the prompt templates in the database
-    /// </summary>
-    public DbSet<PromptTemplate> PromptTemplates { get; set; }
-
-    /// <summary>
-    /// Gets or sets the prompt variables in the database
-    /// </summary>
-    public DbSet<PromptVariable> PromptVariables { get; set; }
-
-    /// <summary>
-    /// Gets or sets the prompt executions in the database
-    /// </summary>
-    public DbSet<PromptExecution> PromptExecutions { get; set; }    /// <summary>
-    /// Gets or sets the variable collections in the database
-    /// </summary>
-    public DbSet<VariableCollection> VariableCollections { get; set; }    /// <summary>
-    /// Gets or sets the prompt flows in the database
-    /// </summary>
-    public DbSet<PromptFlow> PromptFlows { get; set; }
-
-    /// <summary>
-    /// Gets or sets the flow executions in the database
-    /// </summary>
-    public DbSet<FlowExecution> FlowExecutions { get; set; }
-
-    /// <summary>
-    /// Configures the database model
-    /// </summary>
-    /// <param name="modelBuilder">The builder being used to construct the model</param>
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    /// <param name="modelBuilder">The ModelBuilder instance for configuration</param>
+    private static void SeedPromptLabs(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-
-        // Collection configuration
-        modelBuilder.Entity<Collection>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Description).HasMaxLength(500);
-            entity.HasIndex(e => e.Name);
-        });        // PromptLab configuration
-        modelBuilder.Entity<PromptLab>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Description).HasMaxLength(500);
-            entity.Property(e => e.LabId).IsRequired().HasMaxLength(50);
-            entity.Property(e => e.Owner).HasMaxLength(100);
-            entity.Property(e => e.Tags).HasMaxLength(500);
-            entity.Property(e => e.Status).HasConversion<string>();
-            entity.Property(e => e.Visibility).HasConversion<string>();
-
-            entity.HasIndex(e => e.LabId).IsUnique();
-            entity.HasIndex(e => e.Name);
-        });        // PromptLibrary configuration
-        modelBuilder.Entity<PromptLibrary>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Description).HasMaxLength(500);
-            entity.Property(e => e.Color).HasMaxLength(7);
-            entity.Property(e => e.Icon).HasMaxLength(50);
-            entity.Property(e => e.Tags).HasMaxLength(500);
-            entity.Property(e => e.Category).HasConversion<string>();
-
-            entity.HasOne(e => e.PromptLab)
-                  .WithMany(pl => pl.PromptLibraries)
-                  .HasForeignKey(e => e.PromptLabId)
-                  .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => new { e.PromptLabId, e.Name }).IsUnique();
-        });
-
-        // PromptTemplate configuration
-        modelBuilder.Entity<PromptTemplate>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Description).HasMaxLength(500);
-            entity.Property(e => e.Content).IsRequired();
-
-            entity.HasOne(e => e.PromptLibrary)
-                  .WithMany(pl => pl.PromptTemplates)
-                  .HasForeignKey(e => e.PromptLibraryId)
-                  .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => new { e.PromptLibraryId, e.Name });
-        });
-
-        // PromptVariable configuration
-        modelBuilder.Entity<PromptVariable>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(50);
-            entity.Property(e => e.Description).HasMaxLength(200);
-            entity.Property(e => e.Type).HasConversion<string>();
-
-            entity.HasOne(e => e.PromptTemplate)
-                  .WithMany(pt => pt.Variables)
-                  .HasForeignKey(e => e.PromptTemplateId)
-                  .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => new { e.PromptTemplateId, e.Name }).IsUnique();
-        });
-
-        // PromptExecution configuration
-        modelBuilder.Entity<PromptExecution>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.ResolvedPrompt).IsRequired();
-            entity.Property(e => e.AiProvider).HasMaxLength(50);
-            entity.Property(e => e.Model).HasMaxLength(50);
-            entity.Property(e => e.Cost).HasColumnType("decimal(10,4)");
-
-            entity.HasOne(e => e.PromptTemplate)
-                  .WithMany(pt => pt.Executions)
-                  .HasForeignKey(e => e.PromptTemplateId)
-                  .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => e.ExecutedAt);
-            entity.HasIndex(e => e.PromptTemplateId);
-        });
-
-        // VariableCollection configuration
-        modelBuilder.Entity<VariableCollection>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Description).HasMaxLength(500);
-            entity.Property(e => e.VariableSets).IsRequired();
-
-            entity.HasOne(e => e.PromptTemplate)
-                  .WithMany(pt => pt.VariableCollections)
-                  .HasForeignKey(e => e.PromptTemplateId)
-                  .OnDelete(DeleteBehavior.Cascade);            entity.HasIndex(e => e.PromptTemplateId);
-            entity.HasIndex(e => e.Name);
-        });        // PromptFlow configuration
-        modelBuilder.Entity<PromptFlow>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Description).HasMaxLength(500);
-            entity.Property(e => e.Version).IsRequired().HasMaxLength(20);
-            entity.Property(e => e.UserId).HasMaxLength(100);
-            entity.Property(e => e.Tags).HasMaxLength(1000);
-            entity.Property(e => e.FlowData).IsRequired();
-
-            entity.HasIndex(e => e.Name);
-            entity.HasIndex(e => e.UserId);
-            entity.HasIndex(e => e.CreatedAt);
-        });
-
-        // FlowExecution configuration
-        modelBuilder.Entity<FlowExecution>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.InputVariables).IsRequired();
-            entity.Property(e => e.OutputResult);
-            entity.Property(e => e.Status).IsRequired().HasMaxLength(20);
-            entity.Property(e => e.ErrorMessage).HasMaxLength(2000);
-
-            entity.HasOne(e => e.Flow)
-                  .WithMany()
-                  .HasForeignKey(e => e.FlowId)
-                  .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => e.FlowId);
-            entity.HasIndex(e => e.CreatedAt);
-            entity.HasIndex(e => e.Status);
-        });
-
-        // Seed initial data
-        SeedData(modelBuilder);
-    }    /// <summary>
-    /// Seeds the database with initial data
-    /// </summary>    /// <param name="modelBuilder">The builder being used to construct the model</param>
-    private static void SeedData(ModelBuilder modelBuilder)
-    {
-        // Seed prompt labs
+        // NOTE: Original used integer IDs. Converting to integers for compatibility with existing data structure.
         modelBuilder.Entity<PromptLab>().HasData(
             new PromptLab
             {
@@ -225,8 +59,14 @@ public class PromptStudioDbContext : DbContext, IPromptStudioDbContext
                 UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }
         );
+    }
 
-        // Seed prompt libraries
+    /// <summary>
+    /// Seeds initial prompt libraries with sample and AI workflow collections.
+    /// </summary>
+    /// <param name="modelBuilder">The ModelBuilder instance for configuration</param>
+    private static void SeedPromptLibraries(ModelBuilder modelBuilder)
+    {
         modelBuilder.Entity<PromptLibrary>().HasData(
             new PromptLibrary
             {
@@ -259,8 +99,14 @@ public class PromptStudioDbContext : DbContext, IPromptStudioDbContext
                 UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }
         );
+    }
 
-        // Seed prompt templates
+    /// <summary>
+    /// Seeds comprehensive prompt templates with sophisticated AI workflow examples including full content.
+    /// </summary>
+    /// <param name="modelBuilder">The ModelBuilder instance for configuration</param>
+    private static void SeedPromptTemplates(ModelBuilder modelBuilder)
+    {
         modelBuilder.Entity<PromptTemplate>().HasData(
             // Sample Collection Prompt
             new PromptTemplate
@@ -1423,8 +1269,14 @@ Test variations of:
                 UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             }
         );
+    }
 
-        // Seed sample variables
+    /// <summary>
+    /// Seeds sample variables for the basic code review template.
+    /// </summary>
+    /// <param name="modelBuilder">The ModelBuilder instance for configuration</param>
+    private static void SeedPromptVariables(ModelBuilder modelBuilder)
+    {
         modelBuilder.Entity<PromptVariable>().HasData(
             new PromptVariable
             {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using PromptStudio.Core.Domain;
 
-namespace PromptStudio.Core.Domain.TestEntities;
+namespace PromptStudio.Core.Domain;
 
 /// <summary>
 /// Represents an A/B test for comparing different prompts or configurations

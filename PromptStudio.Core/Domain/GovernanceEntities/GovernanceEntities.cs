@@ -1,18 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using PromptStudio.Core.Domain;
 
-namespace PromptStudio.Core.Domain.GovernanceEntities;
+namespace PromptStudio.Core.Domain;
 
 /// <summary>
 /// Represents a governance policy for the platform
 /// </summary>
 public class GovernancePolicy : AuditableEntity
 {
-    /// <summary>
-    /// Unique identifier for the policy
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Policy name
     /// </summary>
@@ -45,11 +40,6 @@ public class GovernancePolicy : AuditableEntity
     public PolicySeverity Severity { get; set; } = PolicySeverity.Medium;
 
     /// <summary>
-    /// Whether the policy is active
-    /// </summary>
-    public bool IsActive { get; set; } = true;
-
-    /// <summary>
     /// Policy version
     /// </summary>
     public string Version { get; set; } = "1.0.0";
@@ -76,11 +66,6 @@ public enum PolicySeverity
 /// </summary>
 public class ComplianceAudit : AuditableEntity
 {
-    /// <summary>
-    /// Unique identifier for the audit
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Audit name
     /// </summary>
