@@ -1,4 +1,4 @@
-using PromptStudio.Core.Domain.FlowEntities;
+using PromptStudio.Core.Domain;
 using PromptStudio.Core.DTOs.Flow;
 using PromptStudio.Core.DTOs.Common;
 using PromptStudio.Core.Domain;

@@ -1,5 +1,5 @@
 using PromptStudio.Core.DTOs.Common;
-using PromptStudio.Core.Domain.FlowEntities;
+using PromptStudio.Core.Domain;
 using System.ComponentModel.DataAnnotations;
 
 namespace PromptStudio.Core.DTOs.Flow;

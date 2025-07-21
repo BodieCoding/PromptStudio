@@ -1,4 +1,4 @@
-using PromptStudio.Core.Domain.GovernanceEntities;
+using PromptStudio.Core.Domain;
 using PromptStudio.Core.DTOs.Common;
 
 namespace PromptStudio.Core.Interfaces.Governance;
