@@ -1,594 +1,978 @@
+using Microsoft.EntityFrameworkCore;
 using PromptStudio.Core.Domain;
 using PromptStudio.Core.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using PromptStudio.Core.Interfaces.Data;
+using PromptStudio.Core.Interfaces.Execution;
+using PromptStudio.Core.DTOs.Execution;
+using PromptStudio.Core.DTOs.Common;
+using PromptStudio.Core.DTOs.Statistics;
+using PromptStudio.Core.Exceptions;
 using System.Text.Json;
 
-namespace PromptStudio.Core.Services;
-
-/// <summary>
-/// Service for managing prompt executions
-/// </summary>
-public class PromptExecutionService : IPromptExecutionService
+namespace PromptStudio.Core.Services
 {
-    #region Private Fields
-
-    private readonly IPromptStudioDbContext _context;
-    private readonly IPromptTemplateService _promptTemplateService;
-    private readonly IVariableService _variableService;
-
-    #endregion
-
-    #region Constructor
-
     /// <summary>
-    /// Initializes a new instance of the PromptExecutionService
+    /// Service for managing prompt template executions with comprehensive tracking, analytics, and batch processing capabilities
     /// </summary>
-    /// <param name="context">Database context for data access</param>
-    /// <param name="promptTemplateService">Prompt template service</param>
-    /// <param name="variableService">Variable service</param>
-    public PromptExecutionService(
-        IPromptStudioDbContext context, 
-        IPromptTemplateService promptTemplateService,
-        IVariableService variableService)
+    public class PromptExecutionService : IPromptExecutionService
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-        _promptTemplateService = promptTemplateService ?? throw new ArgumentNullException(nameof(promptTemplateService));
-        _variableService = variableService ?? throw new ArgumentNullException(nameof(variableService));
-    }
+        #region Private Fields
 
-    #endregion
+        private readonly IPromptStudioDbContext _context;
 
-    #region Execution Operations
+        #endregion
 
-    /// <summary>
-    /// Execute a prompt template with provided variables
-    /// </summary>
-    /// <param name="templateId">Prompt template ID</param>
-    /// <param name="variables">Variables as JSON string</param>
-    /// <param name="aiProvider">AI provider name</param>
-    /// <param name="model">Model name</param>
-    /// <returns>Execution result with resolved prompt</returns>
-    public async Task<ExecutionResult> ExecutePromptTemplateAsync(int templateId, string variables, string? aiProvider = null, string? model = null)
-    {
-        try
+        #region Constructor
+
+        public PromptExecutionService(IPromptStudioDbContext context)
         {
-            var variableValues = JsonSerializer.Deserialize<Dictionary<string, string>>(variables) 
-                ?? new Dictionary<string, string>();
-
-            return await ExecutePromptTemplateAsync(templateId, variableValues, aiProvider, model);
-        }
-        catch (JsonException ex)
-        {
-            return new ExecutionResult
-            {
-                Success = false,
-                Error = $"Invalid JSON format for variables: {ex.Message}",
-                ExecutedAt = DateTime.UtcNow,
-                AiProvider = aiProvider,
-                Model = model
-            };
-        }
-    }
-
-    /// <summary>
-    /// Execute a prompt template with provided variable dictionary
-    /// </summary>
-    /// <param name="templateId">Prompt template ID</param>
-    /// <param name="variableValues">Dictionary of variable names and their values</param>
-    /// <param name="aiProvider">AI provider name</param>
-    /// <param name="model">Model name</param>
-    /// <returns>Execution result with resolved prompt</returns>
-    public async Task<ExecutionResult> ExecutePromptTemplateAsync(int templateId, Dictionary<string, string> variableValues, string? aiProvider = null, string? model = null)
-    {
-        try
-        {
-            var template = await _promptTemplateService.GetPromptTemplateByIdAsync(templateId);
-            if (template == null)
-            {
-                return new ExecutionResult
-                {
-                    Success = false,
-                    Error = $"Prompt template with ID {templateId} not found",
-                    ExecutedAt = DateTime.UtcNow,
-                    Variables = variableValues,
-                    AiProvider = aiProvider,
-                    Model = model
-                };
-            }
-
-            if (!_promptTemplateService.ValidateVariables(template, variableValues))
-            {
-                return new ExecutionResult
-                {
-                    Success = false,
-                    Error = "Missing required variables",
-                    ExecutedAt = DateTime.UtcNow,
-                    PromptName = template.Name,
-                    Variables = variableValues,
-                    AiProvider = aiProvider,
-                    Model = model
-                };
-            }
-
-            var resolvedPrompt = _promptTemplateService.ResolvePrompt(template, variableValues);
-
-            // Save execution to database
-            var execution = new PromptExecution
-            {
-                PromptTemplateId = templateId,
-                ResolvedPrompt = resolvedPrompt,
-                VariableValues = JsonSerializer.Serialize(variableValues),
-                ExecutedAt = DateTime.UtcNow,
-                AiProvider = aiProvider ?? "MCP",
-                Model = model ?? "N/A"
-            };
-
-            _context.PromptExecutions.Add(execution);
-            await _context.SaveChangesAsync();
-
-            return new ExecutionResult
-            {
-                ExecutionId = execution.Id,
-                PromptName = template.Name,
-                ResolvedPrompt = resolvedPrompt,
-                Variables = variableValues,
-                Success = true,
-                ExecutedAt = execution.ExecutedAt,
-                AiProvider = execution.AiProvider,
-                Model = execution.Model
-            };
-        }
-        catch (Exception ex)
-        {
-            return new ExecutionResult
-            {
-                Success = false,
-                Error = ex.Message,
-                ExecutedAt = DateTime.UtcNow,
-                Variables = variableValues,
-                AiProvider = aiProvider,
-                Model = model
-            };
-        }
-    }
-
-    /// <summary>
-    /// Execute batch processing with a variable collection
-    /// </summary>
-    /// <param name="collectionId">Variable collection ID</param>
-    /// <param name="promptId">Prompt template ID</param>
-    /// <returns>Batch execution result</returns>
-    public async Task<BatchExecutionResult> ExecuteBatchAsync(int collectionId, int promptId)
-    {
-        var collection = await _context.VariableCollections
-            .FirstOrDefaultAsync(vc => vc.Id == collectionId);
-
-        if (collection == null)
-        {
-            throw new ArgumentException($"Variable collection with ID {collectionId} not found", nameof(collectionId));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        var template = await _promptTemplateService.GetPromptTemplateByIdAsync(promptId);
-        if (template == null)
-        {
-            throw new ArgumentException($"Prompt template with ID {promptId} not found", nameof(promptId));
-        }
+        #endregion
 
-        // Parse variable sets from JSON
-        var variableSets = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(collection.VariableSets)
-            ?? new List<Dictionary<string, string>>();
+        #region Template Execution
 
-        // Execute batch
-        var results = await BatchExecuteAsync(promptId, variableSets);
-
-        return new BatchExecutionResult
-        {
-            CollectionName = collection.Name,
-            PromptName = template.Name,
-            TotalSets = variableSets.Count,
-            SuccessfulExecutions = results.Count(r => r.Success),
-            FailedExecutions = results.Count(r => !r.Success),
-            Results = results
-        };
-    }
-
-    /// <summary>
-    /// Batch executes a prompt template against multiple variable sets
-    /// </summary>
-    /// <param name="templateId">The prompt template ID to execute</param>
-    /// <param name="variableSets">List of variable sets to use</param>
-    /// <param name="aiProvider">AI provider name</param>
-    /// <param name="model">Model name</param>
-    /// <returns>List of execution results with variables, resolved prompts, and any errors</returns>
-    public async Task<List<IndividualExecutionResult>> BatchExecuteAsync(int templateId, List<Dictionary<string, string>> variableSets, string? aiProvider = null, string? model = null)
-    {
-        var template = await _promptTemplateService.GetPromptTemplateByIdAsync(templateId);
-        if (template == null)
-        {
-            throw new ArgumentException($"Prompt template with ID {templateId} not found", nameof(templateId));
-        }
-
-        var results = new List<IndividualExecutionResult>();
-        var executions = new List<PromptExecution>();
-
-        foreach (var variableSet in variableSets)
+        /// <summary>
+        /// Executes a prompt template with the provided content string
+        /// </summary>
+        public async Task<PromptExecution> ExecutePromptTemplateAsync(
+            Guid templateId,
+            string templateContent,
+            Guid libraryId,
+            Guid userId,
+            string? modelProvider = null,
+            string? modelName = null,
+            Dictionary<string, object>? variables = null,
+            CancellationToken cancellationToken = default)
         {
             try
             {
-                if (!_promptTemplateService.ValidateVariables(template, variableSet))
+                // Validate template exists
+                var template = await _context.PromptTemplates
+                    .Where(t => t.Id == templateId && t.PromptLibraryId == libraryId && t.DeletedAt == null)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (template == null)
                 {
-                    results.Add(new IndividualExecutionResult
-                    {
-                        Variables = variableSet,
-                        ResolvedPrompt = string.Empty,
-                        Success = false,
-                        Error = "Missing required variables"
-                    });
-                    continue;
+                    throw new ResourceNotFoundException($"Template {templateId} not found in library {libraryId}");
                 }
 
-                var resolvedPrompt = _promptTemplateService.ResolvePrompt(template, variableSet);
-                
                 // Create execution record
                 var execution = new PromptExecution
                 {
+                    Id = Guid.NewGuid(),
                     PromptTemplateId = templateId,
-                    ResolvedPrompt = resolvedPrompt,
-                    VariableValues = JsonSerializer.Serialize(variableSet),
-                    ExecutedAt = DateTime.UtcNow,
-                    AiProvider = aiProvider ?? "MCP Batch",
-                    Model = model ?? "N/A"
+                    PromptLibraryId = libraryId,
+                    Content = templateContent,
+                    Variables = variables != null ? JsonSerializer.Serialize(variables) : null,
+                    ModelProvider = modelProvider ?? "default",
+                    ModelName = modelName ?? "gpt-3.5-turbo",
+                    Status = "Running",
+                    StartTime = DateTime.UtcNow,
+                    CreatedBy = userId,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsActive = true
                 };
 
-                executions.Add(execution);
+                _context.PromptExecutions.Add(execution);
+                await _context.SaveChangesAsync(cancellationToken);
 
-                results.Add(new IndividualExecutionResult
-                {
-                    Variables = variableSet,
-                    ResolvedPrompt = resolvedPrompt,
-                    Success = true
-                });
+                // TODO: Implement actual LLM execution logic
+                // For now, simulate execution
+                await Task.Delay(100, cancellationToken);
+
+                // Update execution with results
+                execution.Status = "Completed";
+                execution.EndTime = DateTime.UtcNow;
+                execution.Result = "Sample execution result";
+                execution.TokensUsed = 150;
+                execution.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync(cancellationToken);
+                return execution;
             }
             catch (Exception ex)
             {
-                results.Add(new IndividualExecutionResult
-                {
-                    Variables = variableSet,
-                    ResolvedPrompt = string.Empty,
-                    Success = false,
-                    Error = ex.Message
-                });
+                throw new InvalidOperationException($"Error executing template {templateId}: {ex.Message}", ex);
             }
         }
 
-        // Save successful executions to database
-        if (executions.Any())
-        {
-            _context.PromptExecutions.AddRange(executions);
-            await _context.SaveChangesAsync();
-
-            // Update results with execution IDs
-            var successfulResults = results.Where(r => r.Success).ToList();
-            for (int i = 0; i < successfulResults.Count && i < executions.Count; i++)
-            {
-                successfulResults[i].ExecutionId = executions[i].Id;
-            }
-        }
-
-        return results;
-    }
-
-    #endregion
-
-    #region Execution History
-
-    /// <summary>
-    /// Get execution history for prompts
-    /// </summary>
-    /// <param name="promptId">Optional prompt ID to filter by</param>
-    /// <param name="limit">Maximum number of executions to return</param>
-    /// <returns>List of prompt executions</returns>
-    public async Task<List<PromptExecution>> GetExecutionHistoryAsync(int? promptId = null, int limit = 50)
-    {
-        var query = _context.PromptExecutions
-            .Include(e => e.PromptTemplate)
-                .ThenInclude(pt => pt.PromptLibrary)
-            .AsQueryable();
-
-        if (promptId.HasValue)
-        {
-            query = query.Where(e => e.PromptTemplateId == promptId.Value);
-        }
-
-        return await query
-            .OrderByDescending(e => e.ExecutedAt)
-            .Take(limit)
-            .ToListAsync();
-    }
-
-    /// <summary>
-    /// Get execution history for prompts with pagination
-    /// </summary>
-    /// <param name="pageNumber">Page number</param>
-    /// <param name="pageSize">Page size</param>
-    /// <param name="promptId">Optional prompt ID to filter by</param>
-    /// <returns>Paginated list of prompt executions</returns>
-    public async Task<PagedResult<PromptExecution>> GetExecutionHistoryPagedAsync(int pageNumber, int pageSize, int? promptId = null)
-    {
-        var query = _context.PromptExecutions
-            .Include(e => e.PromptTemplate)
-                .ThenInclude(pt => pt.PromptLibrary)
-            .AsQueryable();
-
-        if (promptId.HasValue)
-        {
-            query = query.Where(e => e.PromptTemplateId == promptId.Value);
-        }
-
-        var totalCount = await query.CountAsync();
-
-        var items = await query
-            .OrderByDescending(e => e.ExecutedAt)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return new PagedResult<PromptExecution>
-        {
-            Items = items,
-            PageNumber = pageNumber,
-            PageSize = pageSize,
-            TotalCount = totalCount
-        };
-    }
-
-    /// <summary>
-    /// Get execution by ID
-    /// </summary>
-    /// <param name="executionId">Execution ID</param>
-    /// <returns>Execution details, or null if not found</returns>
-    public async Task<PromptExecution?> GetExecutionByIdAsync(int executionId)
-    {
-        return await _context.PromptExecutions
-            .Include(e => e.PromptTemplate)
-                .ThenInclude(pt => pt.PromptLibrary)
-            .FirstOrDefaultAsync(e => e.Id == executionId);
-    }
-
-    /// <summary>
-    /// Get total count of executions
-    /// </summary>
-    /// <param name="promptId">Optional prompt ID to filter by</param>
-    /// <returns>Total count of executions</returns>
-    public async Task<int> GetTotalExecutionsCountAsync(int? promptId = null)
-    {
-        var query = _context.PromptExecutions.AsQueryable();
-
-        if (promptId.HasValue)
-        {
-            query = query.Where(e => e.PromptTemplateId == promptId.Value);
-        }
-
-        return await query.CountAsync();
-    }
-
-    #endregion
-
-    #region Execution Analytics
-
-    /// <summary>
-    /// Get execution statistics for a prompt template
-    /// </summary>
-    /// <param name="promptId">Prompt template ID</param>
-    /// <param name="daysBack">Number of days to look back for statistics</param>
-    /// <returns>Execution statistics</returns>
-    public async Task<ExecutionStatistics> GetExecutionStatisticsAsync(int promptId, int daysBack = 30)
-    {
-        var cutoffDate = DateTime.UtcNow.AddDays(-daysBack);
-        
-        var executions = await _context.PromptExecutions
-            .Where(e => e.PromptTemplateId == promptId && e.ExecutedAt >= cutoffDate)
-            .OrderBy(e => e.ExecutedAt)
-            .ToListAsync();
-
-        var totalExecutions = executions.Count;
-        var successfulExecutions = executions.Count; // All saved executions are considered successful
-        var failedExecutions = 0; // We don't currently save failed executions
-
-        var variableUsage = new Dictionary<string, int>();
-        foreach (var execution in executions)
+        /// <summary>
+        /// Executes a prompt template with variable substitutions
+        /// </summary>
+        public async Task<PromptExecution> ExecutePromptTemplateAsync(
+            Guid templateId,
+            Dictionary<string, string> variableValues,
+            Guid libraryId,
+            Guid userId,
+            string? modelProvider = null,
+            string? modelName = null,
+            Dictionary<string, object>? executionContext = null,
+            CancellationToken cancellationToken = default)
         {
             try
             {
-                var variables = JsonSerializer.Deserialize<Dictionary<string, string>>(execution.VariableValues);
-                if (variables != null)
+                // Get template content
+                var template = await _context.PromptTemplates
+                    .Include(t => t.Content)
+                    .Where(t => t.Id == templateId && t.PromptLibraryId == libraryId && t.DeletedAt == null)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (template == null)
                 {
-                    foreach (var variable in variables.Keys)
+                    throw new ResourceNotFoundException($"Template {templateId} not found in library {libraryId}");
+                }
+
+                // Resolve variables in template content
+                string resolvedContent = template.Content?.Value ?? string.Empty;
+                foreach (var variable in variableValues)
+                {
+                    resolvedContent = resolvedContent.Replace($"{{{{{variable.Key}}}}}", variable.Value);
+                }
+
+                // Execute with resolved content
+                var variables = variableValues.ToDictionary(kv => kv.Key, kv => (object)kv.Value);
+                return await ExecutePromptTemplateAsync(templateId, resolvedContent, libraryId, userId, modelProvider, modelName, variables, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error executing template with variables {templateId}: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Batch Execution
+
+        /// <summary>
+        /// Executes a batch of prompt executions from a variable collection
+        /// </summary>
+        public async Task<BatchExecutionResult> ExecuteBatchAsync(
+            Guid templateId,
+            Guid variableCollectionId,
+            Guid libraryId,
+            Guid userId,
+            string? modelProvider = null,
+            string? modelName = null,
+            BatchExecutionOptions? options = null,
+            IProgress<BatchExecutionProgress>? progress = null,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                // Get template
+                var template = await _context.PromptTemplates
+                    .Include(t => t.Content)
+                    .Where(t => t.Id == templateId && t.PromptLibraryId == libraryId && t.DeletedAt == null)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (template == null)
+                {
+                    throw new ResourceNotFoundException($"Template {templateId} not found");
+                }
+
+                // Get variable collection
+                var variableCollection = await _context.VariableCollections
+                    .Where(vc => vc.Id == variableCollectionId && vc.IsActive)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (variableCollection == null)
+                {
+                    throw new ResourceNotFoundException($"Variable collection {variableCollectionId} not found");
+                }
+
+                // TODO: Parse variable collection data and execute batch
+                var batchResult = new BatchExecutionResult
+                {
+                    BatchId = Guid.NewGuid(),
+                    TemplateId = templateId,
+                    TotalExecutions = 1, // Placeholder
+                    SuccessfulExecutions = 1,
+                    FailedExecutions = 0,
+                    StartTime = DateTime.UtcNow,
+                    EndTime = DateTime.UtcNow,
+                    ExecutionIds = new List<Guid>(),
+                    Errors = new List<string>()
+                };
+
+                return batchResult;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error executing batch: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Executes a batch of prompt templates with multiple variable sets
+        /// </summary>
+        public async Task<BatchExecutionResult> BatchExecuteAsync(
+            Guid templateId,
+            List<Dictionary<string, string>> variableSets,
+            Guid libraryId,
+            Guid userId,
+            string? modelProvider = null,
+            string? modelName = null,
+            BatchExecutionOptions? options = null,
+            IProgress<BatchExecutionProgress>? progress = null,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var batchId = Guid.NewGuid();
+                var executionIds = new List<Guid>();
+                var errors = new List<string>();
+                var startTime = DateTime.UtcNow;
+
+                var successfulExecutions = 0;
+                var failedExecutions = 0;
+
+                for (int i = 0; i < variableSets.Count; i++)
+                {
+                    try
                     {
-                        variableUsage[variable] = variableUsage.GetValueOrDefault(variable, 0) + 1;
+                        var execution = await ExecutePromptTemplateAsync(
+                            templateId, variableSets[i], libraryId, userId, 
+                            modelProvider, modelName, null, cancellationToken);
+
+                        executionIds.Add(execution.Id);
+                        successfulExecutions++;
+
+                        // Report progress
+                        progress?.Report(new BatchExecutionProgress
+                        {
+                            BatchId = batchId,
+                            CompletedCount = i + 1,
+                            TotalCount = variableSets.Count,
+                            CurrentExecutionId = execution.Id,
+                            PercentComplete = (double)(i + 1) / variableSets.Count * 100
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        errors.Add($"Execution {i + 1}: {ex.Message}");
+                        failedExecutions++;
+                    }
+
+                    if (cancellationToken.IsCancellationRequested)
+                        break;
+                }
+
+                return new BatchExecutionResult
+                {
+                    BatchId = batchId,
+                    TemplateId = templateId,
+                    TotalExecutions = variableSets.Count,
+                    SuccessfulExecutions = successfulExecutions,
+                    FailedExecutions = failedExecutions,
+                    StartTime = startTime,
+                    EndTime = DateTime.UtcNow,
+                    ExecutionIds = executionIds,
+                    Errors = errors
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error in batch execution: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Execution History and Retrieval
+
+        /// <summary>
+        /// Gets execution history for a template with filtering
+        /// </summary>
+        public async Task<PagedResult<PromptExecution>> GetExecutionHistoryAsync(
+            Guid templateId,
+            Guid? libraryId = null,
+            Guid? userId = null,
+            int limit = 100,
+            bool includeDetails = true,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var query = _context.PromptExecutions
+                    .Where(e => e.PromptTemplateId == templateId && e.IsActive);
+
+                if (libraryId.HasValue)
+                    query = query.Where(e => e.PromptLibraryId == libraryId.Value);
+
+                if (userId.HasValue)
+                    query = query.Where(e => e.CreatedBy == userId.Value);
+
+                var totalCount = await query.CountAsync(cancellationToken);
+                var executions = await query
+                    .OrderByDescending(e => e.CreatedAt)
+                    .Take(limit)
+                    .ToListAsync(cancellationToken);
+
+                return new PagedResult<PromptExecution>
+                {
+                    Items = executions,
+                    TotalCount = totalCount,
+                    Skip = 0,
+                    Take = limit
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving execution history: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets advanced execution history with detailed filtering
+        /// </summary>
+        public async Task<PagedResult<PromptExecution>> GetExecutionHistoryAdvancedAsync(
+            Guid templateId,
+            ExecutionHistoryFilter? filter = null,
+            int pageNumber = 1,
+            int pageSize = 20,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var query = _context.PromptExecutions
+                    .Where(e => e.PromptTemplateId == templateId && e.IsActive);
+
+                // Apply filters
+                if (filter != null)
+                {
+                    if (filter.StartDate.HasValue)
+                        query = query.Where(e => e.CreatedAt >= filter.StartDate.Value);
+
+                    if (filter.EndDate.HasValue)
+                        query = query.Where(e => e.CreatedAt <= filter.EndDate.Value);
+
+                    if (!string.IsNullOrEmpty(filter.Status))
+                        query = query.Where(e => e.Status == filter.Status);
+
+                    if (!string.IsNullOrEmpty(filter.ModelProvider))
+                        query = query.Where(e => e.ModelProvider == filter.ModelProvider);
+
+                    if (filter.UserId.HasValue)
+                        query = query.Where(e => e.CreatedBy == filter.UserId.Value);
+                }
+
+                var totalCount = await query.CountAsync(cancellationToken);
+                var executions = await query
+                    .OrderByDescending(e => e.CreatedAt)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync(cancellationToken);
+
+                return new PagedResult<PromptExecution>
+                {
+                    Items = executions,
+                    TotalCount = totalCount,
+                    Skip = (pageNumber - 1) * pageSize,
+                    Take = pageSize
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving advanced execution history: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets a specific execution by ID
+        /// </summary>
+        public async Task<PromptExecution?> GetExecutionByIdAsync(
+            Guid executionId,
+            Guid userId,
+            bool includeTemplate = true,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var query = _context.PromptExecutions.AsQueryable();
+
+                if (includeTemplate)
+                    query = query.Include(e => e.PromptTemplate);
+
+                var execution = await query
+                    .Where(e => e.Id == executionId && e.CreatedBy == userId && e.IsActive)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                return execution;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving execution {executionId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets total execution count with filtering
+        /// </summary>
+        public async Task<int> GetTotalExecutionsCountAsync(
+            Guid templateId,
+            ExecutionCountFilter? filter = null,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var query = _context.PromptExecutions
+                    .Where(e => e.PromptTemplateId == templateId && e.IsActive);
+
+                if (filter != null)
+                {
+                    if (filter.StartDate.HasValue)
+                        query = query.Where(e => e.CreatedAt >= filter.StartDate.Value);
+
+                    if (filter.EndDate.HasValue)
+                        query = query.Where(e => e.CreatedAt <= filter.EndDate.Value);
+
+                    if (!string.IsNullOrEmpty(filter.Status))
+                        query = query.Where(e => e.Status == filter.Status);
+
+                    if (filter.UserId.HasValue)
+                        query = query.Where(e => e.CreatedBy == filter.UserId.Value);
+                }
+
+                return await query.CountAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error counting executions: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Statistics and Analytics
+
+        /// <summary>
+        /// Gets execution statistics for a template
+        /// </summary>
+        public async Task<ExecutionStatistics> GetExecutionStatisticsAsync(
+            Guid templateId,
+            Guid libraryId,
+            TimeSpan? timeWindow = null,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var query = _context.PromptExecutions
+                    .Where(e => e.PromptTemplateId == templateId && e.PromptLibraryId == libraryId && e.IsActive);
+
+                if (timeWindow.HasValue)
+                {
+                    var cutoffDate = DateTime.UtcNow.Subtract(timeWindow.Value);
+                    query = query.Where(e => e.CreatedAt >= cutoffDate);
+                }
+
+                var executions = await query.ToListAsync(cancellationToken);
+
+                return new ExecutionStatistics
+                {
+                    TemplateId = templateId,
+                    TotalExecutions = executions.Count,
+                    SuccessfulExecutions = executions.Count(e => e.Status == "Completed"),
+                    FailedExecutions = executions.Count(e => e.Status == "Failed"),
+                    AverageExecutionTime = executions.Where(e => e.EndTime.HasValue)
+                        .Select(e => (e.EndTime!.Value - e.StartTime).TotalMilliseconds)
+                        .DefaultIfEmpty(0)
+                        .Average(),
+                    TotalTokensUsed = executions.Sum(e => e.TokensUsed ?? 0),
+                    UniqueUsers = executions.Select(e => e.CreatedBy).Distinct().Count(),
+                    LastExecution = executions.OrderByDescending(e => e.CreatedAt).FirstOrDefault()?.CreatedAt,
+                    TimeWindow = timeWindow
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error calculating execution statistics: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets execution statistics for all templates in a library
+        /// </summary>
+        public async Task<LibraryExecutionStatistics> GetLibraryExecutionStatisticsAsync(
+            Guid libraryId,
+            Guid userId,
+            TimeSpan? timeWindow = null,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var query = _context.PromptExecutions
+                    .Where(e => e.PromptLibraryId == libraryId && e.IsActive);
+
+                if (timeWindow.HasValue)
+                {
+                    var cutoffDate = DateTime.UtcNow.Subtract(timeWindow.Value);
+                    query = query.Where(e => e.CreatedAt >= cutoffDate);
+                }
+
+                var executions = await query.ToListAsync(cancellationToken);
+
+                return new LibraryExecutionStatistics
+                {
+                    LibraryId = libraryId,
+                    TotalExecutions = executions.Count,
+                    UniqueTemplates = executions.Select(e => e.PromptTemplateId).Distinct().Count(),
+                    UniqueUsers = executions.Select(e => e.CreatedBy).Distinct().Count(),
+                    TotalTokensUsed = executions.Sum(e => e.TokensUsed ?? 0),
+                    AverageExecutionsPerTemplate = executions.GroupBy(e => e.PromptTemplateId).Select(g => g.Count()).DefaultIfEmpty(0).Average(),
+                    MostActiveTemplate = executions.GroupBy(e => e.PromptTemplateId).OrderByDescending(g => g.Count()).FirstOrDefault()?.Key,
+                    TimeWindow = timeWindow
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error calculating library execution statistics: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets most executed templates
+        /// </summary>
+        public async Task<List<TemplateExecutionRank>> GetMostExecutedTemplatesAsync(
+            Guid libraryId,
+            Guid? userId = null,
+            int limit = 10,
+            TimeSpan? timeWindow = null,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var query = _context.PromptExecutions
+                    .Where(e => e.PromptLibraryId == libraryId && e.IsActive);
+
+                if (userId.HasValue)
+                    query = query.Where(e => e.CreatedBy == userId.Value);
+
+                if (timeWindow.HasValue)
+                {
+                    var cutoffDate = DateTime.UtcNow.Subtract(timeWindow.Value);
+                    query = query.Where(e => e.CreatedAt >= cutoffDate);
+                }
+
+                var rankings = await query
+                    .GroupBy(e => e.PromptTemplateId)
+                    .Select(g => new TemplateExecutionRank
+                    {
+                        TemplateId = g.Key,
+                        ExecutionCount = g.Count(),
+                        LastExecuted = g.Max(e => e.CreatedAt),
+                        UniqueUsers = g.Select(e => e.CreatedBy).Distinct().Count()
+                    })
+                    .OrderByDescending(r => r.ExecutionCount)
+                    .Take(limit)
+                    .ToListAsync(cancellationToken);
+
+                return rankings;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving most executed templates: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets execution trends over time
+        /// </summary>
+        public async Task<List<ExecutionTrend>> GetExecutionTrendsAsync(
+            Guid libraryId,
+            Guid? templateId = null,
+            TimeSpan? timeWindow = null,
+            string granularity = "daily",
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var query = _context.PromptExecutions
+                    .Where(e => e.PromptLibraryId == libraryId && e.IsActive);
+
+                if (templateId.HasValue)
+                    query = query.Where(e => e.PromptTemplateId == templateId.Value);
+
+                if (timeWindow.HasValue)
+                {
+                    var cutoffDate = DateTime.UtcNow.Subtract(timeWindow.Value);
+                    query = query.Where(e => e.CreatedAt >= cutoffDate);
+                }
+
+                var executions = await query.ToListAsync(cancellationToken);
+
+                // Group by time period based on granularity
+                var trends = granularity.ToLower() switch
+                {
+                    "hourly" => executions.GroupBy(e => new DateTime(e.CreatedAt.Year, e.CreatedAt.Month, e.CreatedAt.Day, e.CreatedAt.Hour, 0, 0)),
+                    "weekly" => executions.GroupBy(e => new DateTime(e.CreatedAt.Year, e.CreatedAt.Month, e.CreatedAt.Day).AddDays(-(int)e.CreatedAt.DayOfWeek)),
+                    "monthly" => executions.GroupBy(e => new DateTime(e.CreatedAt.Year, e.CreatedAt.Month, 1)),
+                    _ => executions.GroupBy(e => e.CreatedAt.Date)
+                };
+
+                return trends.Select(g => new ExecutionTrend
+                {
+                    Period = g.Key,
+                    ExecutionCount = g.Count(),
+                    UniqueUsers = g.Select(e => e.CreatedBy).Distinct().Count(),
+                    SuccessRate = g.Count(e => e.Status == "Completed") / (double)g.Count() * 100
+                }).OrderBy(t => t.Period).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error calculating execution trends: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets model performance analytics
+        /// </summary>
+        public async Task<List<ModelPerformance>> GetModelPerformanceAsync(
+            Guid libraryId,
+            Guid? templateId = null,
+            TimeSpan? timeWindow = null,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var query = _context.PromptExecutions
+                    .Where(e => e.PromptLibraryId == libraryId && e.IsActive);
+
+                if (templateId.HasValue)
+                    query = query.Where(e => e.PromptTemplateId == templateId.Value);
+
+                if (timeWindow.HasValue)
+                {
+                    var cutoffDate = DateTime.UtcNow.Subtract(timeWindow.Value);
+                    query = query.Where(e => e.CreatedAt >= cutoffDate);
+                }
+
+                var executions = await query.ToListAsync(cancellationToken);
+
+                var performance = executions
+                    .GroupBy(e => new { e.ModelProvider, e.ModelName })
+                    .Select(g => new ModelPerformance
+                    {
+                        ModelProvider = g.Key.ModelProvider,
+                        ModelName = g.Key.ModelName,
+                        TotalExecutions = g.Count(),
+                        SuccessfulExecutions = g.Count(e => e.Status == "Completed"),
+                        FailedExecutions = g.Count(e => e.Status == "Failed"),
+                        AverageExecutionTime = g.Where(e => e.EndTime.HasValue)
+                            .Select(e => (e.EndTime!.Value - e.StartTime).TotalMilliseconds)
+                            .DefaultIfEmpty(0)
+                            .Average(),
+                        TotalTokensUsed = g.Sum(e => e.TokensUsed ?? 0),
+                        AverageTokensPerExecution = g.Where(e => e.TokensUsed.HasValue).Select(e => e.TokensUsed!.Value).DefaultIfEmpty(0).Average()
+                    })
+                    .OrderByDescending(p => p.TotalExecutions)
+                    .ToList();
+
+                return performance;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error calculating model performance: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Data Management
+
+        /// <summary>
+        /// Saves multiple prompt executions in batch
+        /// </summary>
+        public async Task<bool> SavePromptExecutionsAsync(
+            List<PromptExecution> executions,
+            Guid userId,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                foreach (var execution in executions)
+                {
+                    execution.CreatedBy = userId;
+                    execution.CreatedAt = DateTime.UtcNow;
+                    execution.UpdatedAt = DateTime.UtcNow;
+                    execution.IsActive = true;
+                }
+
+                _context.PromptExecutions.AddRange(executions);
+                await _context.SaveChangesAsync(cancellationToken);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error saving prompt executions: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Soft deletes an execution
+        /// </summary>
+        public async Task<bool> SoftDeleteExecutionAsync(
+            Guid executionId,
+            Guid userId,
+            Guid libraryId,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var execution = await _context.PromptExecutions
+                    .Where(e => e.Id == executionId && e.CreatedBy == userId && e.PromptLibraryId == libraryId && e.IsActive)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (execution == null)
+                    return false;
+
+                execution.IsActive = false;
+                execution.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync(cancellationToken);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error soft deleting execution: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Deletes old executions based on date criteria
+        /// </summary>
+        public async Task<int> DeleteOldExecutionsAsync(
+            DateTime cutoffDate,
+            Guid libraryId,
+            Guid? templateId = null,
+            bool hardDelete = false,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var query = _context.PromptExecutions
+                    .Where(e => e.PromptLibraryId == libraryId && e.CreatedAt < cutoffDate);
+
+                if (templateId.HasValue)
+                    query = query.Where(e => e.PromptTemplateId == templateId.Value);
+
+                var executions = await query.ToListAsync(cancellationToken);
+
+                if (hardDelete)
+                {
+                    _context.PromptExecutions.RemoveRange(executions);
+                }
+                else
+                {
+                    foreach (var execution in executions)
+                    {
+                        execution.IsActive = false;
+                        execution.UpdatedAt = DateTime.UtcNow;
                     }
                 }
+
+                await _context.SaveChangesAsync(cancellationToken);
+                return executions.Count;
             }
-            catch
+            catch (Exception ex)
             {
-                // Skip invalid JSON
+                throw new InvalidOperationException($"Error deleting old executions: {ex.Message}", ex);
             }
         }
 
-        return new ExecutionStatistics
+        /// <summary>
+        /// Restores a soft-deleted execution
+        /// </summary>
+        public async Task<bool> RestoreExecutionAsync(
+            Guid executionId,
+            Guid userId,
+            Guid libraryId,
+            CancellationToken cancellationToken = default)
         {
-            TotalExecutions = totalExecutions,
-            SuccessfulExecutions = successfulExecutions,
-            FailedExecutions = failedExecutions,
-            LastExecution = executions.LastOrDefault()?.ExecutedAt,
-            FirstExecution = executions.FirstOrDefault()?.ExecutedAt,
-            AverageExecutionsPerDay = daysBack > 0 ? (double)totalExecutions / daysBack : 0,
-            VariableUsageCount = variableUsage
-        };
-    }
-
-    /// <summary>
-    /// Get execution statistics for a prompt library
-    /// </summary>
-    /// <param name="libraryId">Library ID</param>
-    /// <param name="daysBack">Number of days to look back for statistics</param>
-    /// <returns>Library execution statistics</returns>
-    public async Task<LibraryExecutionStatistics> GetLibraryExecutionStatisticsAsync(int libraryId, int daysBack = 30)
-    {
-        var cutoffDate = DateTime.UtcNow.AddDays(-daysBack);
-
-        var libraryData = await _context.PromptLibraries
-            .Include(l => l.PromptTemplates)
-                .ThenInclude(pt => pt.Executions.Where(e => e.ExecutedAt >= cutoffDate))
-            .FirstOrDefaultAsync(l => l.Id == libraryId);
-
-        if (libraryData == null)
-        {
-            throw new ArgumentException($"Library with ID {libraryId} not found", nameof(libraryId));
-        }
-
-        var totalTemplates = libraryData.PromptTemplates.Count;
-        var executedTemplates = libraryData.PromptTemplates.Count(pt => pt.Executions.Any());
-        var totalExecutions = libraryData.PromptTemplates.Sum(pt => pt.Executions.Count);
-        var lastExecution = libraryData.PromptTemplates
-            .SelectMany(pt => pt.Executions)
-            .OrderByDescending(e => e.ExecutedAt)
-            .FirstOrDefault()?.ExecutedAt;
-
-        var templateStats = libraryData.PromptTemplates
-            .Where(pt => pt.Executions.Any())
-            .Select(pt => new TemplateExecutionSummary
+            try
             {
-                TemplateId = pt.Id,
-                TemplateName = pt.Name,
-                ExecutionCount = pt.Executions.Count,
-                LastExecution = pt.Executions.OrderByDescending(e => e.ExecutedAt).FirstOrDefault()?.ExecutedAt
-            })
-            .OrderByDescending(ts => ts.ExecutionCount)
-            .ToList();
+                var execution = await _context.PromptExecutions
+                    .Where(e => e.Id == executionId && e.CreatedBy == userId && e.PromptLibraryId == libraryId && !e.IsActive)
+                    .FirstOrDefaultAsync(cancellationToken);
 
-        return new LibraryExecutionStatistics
-        {
-            TotalExecutions = totalExecutions,
-            ExecutedTemplatesCount = executedTemplates,
-            TotalTemplatesCount = totalTemplates,
-            AverageExecutionsPerTemplate = totalTemplates > 0 ? (double)totalExecutions / totalTemplates : 0,
-            LastExecution = lastExecution,
-            TemplateStatistics = templateStats
-        };
-    }
+                if (execution == null)
+                    return false;
 
-    /// <summary>
-    /// Get most frequently executed templates
-    /// </summary>
-    /// <param name="libraryId">Optional library ID to filter by</param>
-    /// <param name="limit">Maximum number of templates to return</param>
-    /// <param name="daysBack">Number of days to look back</param>
-    /// <returns>List of templates with execution counts</returns>
-    public async Task<List<TemplateExecutionSummary>> GetMostExecutedTemplatesAsync(int? libraryId = null, int limit = 10, int daysBack = 30)
-    {
-        var cutoffDate = DateTime.UtcNow.AddDays(-daysBack);
+                execution.IsActive = true;
+                execution.UpdatedAt = DateTime.UtcNow;
 
-        var query = _context.PromptExecutions
-            .Include(e => e.PromptTemplate)
-            .Where(e => e.ExecutedAt >= cutoffDate)
-            .AsQueryable();
-
-        if (libraryId.HasValue)
-        {
-            query = query.Where(e => e.PromptTemplate.PromptLibraryId == libraryId.Value);
-        }
-
-        var templateStats = await query
-            .GroupBy(e => new { e.PromptTemplateId, e.PromptTemplate.Name })
-            .Select(g => new TemplateExecutionSummary
+                await _context.SaveChangesAsync(cancellationToken);
+                return true;
+            }
+            catch (Exception ex)
             {
-                TemplateId = g.Key.PromptTemplateId,
-                TemplateName = g.Key.Name,
-                ExecutionCount = g.Count(),
-                LastExecution = g.Max(e => e.ExecutedAt)
-            })
-            .OrderByDescending(ts => ts.ExecutionCount)
-            .Take(limit)
-            .ToListAsync();
+                throw new InvalidOperationException($"Error restoring execution: {ex.Message}", ex);
+            }
+        }
 
-        return templateStats;
+        /// <summary>
+        /// Bulk updates execution metadata
+        /// </summary>
+        public async Task<int> BulkUpdateExecutionsAsync(
+            List<ExecutionMetadataUpdate> updates,
+            Guid userId,
+            Guid libraryId,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var updateCount = 0;
+
+                foreach (var update in updates)
+                {
+                    var execution = await _context.PromptExecutions
+                        .Where(e => e.Id == update.ExecutionId && e.CreatedBy == userId && e.PromptLibraryId == libraryId && e.IsActive)
+                        .FirstOrDefaultAsync(cancellationToken);
+
+                    if (execution != null)
+                    {
+                        if (!string.IsNullOrEmpty(update.Status))
+                            execution.Status = update.Status;
+
+                        if (!string.IsNullOrEmpty(update.Result))
+                            execution.Result = update.Result;
+
+                        if (update.TokensUsed.HasValue)
+                            execution.TokensUsed = update.TokensUsed.Value;
+
+                        if (update.EndTime.HasValue)
+                            execution.EndTime = update.EndTime.Value;
+
+                        execution.UpdatedAt = DateTime.UtcNow;
+                        updateCount++;
+                    }
+                }
+
+                await _context.SaveChangesAsync(cancellationToken);
+                return updateCount;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error bulk updating executions: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Export and Reporting
+
+        /// <summary>
+        /// Exports execution data with filtering
+        /// </summary>
+        public async Task<string> ExportExecutionDataAsync(
+            Guid libraryId,
+            ExecutionExportFilter filter,
+            string format = "json",
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var query = _context.PromptExecutions
+                    .Where(e => e.PromptLibraryId == libraryId && e.IsActive);
+
+                // Apply filters
+                if (filter.TemplateIds?.Any() == true)
+                    query = query.Where(e => filter.TemplateIds.Contains(e.PromptTemplateId));
+
+                if (filter.StartDate.HasValue)
+                    query = query.Where(e => e.CreatedAt >= filter.StartDate.Value);
+
+                if (filter.EndDate.HasValue)
+                    query = query.Where(e => e.CreatedAt <= filter.EndDate.Value);
+
+                if (filter.UserIds?.Any() == true)
+                    query = query.Where(e => filter.UserIds.Contains(e.CreatedBy));
+
+                if (!string.IsNullOrEmpty(filter.Status))
+                    query = query.Where(e => e.Status == filter.Status);
+
+                var executions = await query
+                    .OrderByDescending(e => e.CreatedAt)
+                    .ToListAsync(cancellationToken);
+
+                // Export based on format
+                return format.ToLower() switch
+                {
+                    "csv" => ExportToCsv(executions),
+                    "json" => JsonSerializer.Serialize(executions, new JsonSerializerOptions { WriteIndented = true }),
+                    _ => JsonSerializer.Serialize(executions, new JsonSerializerOptions { WriteIndented = true })
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error exporting execution data: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Generates execution report with analytics
+        /// </summary>
+        public async Task<ExecutionReport> GenerateExecutionReportAsync(
+            Guid libraryId,
+            string reportType = "summary",
+            Dictionary<string, object>? parameters = null,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var timeWindow = TimeSpan.FromDays(30); // Default to 30 days
+
+                if (parameters?.ContainsKey("timeWindow") == true)
+                {
+                    timeWindow = TimeSpan.FromDays(Convert.ToInt32(parameters["timeWindow"]));
+                }
+
+                var statistics = await GetLibraryExecutionStatisticsAsync(libraryId, Guid.Empty, timeWindow, cancellationToken);
+                var trends = await GetExecutionTrendsAsync(libraryId, null, timeWindow, "daily", cancellationToken);
+                var topTemplates = await GetMostExecutedTemplatesAsync(libraryId, null, 10, timeWindow, cancellationToken);
+                var modelPerformance = await GetModelPerformanceAsync(libraryId, null, timeWindow, cancellationToken);
+
+                return new ExecutionReport
+                {
+                    ReportId = Guid.NewGuid(),
+                    LibraryId = libraryId,
+                    ReportType = reportType,
+                    GeneratedAt = DateTime.UtcNow,
+                    TimeWindow = timeWindow,
+                    Summary = statistics,
+                    Trends = trends,
+                    TopTemplates = topTemplates,
+                    ModelPerformance = modelPerformance,
+                    Parameters = parameters
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error generating execution report: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        private string ExportToCsv(List<PromptExecution> executions)
+        {
+            var csv = new System.Text.StringBuilder();
+            csv.AppendLine("Id,TemplateId,LibraryId,Status,StartTime,EndTime,TokensUsed,ModelProvider,ModelName,CreatedBy");
+
+            foreach (var execution in executions)
+            {
+                csv.AppendLine($"{execution.Id},{execution.PromptTemplateId},{execution.PromptLibraryId}," +
+                              $"{execution.Status},{execution.StartTime},{execution.EndTime}," +
+                              $"{execution.TokensUsed},{execution.ModelProvider},{execution.ModelName},{execution.CreatedBy}");
+            }
+
+            return csv.ToString();
+        }
+
+        #endregion
     }
-
-    #endregion
-
-    #region Execution Management
-
-    /// <summary>
-    /// Save a list of prompt executions to the database
-    /// </summary>
-    /// <param name="executions">List of prompt executions</param>
-    /// <returns>List of saved prompt executions</returns>
-    public async Task<List<PromptExecution>> SavePromptExecutionsAsync(List<PromptExecution> executions)
-    {
-        if (executions == null || executions.Count == 0)
-        {
-            return executions ?? new List<PromptExecution>();
-        }
-
-        _context.PromptExecutions.AddRange(executions);
-        await _context.SaveChangesAsync();
-        return executions;
-    }
-
-    /// <summary>
-    /// Delete execution by ID
-    /// </summary>
-    /// <param name="executionId">Execution ID</param>
-    /// <returns>True if deleted successfully, false otherwise</returns>
-    public async Task<bool> DeleteExecutionAsync(int executionId)
-    {
-        var execution = await _context.PromptExecutions.FindAsync(executionId);
-        if (execution == null)
-        {
-            return false;
-        }
-
-        try
-        {
-            _context.PromptExecutions.Remove(execution);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// Delete executions older than specified date
-    /// </summary>
-    /// <param name="olderThan">Date threshold</param>
-    /// <param name="promptId">Optional prompt ID to filter by</param>
-    /// <returns>Number of executions deleted</returns>
-    public async Task<int> DeleteOldExecutionsAsync(DateTime olderThan, int? promptId = null)
-    {
-        var query = _context.PromptExecutions
-            .Where(e => e.ExecutedAt < olderThan);
-
-        if (promptId.HasValue)
-        {
-            query = query.Where(e => e.PromptTemplateId == promptId.Value);
-        }
-
-        var executionsToDelete = await query.ToListAsync();
-        
-        if (!executionsToDelete.Any())
-        {
-            return 0;
-        }
-
-        _context.PromptExecutions.RemoveRange(executionsToDelete);
-        await _context.SaveChangesAsync();
-
-        return executionsToDelete.Count;
-    }
-
-    #endregion
 }

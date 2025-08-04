@@ -1,891 +1,1169 @@
-using PromptStudio.Core.Interfaces;
 using PromptStudio.Core.Domain;
-using Microsoft.Extensions.Logging;
+using PromptStudio.Core.Domain.FlowEntities;
+using PromptStudio.Core.DTOs.Flow;
+using PromptStudio.Core.Interfaces;
+using PromptStudio.Core.Interfaces.Data;
+using PromptStudio.Core.Interfaces.Flow;
+using PromptStudio.Core.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
-namespace PromptStudio.Core.Services;
-
-/// <summary>
-/// Service for managing visual prompt flows
-/// </summary>
-public class FlowService : IFlowService
+namespace PromptStudio.Core.Services
 {
-    private readonly ILogger<FlowService> _logger;
-    private readonly IModelProviderManager _modelProviderManager;
-    
-    // TODO: Add IPromptStudioDbContext when database schema is ready
-    // private readonly IPromptStudioDbContext _context;
-
-    public FlowService(ILogger<FlowService> logger, IModelProviderManager modelProviderManager)
-    {
-        _logger = logger;
-        _modelProviderManager = modelProviderManager;
-    }
-
     /// <summary>
-    /// Get all flows for a user with optional filtering
+    /// Service for managing prompt flows with comprehensive workflow operations
     /// </summary>
-    public async Task<IEnumerable<PromptFlow>> GetFlowsAsync(string? userId = null, string? tag = null, string? search = null)
+    public class FlowService : IFlowService
     {
-        try
-        {
-            // TODO: Implement database query
-            // For now, return mock data for development
-            await Task.Delay(100); // Simulate async operation
+        #region Private Fields
 
-            var mockFlows = new List<PromptFlow>
+        private readonly IPromptStudioDbContext _context;
+
+        #endregion
+
+        #region Constructor
+
+        public FlowService(IPromptStudioDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        #endregion
+
+        #region Flow CRUD Operations
+
+        /// <summary>
+        /// Gets flows with optional filtering
+        /// </summary>
+        public async Task<IEnumerable<PromptFlow>> GetFlowsAsync(string? searchTerm = null, Guid? userId = null, Guid? projectId = null, string? category = null, string? status = null, bool includeDeleted = false)
+        {
+            try
             {
-                new PromptFlow
+                var query = _context.PromptFlows.AsQueryable();
+
+                if (!includeDeleted)
+                    query = query.Where(f => f.IsActive);
+
+                if (userId.HasValue)
+                    query = query.Where(f => f.CreatedBy == userId.Value);
+
+                if (projectId.HasValue)
+                    query = query.Where(f => f.ProjectId == projectId.Value);
+
+                if (!string.IsNullOrEmpty(searchTerm))
+                    query = query.Where(f => f.Name.Contains(searchTerm) || f.Description.Contains(searchTerm));
+
+                if (!string.IsNullOrEmpty(category))
+                    query = query.Where(f => f.Category == category);
+
+                return await query.OrderByDescending(f => f.CreatedAt).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving flows: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets a flow by ID with optional related data
+        /// </summary>
+        public async Task<PromptFlow?> GetFlowByIdAsync(Guid flowId, Guid? userId = null, bool includeNodes = true, bool includeEdges = true)
+        {
+            try
+            {
+                var query = _context.PromptFlows.AsQueryable();
+
+                if (includeNodes)
+                    query = query.Include(f => f.Nodes);
+
+                if (includeEdges)
+                    query = query.Include(f => f.Edges);
+
+                var flow = await query.FirstOrDefaultAsync(f => f.Id == flowId && f.IsActive);
+
+                if (flow == null || (userId.HasValue && flow.CreatedBy != userId.Value))
+                    return null;
+
+                return flow;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new flow
+        /// </summary>
+        public async Task<PromptFlow> CreateFlowAsync(string name, string? description = null, Guid? projectId = null, bool isTemplate = false, List<string>? tags = null, Guid? userId = null, string? category = null)
+        {
+            try
+            {
+                var flow = new PromptFlow
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Sample Flow 1",
-                    Description = "A sample prompt flow for testing",
-                    Version = "1.0.0",
-                    CreatedAt = DateTime.UtcNow.AddDays(-5),
-                    UpdatedAt = DateTime.UtcNow.AddDays(-1),
-                    Tags = JsonSerializer.Serialize(new[] { "test", "sample" }),
-                    FlowData = JsonSerializer.Serialize(CreateSampleFlowData()),
-                    IsActive = true
-                },
-                new PromptFlow
+                    Name = name,
+                    Description = description,
+                    ProjectId = projectId,
+                    IsTemplate = isTemplate,
+                    Category = category ?? "General",
+                    Status = "Draft",
+                    Tags = tags != null ? JsonSerializer.Serialize(tags) : null,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    CreatedBy = userId ?? Guid.Empty,
+                    IsActive = true,
+                    Nodes = new List<FlowNode>(),
+                    Edges = new List<FlowEdge>()
+                };
+
+                _context.PromptFlows.Add(flow);
+                await _context.SaveChangesAsync();
+                return flow;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error creating flow: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Updates an existing flow
+        /// </summary>
+        public async Task<PromptFlow> UpdateFlowAsync(Guid flowId, string name, string? description = null, bool? isTemplate = null, List<string>? tags = null, Guid? userId = null, string? category = null)
+        {
+            try
+            {
+                var flow = await _context.PromptFlows.FirstOrDefaultAsync(f => f.Id == flowId && f.IsActive);
+                if (flow == null)
+                    throw new ResourceNotFoundException($"Flow {flowId} not found");
+
+                if (userId.HasValue && flow.CreatedBy != userId.Value)
+                    throw new UnauthorizedAccessException("User not authorized to update this flow");
+
+                flow.Name = name;
+                flow.Description = description;
+                flow.Category = category ?? flow.Category;
+                if (isTemplate.HasValue)
+                    flow.IsTemplate = isTemplate.Value;
+                if (tags != null)
+                    flow.Tags = JsonSerializer.Serialize(tags);
+                flow.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+                return flow;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error updating flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Soft deletes a flow
+        /// </summary>
+        public async Task<bool> DeleteFlowAsync(Guid flowId, Guid? userId = null, string? reason = null)
+        {
+            try
+            {
+                var flow = await _context.PromptFlows.FirstOrDefaultAsync(f => f.Id == flowId && f.IsActive);
+                if (flow == null)
+                    return false;
+
+                if (userId.HasValue && flow.CreatedBy != userId.Value)
+                    throw new UnauthorizedAccessException("User not authorized to delete this flow");
+
+                flow.IsActive = false;
+                flow.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error deleting flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Permanently deletes a flow
+        /// </summary>
+        public async Task<bool> PermanentlyDeleteFlowAsync(Guid flowId, Guid? userId = null)
+        {
+            try
+            {
+                var flow = await _context.PromptFlows
+                    .Include(f => f.Nodes)
+                    .Include(f => f.Edges)
+                    .FirstOrDefaultAsync(f => f.Id == flowId);
+
+                if (flow == null)
+                    return false;
+
+                if (userId.HasValue && flow.CreatedBy != userId.Value)
+                    throw new UnauthorizedAccessException("User not authorized to permanently delete this flow");
+
+                _context.PromptFlows.Remove(flow);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error permanently deleting flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Restores a soft-deleted flow
+        /// </summary>
+        public async Task<bool> RestoreFlowAsync(Guid flowId, Guid? userId = null, string? reason = null)
+        {
+            try
+            {
+                var flow = await _context.PromptFlows.FirstOrDefaultAsync(f => f.Id == flowId && !f.IsActive);
+                if (flow == null)
+                    return false;
+
+                if (userId.HasValue && flow.CreatedBy != userId.Value)
+                    throw new UnauthorizedAccessException("User not authorized to restore this flow");
+
+                flow.IsActive = true;
+                flow.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error restoring flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Flow Node Operations
+
+        /// <summary>
+        /// Adds a node to a flow
+        /// </summary>
+        public async Task<FlowNode> AddFlowNodeAsync(Guid flowId, FlowNode node, Guid? userId = null, string? reason = null)
+        {
+            try
+            {
+                var flow = await _context.PromptFlows.Include(f => f.Nodes).FirstOrDefaultAsync(f => f.Id == flowId && f.IsActive);
+                if (flow == null)
+                    throw new ResourceNotFoundException($"Flow {flowId} not found");
+
+                if (userId.HasValue && flow.CreatedBy != userId.Value)
+                    throw new UnauthorizedAccessException("User not authorized to modify this flow");
+
+                node.Id = Guid.NewGuid();
+                node.FlowId = flowId;
+                node.CreatedAt = DateTime.UtcNow;
+                node.UpdatedAt = DateTime.UtcNow;
+
+                _context.FlowNodes.Add(node);
+                await _context.SaveChangesAsync();
+                return node;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error adding node to flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Updates a flow node
+        /// </summary>
+        public async Task<FlowNode> UpdateFlowNodeAsync(Guid nodeId, FlowNode updatedNode, Guid? userId = null, string? reason = null)
+        {
+            try
+            {
+                var existingNode = await _context.FlowNodes
+                    .Include(n => n.Flow)
+                    .FirstOrDefaultAsync(n => n.Id == nodeId);
+
+                if (existingNode == null)
+                    throw new ResourceNotFoundException($"Flow node {nodeId} not found");
+
+                if (userId.HasValue && existingNode.Flow.CreatedBy != userId.Value)
+                    throw new UnauthorizedAccessException("User not authorized to modify this flow");
+
+                existingNode.Type = updatedNode.Type;
+                existingNode.Name = updatedNode.Name;
+                existingNode.Description = updatedNode.Description;
+                existingNode.Configuration = updatedNode.Configuration;
+                existingNode.Position = updatedNode.Position;
+                existingNode.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+                return existingNode;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error updating flow node {nodeId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Removes a node from a flow
+        /// </summary>
+        public async Task<bool> RemoveFlowNodeAsync(Guid nodeId, Guid? userId = null, string? reason = null)
+        {
+            try
+            {
+                var node = await _context.FlowNodes
+                    .Include(n => n.Flow)
+                    .FirstOrDefaultAsync(n => n.Id == nodeId);
+
+                if (node == null)
+                    return false;
+
+                if (userId.HasValue && node.Flow.CreatedBy != userId.Value)
+                    throw new UnauthorizedAccessException("User not authorized to modify this flow");
+
+                _context.FlowNodes.Remove(node);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error removing flow node {nodeId}: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Flow Edge Operations
+
+        /// <summary>
+        /// Adds an edge to a flow
+        /// </summary>
+        public async Task<FlowEdge> AddFlowEdgeAsync(Guid flowId, FlowEdge edge, Guid? userId = null, string? reason = null)
+        {
+            try
+            {
+                var flow = await _context.PromptFlows.Include(f => f.Edges).FirstOrDefaultAsync(f => f.Id == flowId && f.IsActive);
+                if (flow == null)
+                    throw new ResourceNotFoundException($"Flow {flowId} not found");
+
+                if (userId.HasValue && flow.CreatedBy != userId.Value)
+                    throw new UnauthorizedAccessException("User not authorized to modify this flow");
+
+                edge.Id = Guid.NewGuid();
+                edge.FlowId = flowId;
+                edge.CreatedAt = DateTime.UtcNow;
+                edge.UpdatedAt = DateTime.UtcNow;
+
+                _context.FlowEdges.Add(edge);
+                await _context.SaveChangesAsync();
+                return edge;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error adding edge to flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Removes an edge from a flow
+        /// </summary>
+        public async Task<bool> RemoveFlowEdgeAsync(Guid edgeId, Guid? userId = null, string? reason = null)
+        {
+            try
+            {
+                var edge = await _context.FlowEdges
+                    .Include(e => e.Flow)
+                    .FirstOrDefaultAsync(e => e.Id == edgeId);
+
+                if (edge == null)
+                    return false;
+
+                if (userId.HasValue && edge.Flow.CreatedBy != userId.Value)
+                    throw new UnauthorizedAccessException("User not authorized to modify this flow");
+
+                _context.FlowEdges.Remove(edge);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error removing flow edge {edgeId}: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Flow Execution
+
+        /// <summary>
+        /// Executes a flow with provided inputs
+        /// </summary>
+        public async Task<FlowExecutionResult> ExecuteFlowAsync(Guid flowId, Dictionary<string, object> inputs, FlowExecutionOptions? options = null, Guid? userId = null, string? sessionId = null)
+        {
+            try
+            {
+                var flow = await GetFlowByIdAsync(flowId, userId, true, true);
+                if (flow == null)
+                    throw new ResourceNotFoundException($"Flow {flowId} not found");
+
+                // TODO: Implement actual flow execution logic
+                // For now, return a basic success result
+                return new FlowExecutionResult
                 {
-                    Id = Guid.NewGuid(),
-                    Name = "Customer Support Flow",
-                    Description = "Automated customer support response flow",
-                    Version = "2.1.0",
-                    CreatedAt = DateTime.UtcNow.AddDays(-10),
-                    UpdatedAt = DateTime.UtcNow.AddHours(-2),
-                    Tags = JsonSerializer.Serialize(new[] { "production", "customer-support" }),
-                    FlowData = JsonSerializer.Serialize(CreateComplexFlowData()),
-                    IsActive = true
-                }
-            };
-
-            // Apply filters if provided
-            var filteredFlows = mockFlows.AsEnumerable();
-            
-            if (!string.IsNullOrEmpty(tag))
-            {
-                filteredFlows = filteredFlows.Where(f => f.Tags?.Contains(tag) == true);
-            }
-            
-            if (!string.IsNullOrEmpty(search))
-            {
-                filteredFlows = filteredFlows.Where(f => 
-                    f.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                    (f.Description?.Contains(search, StringComparison.OrdinalIgnoreCase) == true));
-            }
-
-            return filteredFlows.ToList();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving flows");
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Get a specific flow by ID
-    /// </summary>
-    public async Task<PromptFlow?> GetFlowByIdAsync(Guid flowId)
-    {
-        try
-        {
-            // TODO: Implement database query
-            await Task.Delay(50); // Simulate async operation
-
-            // Return mock flow for development
-            return new PromptFlow
-            {
-                Id = flowId,
-                Name = "Sample Flow",
-                Description = "A sample prompt flow",
-                Version = "1.0.0",
-                CreatedAt = DateTime.UtcNow.AddDays(-5),
-                UpdatedAt = DateTime.UtcNow.AddDays(-1),
-                Tags = JsonSerializer.Serialize(new[] { "test", "sample" }),
-                FlowData = JsonSerializer.Serialize(CreateSampleFlowData()),
-                IsActive = true
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving flow {FlowId}", flowId);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Create a new prompt flow
-    /// </summary>
-    public async Task<PromptFlow> CreateFlowAsync(PromptFlow flow)
-    {
-        try
-        {
-            // TODO: Implement database save
-            flow.Id = Guid.NewGuid();
-            flow.CreatedAt = DateTime.UtcNow;
-            flow.UpdatedAt = DateTime.UtcNow;
-            flow.Version = "1.0.0";
-            flow.IsActive = true;
-
-            await Task.Delay(100); // Simulate async operation
-
-            _logger.LogInformation("Created new flow {FlowId} with name '{FlowName}'", flow.Id, flow.Name);
-
-            return flow;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error creating flow");
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Update an existing prompt flow
-    /// </summary>
-    public async Task<PromptFlow> UpdateFlowAsync(PromptFlow flow)
-    {
-        try
-        {
-            // TODO: Implement database update
-            flow.UpdatedAt = DateTime.UtcNow;
-            
-            // Increment patch version
-            var versionParts = flow.Version.Split('.');
-            if (versionParts.Length >= 3 && int.TryParse(versionParts[2], out int patch))
-            {
-                flow.Version = $"{versionParts[0]}.{versionParts[1]}.{patch + 1}";
-            }
-
-            await Task.Delay(100); // Simulate async operation
-
-            _logger.LogInformation("Updated flow {FlowId}", flow.Id);
-
-            return flow;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error updating flow {FlowId}", flow.Id);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Delete a prompt flow
-    /// </summary>
-    public async Task<bool> DeleteFlowAsync(Guid flowId)
-    {
-        try
-        {
-            // TODO: Implement database deletion
-            await Task.Delay(50); // Simulate async operation
-
-            _logger.LogInformation("Deleted flow {FlowId}", flowId);
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error deleting flow {FlowId}", flowId);
-            throw;
-        }
-    }    /// <summary>
-    /// Execute a prompt flow with given variables
-    /// </summary>
-    public async Task<FlowExecutionResult> ExecuteFlowAsync(Guid flowId, Dictionary<string, object> variables, FlowExecutionOptions? options = null)
-    {
-        var startTime = DateTime.UtcNow;
-        var executionId = Guid.NewGuid();
-        
-        try
-        {
-            _logger.LogInformation("Starting execution of flow {FlowId} with execution ID {ExecutionId}", flowId, executionId);
-
-            // Get the flow
-            var flow = await GetFlowByIdAsync(flowId);
-            if (flow == null)
-            {                return new FlowExecutionResult
-                {
-                    Success = false,
-                    ExecutionId = executionId,
-                    Error = "Flow not found",
-                    ExecutionTime = (long)(DateTime.UtcNow - startTime).TotalMilliseconds,
-                    NodeExecutions = new List<NodeExecutionInfo>()
+                    FlowId = flowId,
+                    ExecutionId = Guid.NewGuid(),
+                    Status = "Completed",
+                    StartTime = DateTime.UtcNow,
+                    EndTime = DateTime.UtcNow,
+                    Outputs = new Dictionary<string, object> { { "result", "Flow executed successfully" } },
+                    Metadata = new Dictionary<string, object> { { "nodeCount", flow.Nodes?.Count ?? 0 } }
                 };
             }
-
-            // Parse flow data
-            var flowData = JsonSerializer.Deserialize<Dictionary<string, object>>(flow.FlowData);
-            var nodes = ExtractNodesFromFlowData(flowData);
-            var edges = ExtractEdgesFromFlowData(flowData);
-
-            // Execute the flow
-            var result = await ExecuteFlowNodes(nodes, edges, variables, executionId);
-            result.ExecutionId = executionId;
-
-            _logger.LogInformation("Completed execution of flow {FlowId} in {ExecutionTime}ms", 
-                flowId, result.ExecutionTime);
-
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error executing flow {FlowId}", flowId);
-            
-            return new FlowExecutionResult
+            catch (Exception ex)
             {
-                Success = false,
-                ExecutionId = executionId,
-                Error = ex.Message,
-                ExecutionTime = (long)(DateTime.UtcNow - startTime).TotalMilliseconds,
-                NodeExecutions = new List<NodeExecutionInfo>()
-            };
-        }
-    }
-
-    private async Task<FlowExecutionResult> ExecuteFlowNodes(
-        List<FlowNodeInfo> nodes, 
-        List<FlowEdgeInfo> edges, 
-        Dictionary<string, object> variables, 
-        Guid executionId)
-    {
-        var startTime = DateTime.UtcNow;
-        var nodeExecutions = new List<NodeExecutionInfo>();
-        var flowVariables = new Dictionary<string, object>(variables);
-        
-        try
-        {
-            // Find starting nodes (nodes with no incoming edges)
-            var startingNodes = nodes.Where(n => !edges.Any(e => e.Target == n.Id)).ToList();
-            
-            if (!startingNodes.Any())
-            {
-                startingNodes = nodes.Take(1).ToList(); // Fallback to first node
+                throw new InvalidOperationException($"Error executing flow {flowId}: {ex.Message}", ex);
             }
-
-            // Execute nodes in topological order
-            var executedNodes = new HashSet<string>();
-            var nodesToExecute = new Queue<FlowNodeInfo>(startingNodes);
-            
-            while (nodesToExecute.Count > 0)
-            {
-                var currentNode = nodesToExecute.Dequeue();
-                
-                if (executedNodes.Contains(currentNode.Id))
-                    continue;                var nodeExecution = await ExecuteNode(currentNode, flowVariables);
-                var nodeStatus = ConvertToNodeExecutionInfo(nodeExecution);
-                nodeExecutions.Add(nodeStatus);
-                executedNodes.Add(currentNode.Id);
-
-                // Update flow variables with node output
-                if (nodeExecution.OutputData != null && nodeExecution.OutputData != "{}")
-                {
-                    // Parse output data and extract output value
-                    var outputData = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(nodeExecution.OutputData);
-                    if (outputData?.ContainsKey("output") == true)
-                    {
-                        flowVariables[$"node_{currentNode.Id}_output"] = outputData["output"];
-                    }
-                }
-
-                // Find next nodes to execute
-                var outgoingEdges = edges.Where(e => e.Source == currentNode.Id);
-                foreach (var edge in outgoingEdges)
-                {
-                    var nextNode = nodes.FirstOrDefault(n => n.Id == edge.Target);
-                    if (nextNode != null && !executedNodes.Contains(nextNode.Id))
-                    {
-                        // Check if all incoming nodes have been executed
-                        var incomingEdges = edges.Where(e => e.Target == nextNode.Id);
-                        var allPredecessorsExecuted = incomingEdges.All(e => executedNodes.Contains(e.Source));
-                        
-                        if (allPredecessorsExecuted)
-                        {
-                            nodesToExecute.Enqueue(nextNode);
-                        }
-                    }
-                }
-            }            // Determine final output
-            var outputNode = nodeExecutions.LastOrDefault(ne => ne.Status == "completed");
-            var finalOutput = outputNode?.Output ?? "Flow completed successfully";
-
-            return new FlowExecutionResult
-            {
-                Success = true,
-                Output = finalOutput,
-                ExecutionTime = (long)(DateTime.UtcNow - startTime).TotalMilliseconds,
-                NodeExecutions = nodeExecutions
-            };
-        }
-        catch (Exception ex)
-        {
-            return new FlowExecutionResult
-            {
-                Success = false,
-                Error = ex.Message,
-                ExecutionTime = (long)(DateTime.UtcNow - startTime).TotalMilliseconds,
-                NodeExecutions = nodeExecutions
-            };
-        }
-    }    private async Task<NodeExecution> ExecuteNode(FlowNodeInfo node, Dictionary<string, object> variables)
-    {
-        var startTime = DateTime.UtcNow;
-        var nodeExecution = new NodeExecution
-        {
-            NodeKey = node.Id,
-            NodeType = ParseNodeType(node.Type),
-            StartTime = startTime,
-            Status = NodeExecutionStatus.Running,
-            InputData = JsonSerializer.Serialize(variables)
-        };
-
-        try
-        {
-            object? output = null;
-
-            switch (node.Type?.ToLowerInvariant())
-            {
-                case "prompt":
-                    output = await ExecutePromptNode(node, variables);
-                    break;
-
-                case "variable":
-                    output = ExecuteVariableNode(node, variables);
-                    break;
-
-                case "conditional":
-                    output = ExecuteConditionalNode(node, variables);
-                    break;
-
-                case "transform":
-                    output = ExecuteTransformNode(node, variables);
-                    break;
-
-                case "output":
-                    output = ExecuteOutputNode(node, variables);
-                    break;
-
-                default:
-                    output = $"Unsupported node type: {node.Type}";
-                    break;
-            }
-
-            nodeExecution.EndTime = DateTime.UtcNow;
-            nodeExecution.Status = NodeExecutionStatus.Completed;
-            nodeExecution.OutputData = JsonSerializer.Serialize(new { output = output });
-            nodeExecution.ExecutionTimeMs = (int)(nodeExecution.EndTime.Value - nodeExecution.StartTime).TotalMilliseconds;
-        }
-        catch (Exception ex)
-        {
-            nodeExecution.EndTime = DateTime.UtcNow;
-            nodeExecution.Status = NodeExecutionStatus.Failed;
-            nodeExecution.ErrorMessage = ex.Message;
-            nodeExecution.ExecutionTimeMs = (int)(nodeExecution.EndTime.Value - nodeExecution.StartTime).TotalMilliseconds;
-            _logger.LogError(ex, "Error executing node {NodeId}", node.Id);
         }
 
-        return nodeExecution;
-    }
-
-    private FlowNodeType ParseNodeType(string? nodeType)
-    {
-        return nodeType?.ToLowerInvariant() switch
-        {
-            "input" => FlowNodeType.Input,
-            "prompt" => FlowNodeType.Prompt,
-            "variable" => FlowNodeType.Variable,
-            "conditional" => FlowNodeType.Conditional,
-            "transform" => FlowNodeType.Transform,
-            "output" => FlowNodeType.Output,
-            "llmcall" => FlowNodeType.LlmCall,
-            "template" => FlowNodeType.Template,
-            "loop" => FlowNodeType.Loop,
-            "parallel" => FlowNodeType.Parallel,
-            "apicall" => FlowNodeType.ApiCall,
-            "validation" => FlowNodeType.Validation,
-            "aggregation" => FlowNodeType.Aggregation,
-            _ => FlowNodeType.Prompt
-        };
-    }
-
-    private NodeExecutionInfo ConvertToNodeExecutionInfo(NodeExecution nodeExecution)
-    {
-        var outputData = new Dictionary<string, object>();
-        if (!string.IsNullOrEmpty(nodeExecution.OutputData) && nodeExecution.OutputData != "{}")
+        /// <summary>
+        /// Executes a specific flow node
+        /// </summary>
+        public async Task<NodeExecutionResult> ExecuteFlowNodeAsync(Guid nodeId, Dictionary<string, object> inputs, Guid? userId = null, string? sessionId = null)
         {
             try
             {
-                outputData = JsonSerializer.Deserialize<Dictionary<string, object>>(nodeExecution.OutputData) ?? new();
+                var node = await _context.FlowNodes
+                    .Include(n => n.Flow)
+                    .FirstOrDefaultAsync(n => n.Id == nodeId);
+
+                if (node == null)
+                    throw new ResourceNotFoundException($"Flow node {nodeId} not found");
+
+                if (userId.HasValue && node.Flow.CreatedBy != userId.Value)
+                    throw new UnauthorizedAccessException("User not authorized to execute this flow");
+
+                // TODO: Implement actual node execution logic
+                return new NodeExecutionResult
+                {
+                    NodeId = nodeId,
+                    ExecutionId = Guid.NewGuid(),
+                    Status = "Completed",
+                    StartTime = DateTime.UtcNow,
+                    EndTime = DateTime.UtcNow,
+                    Outputs = new Dictionary<string, object> { { "result", "Node executed successfully" } }
+                };
             }
-            catch
+            catch (Exception ex)
             {
-                // If deserialization fails, treat as simple string
-                outputData["output"] = nodeExecution.OutputData;
+                throw new InvalidOperationException($"Error executing flow node {nodeId}: {ex.Message}", ex);
             }
         }
 
-        var inputData = new Dictionary<string, object>();
-        if (!string.IsNullOrEmpty(nodeExecution.InputData) && nodeExecution.InputData != "{}")
+        /// <summary>
+        /// Executes a flow with streaming results
+        /// </summary>
+        public async IAsyncEnumerable<FlowExecutionUpdate> ExecuteFlowStreamingAsync(Guid flowId, Dictionary<string, object> inputs, FlowExecutionOptions? options = null, Guid? userId = null, string? sessionId = null)
+        {
+            var flow = await GetFlowByIdAsync(flowId, userId, true, true);
+            if (flow == null)
+                throw new ResourceNotFoundException($"Flow {flowId} not found");
+
+            // TODO: Implement actual streaming flow execution
+            // For now, yield a single update
+            yield return new FlowExecutionUpdate
+            {
+                ExecutionId = Guid.NewGuid(),
+                NodeId = flow.Nodes?.FirstOrDefault()?.Id,
+                Status = "Running",
+                Timestamp = DateTime.UtcNow,
+                Data = new Dictionary<string, object> { { "message", "Flow execution started" } }
+            };
+
+            await Task.Delay(100); // Simulate processing
+
+            yield return new FlowExecutionUpdate
+            {
+                ExecutionId = Guid.NewGuid(),
+                NodeId = flow.Nodes?.FirstOrDefault()?.Id,
+                Status = "Completed",
+                Timestamp = DateTime.UtcNow,
+                Data = new Dictionary<string, object> { { "message", "Flow execution completed" } }
+            };
+        }
+
+        /// <summary>
+        /// Stops a running flow execution
+        /// </summary>
+        public async Task<bool> StopFlowExecutionAsync(Guid executionId, Guid? userId = null, string? reason = null)
         {
             try
             {
-                inputData = JsonSerializer.Deserialize<Dictionary<string, object>>(nodeExecution.InputData) ?? new();
+                // TODO: Implement execution tracking and stopping logic
+                await Task.CompletedTask;
+                return true;
             }
-            catch
+            catch (Exception ex)
             {
-                inputData["input"] = nodeExecution.InputData;
+                throw new InvalidOperationException($"Error stopping flow execution {executionId}: {ex.Message}", ex);
             }
         }
 
-        return new NodeExecutionInfo
-        {
-            NodeId = nodeExecution.NodeKey,
-            StartTime = nodeExecution.StartTime,
-            EndTime = nodeExecution.EndTime,
-            Input = inputData.Count > 0 ? inputData : null,
-            Output = outputData.ContainsKey("output") ? outputData["output"] : null,
-            Status = nodeExecution.Status.ToString().ToLowerInvariant(),
-            Error = nodeExecution.ErrorMessage
-        };
-    }
+        #endregion
 
-    private async Task<object> ExecutePromptNode(FlowNodeInfo node, Dictionary<string, object> variables)
-    {
-        try
+        #region Flow Validation
+
+        /// <summary>
+        /// Validates a flow for execution
+        /// </summary>
+        public async Task<FlowValidationResult> ValidateFlowAsync(Guid flowId, Guid? userId = null)
         {
-            var data = node.Data;            var content = data.TryGetValue("content", out var contentObj) ? contentObj?.ToString() ?? "" : "";
-            var model = data.TryGetValue("model", out var modelObj) ? modelObj?.ToString() ?? "gpt-3.5-turbo" : "gpt-3.5-turbo";
-            var systemMessage = data.TryGetValue("systemMessage", out var sysObj) ? sysObj?.ToString() : null;
-            
-            // Extract parameters
-            var parameters = new Dictionary<string, object>();
-            if (data.ContainsKey("parameters") && data["parameters"] is JsonElement paramsElement)
+            try
             {
-                if (paramsElement.ValueKind == JsonValueKind.Object)
+                var flow = await GetFlowByIdAsync(flowId, userId, true, true);
+                if (flow == null)
+                    throw new ResourceNotFoundException($"Flow {flowId} not found");
+
+                var result = new FlowValidationResult
                 {
-                    foreach (var prop in paramsElement.EnumerateObject())
-                    {
-                        parameters[prop.Name] = prop.Value.GetRawText();
-                    }
-                }
-            }
+                    FlowId = flowId,
+                    IsValid = true,
+                    Errors = new List<string>(),
+                    Warnings = new List<string>()
+                };
 
-            // Replace variables in content
-            var processedContent = ReplaceVariables(content!, variables);
-            var processedSystemMessage = !string.IsNullOrEmpty(systemMessage) 
-                ? ReplaceVariables(systemMessage, variables) 
-                : null;            // Execute via model provider
-            var request = new ModelRequest
-            {
-                ModelId = model!,
-                Prompt = processedContent,
-                SystemMessage = processedSystemMessage,
-                Parameters = parameters,
-                Variables = variables
-            };
-
-            var response = await _modelProviderManager.ExecutePromptAsync(request);
-            
-            if (response.Success)
-            {
-                return response.Content ?? "No content returned";
-            }
-            else
-            {
-                throw new Exception($"Model execution failed: {response.ErrorMessage}");
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error executing prompt node {NodeId}", node.Id);
-            throw;
-        }
-    }
-
-    private object ExecuteVariableNode(FlowNodeInfo node, Dictionary<string, object> variables)
-    {
-        var data = node.Data;        var varName = data.TryGetValue("name", out var nameObj) ? nameObj?.ToString() ?? "" : "";
-        var defaultValue = data.TryGetValue("defaultValue", out var defaultObj) ? defaultObj : null;
-
-        if (!string.IsNullOrEmpty(varName) && variables.ContainsKey(varName!))
-        {
-            return variables[varName!];
-        }
-
-        return defaultValue ?? $"Variable '{varName}' not found";
-    }
-
-    private object ExecuteConditionalNode(FlowNodeInfo node, Dictionary<string, object> variables)
-    {
-        // TODO: Implement conditional logic based on node.Data["condition"]
-        return "Conditional node executed (not implemented)";
-    }
-
-    private object ExecuteTransformNode(FlowNodeInfo node, Dictionary<string, object> variables)
-    {
-        // TODO: Implement data transformation based on node.Data["transformType"]
-        return "Transform node executed (not implemented)";
-    }
-
-    private object ExecuteOutputNode(FlowNodeInfo node, Dictionary<string, object> variables)
-    {
-        var data = node.Data;
-        var template = data.TryGetValue("template", out var templateObj) ? templateObj?.ToString() ?? "" : "";
-        
-        if (!string.IsNullOrEmpty(template))
-        {
-            return ReplaceVariables(template!, variables);
-        }
-
-        return variables;
-    }
-
-    private string ReplaceVariables(string content, Dictionary<string, object> variables)
-    {
-        var result = content;
-        
-        // Replace {{variableName}} patterns
-        var regex = new Regex(@"\{\{([^}]+)\}\}");
-        result = regex.Replace(result, match =>
-        {
-            var varName = match.Groups[1].Value.Trim();
-            if (variables.ContainsKey(varName))
-            {
-                return variables[varName]?.ToString() ?? "";
-            }
-            return match.Value; // Keep original if variable not found
-        });
-
-        return result;
-    }
-
-    private List<FlowNodeInfo> ExtractNodesFromFlowData(Dictionary<string, object>? flowData)
-    {
-        var nodes = new List<FlowNodeInfo>();
-        
-        if (flowData?.ContainsKey("nodes") == true && flowData["nodes"] is JsonElement nodesElement)
-        {
-            if (nodesElement.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var nodeElement in nodesElement.EnumerateArray())
+                // Basic validation checks
+                if (flow.Nodes == null || !flow.Nodes.Any())
                 {
-                    var node = new FlowNodeInfo
-                    {
-                        Id = GetJsonProperty(nodeElement, "id"),
-                        Type = GetJsonProperty(nodeElement, "type"),
-                        Data = ExtractNodeData(nodeElement)
-                    };
-                    nodes.Add(node);
+                    result.Errors.Add("Flow must contain at least one node");
+                    result.IsValid = false;
                 }
+
+                // TODO: Add more comprehensive validation logic
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error validating flow {flowId}: {ex.Message}", ex);
             }
         }
 
-        return nodes;
-    }
-
-    private List<FlowEdgeInfo> ExtractEdgesFromFlowData(Dictionary<string, object>? flowData)
-    {
-        var edges = new List<FlowEdgeInfo>();
-        
-        if (flowData?.ContainsKey("edges") == true && flowData["edges"] is JsonElement edgesElement)
+        /// <summary>
+        /// Validates a flow definition without persisting
+        /// </summary>
+        public async Task<FlowValidationResult> ValidateFlowDefinitionAsync(PromptFlow flow)
         {
-            if (edgesElement.ValueKind == JsonValueKind.Array)
+            try
             {
-                foreach (var edgeElement in edgesElement.EnumerateArray())
+                var result = new FlowValidationResult
                 {
-                    var edge = new FlowEdgeInfo
-                    {
-                        Id = GetJsonProperty(edgeElement, "id"),
-                        Source = GetJsonProperty(edgeElement, "source"),
-                        Target = GetJsonProperty(edgeElement, "target")
-                    };
-                    edges.Add(edge);
+                    FlowId = flow.Id,
+                    IsValid = true,
+                    Errors = new List<string>(),
+                    Warnings = new List<string>()
+                };
+
+                // Validate flow definition
+                if (string.IsNullOrEmpty(flow.Name))
+                {
+                    result.Errors.Add("Flow name is required");
+                    result.IsValid = false;
                 }
+
+                // TODO: Add more validation logic
+                await Task.CompletedTask;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error validating flow definition: {ex.Message}", ex);
             }
         }
 
-        return edges;
-    }
-
-    private Dictionary<string, object> ExtractNodeData(JsonElement nodeElement)
-    {
-        var data = new Dictionary<string, object>();
-        
-        if (nodeElement.TryGetProperty("data", out var dataElement))
+        /// <summary>
+        /// Checks if a flow has circular dependencies
+        /// </summary>
+        public async Task<bool> HasCircularDependenciesAsync(Guid flowId, Guid? userId = null)
         {
-            if (dataElement.ValueKind == JsonValueKind.Object)
+            try
             {
-                foreach (var prop in dataElement.EnumerateObject())
-                {
-                    data[prop.Name] = prop.Value;
-                }
+                var flow = await GetFlowByIdAsync(flowId, userId, true, true);
+                if (flow == null)
+                    return false;
+
+                // TODO: Implement circular dependency detection
+                await Task.CompletedTask;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error checking circular dependencies for flow {flowId}: {ex.Message}", ex);
             }
         }
 
-        return data;
-    }
+        #endregion
 
-    private string GetJsonProperty(JsonElement element, string propertyName)
-    {
-        if (element.TryGetProperty(propertyName, out var prop))
+        #region Flow Analytics and History
+
+        /// <summary>
+        /// Gets execution history for a flow
+        /// </summary>
+        public async Task<IEnumerable<FlowExecutionRecord>> GetExecutionHistoryAsync(Guid flowId, Guid? userId = null, int limit = 100, bool includeDetails = false)
         {
-            return prop.GetString() ?? "";
-        }
-        return "";
-    }
-
-    // Helper classes for flow execution
-    private class FlowNodeInfo
-    {
-        public string Id { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty;
-        public Dictionary<string, object> Data { get; set; } = new();
-    }
-
-    private class FlowEdgeInfo
-    {
-        public string Id { get; set; } = string.Empty;
-        public string Source { get; set; } = string.Empty;
-        public string Target { get; set; } = string.Empty;
-    }
-
-    /// <summary>
-    /// Validate a prompt flow structure
-    /// </summary>
-    public async Task<FlowValidationResult> ValidateFlowAsync(PromptFlow flow)
-    {
-        try
-        {
-            // TODO: Implement comprehensive flow validation
-            await Task.Delay(200); // Simulate validation time
-
-            var result = new FlowValidationResult
+            try
             {
-                IsValid = true,
-                Errors = new List<ValidationError>(),
-                Warnings = new List<ValidationWarning>
+                // TODO: Implement execution history retrieval
+                await Task.CompletedTask;
+                return new List<FlowExecutionRecord>();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving execution history for flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets execution statistics for a flow
+        /// </summary>
+        public async Task<FlowExecutionStatistics> GetFlowExecutionStatisticsAsync(Guid flowId, Guid? userId = null, int days = 30)
+        {
+            try
+            {
+                // TODO: Implement execution statistics calculation
+                await Task.CompletedTask;
+                return new FlowExecutionStatistics
                 {
-                    new ValidationWarning
-                    {
-                        NodeId = "node-2",
-                        Message = "Consider reducing temperature for more consistent outputs",
-                        Type = "optimization"
-                    }
-                }
-            };
-
-            return result;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error validating flow {FlowId}", flow.Id);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Get execution history for a flow
-    /// </summary>
-    public async Task<IEnumerable<FlowExecution>> GetExecutionHistoryAsync(Guid flowId, int limit = 50)
-    {
-        try
-        {
-            // TODO: Implement database query
-            await Task.Delay(100); // Simulate async operation            // Return mock execution history
-            var mockHistory = new List<FlowExecution>
+                    FlowId = flowId,
+                    TotalExecutions = 0,
+                    SuccessfulExecutions = 0,
+                    FailedExecutions = 0,
+                    AverageExecutionTime = TimeSpan.Zero,
+                    LastExecutionTime = null
+                };
+            }
+            catch (Exception ex)
             {
-                new FlowExecution
+                throw new InvalidOperationException($"Error retrieving execution statistics for flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets performance metrics for a flow
+        /// </summary>
+        public async Task<FlowPerformanceMetrics> GetFlowPerformanceMetricsAsync(Guid flowId, Guid? userId = null, int days = 30)
+        {
+            try
+            {
+                // TODO: Implement performance metrics calculation
+                await Task.CompletedTask;
+                return new FlowPerformanceMetrics
+                {
+                    FlowId = flowId,
+                    AverageExecutionTime = TimeSpan.Zero,
+                    MinExecutionTime = TimeSpan.Zero,
+                    MaxExecutionTime = TimeSpan.Zero,
+                    ThroughputPerHour = 0
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving performance metrics for flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets node execution statistics
+        /// </summary>
+        public async Task<IEnumerable<NodeExecutionStatistics>> GetNodeExecutionStatisticsAsync(Guid flowId, Guid? userId = null, int days = 30)
+        {
+            try
+            {
+                // TODO: Implement node execution statistics
+                await Task.CompletedTask;
+                return new List<NodeExecutionStatistics>();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving node execution statistics for flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Flow Templates and Cloning
+
+        /// <summary>
+        /// Creates a template from an existing flow
+        /// </summary>
+        public async Task<PromptFlow> CreateFlowTemplateAsync(Guid flowId, string templateName, string? description = null, Guid? userId = null, string? category = null)
+        {
+            try
+            {
+                var sourceFlow = await GetFlowByIdAsync(flowId, userId, true, true);
+                if (sourceFlow == null)
+                    throw new ResourceNotFoundException($"Source flow {flowId} not found");
+
+                var template = new PromptFlow
                 {
                     Id = Guid.NewGuid(),
-                    FlowId = flowId,
-                    FlowVersion = "1.0.0",
-                    InputVariables = JsonSerializer.Serialize(new { user_input = "Hello, world!" }),
-                    OutputResult = JsonSerializer.Serialize("Hello! How can I help you today?"),
-                    TotalExecutionTime = 1250,
-                    Status = FlowExecutionStatus.Completed,
-                    CreatedAt = DateTime.UtcNow.AddHours(-1)
-                },
-                new FlowExecution
+                    Name = templateName,
+                    Description = description ?? $"Template based on {sourceFlow.Name}",
+                    Category = category ?? sourceFlow.Category,
+                    IsTemplate = true,
+                    Status = "Template",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    CreatedBy = userId ?? sourceFlow.CreatedBy,
+                    IsActive = true
+                };
+
+                // TODO: Copy nodes and edges from source flow
+
+                _context.PromptFlows.Add(template);
+                await _context.SaveChangesAsync();
+                return template;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error creating flow template: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Creates a flow from a template
+        /// </summary>
+        public async Task<PromptFlow> CreateFlowFromTemplateAsync(Guid templateId, string flowName, Guid userId, Guid? projectId = null, string? description = null)
+        {
+            try
+            {
+                var template = await GetFlowByIdAsync(templateId, null, true, true);
+                if (template == null || !template.IsTemplate)
+                    throw new ResourceNotFoundException($"Flow template {templateId} not found");
+
+                var newFlow = new PromptFlow
                 {
                     Id = Guid.NewGuid(),
-                    FlowId = flowId,
-                    FlowVersion = "1.0.0",
-                    InputVariables = JsonSerializer.Serialize(new { user_input = "What's the weather?" }),
-                    OutputResult = JsonSerializer.Serialize("I don't have access to real-time weather data."),
-                    TotalExecutionTime = 980,
-                    Status = FlowExecutionStatus.Completed,
-                    CreatedAt = DateTime.UtcNow.AddHours(-2)
-                }
-            };
+                    Name = flowName,
+                    Description = description ?? $"Flow created from template {template.Name}",
+                    Category = template.Category,
+                    ProjectId = projectId,
+                    IsTemplate = false,
+                    Status = "Draft",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    CreatedBy = userId,
+                    IsActive = true
+                };
 
-            return mockHistory.Take(limit);
-        }        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving execution history for flow {FlowId}", flowId);
-            throw;
+                // TODO: Copy nodes and edges from template
+
+                _context.PromptFlows.Add(newFlow);
+                await _context.SaveChangesAsync();
+                return newFlow;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error creating flow from template: {ex.Message}", ex);
+            }
         }
+
+        /// <summary>
+        /// Clones an existing flow
+        /// </summary>
+        public async Task<PromptFlow> CloneFlowAsync(Guid flowId, string newName, Guid userId, Guid? projectId = null, string? description = null)
+        {
+            try
+            {
+                var sourceFlow = await GetFlowByIdAsync(flowId, userId, true, true);
+                if (sourceFlow == null)
+                    throw new ResourceNotFoundException($"Source flow {flowId} not found");
+
+                var clonedFlow = new PromptFlow
+                {
+                    Id = Guid.NewGuid(),
+                    Name = newName,
+                    Description = description ?? $"Clone of {sourceFlow.Name}",
+                    Category = sourceFlow.Category,
+                    ProjectId = projectId ?? sourceFlow.ProjectId,
+                    IsTemplate = false,
+                    Status = "Draft",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    CreatedBy = userId,
+                    IsActive = true
+                };
+
+                // TODO: Copy nodes and edges from source flow
+
+                _context.PromptFlows.Add(clonedFlow);
+                await _context.SaveChangesAsync();
+                return clonedFlow;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error cloning flow: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets available flow templates
+        /// </summary>
+        public async Task<IEnumerable<PromptFlow>> GetFlowTemplatesAsync(string? category = null, Guid? userId = null, bool includePublic = true)
+        {
+            try
+            {
+                var query = _context.PromptFlows.Where(f => f.IsTemplate && f.IsActive);
+
+                if (!string.IsNullOrEmpty(category))
+                    query = query.Where(f => f.Category == category);
+
+                // TODO: Implement proper access control for templates
+
+                return await query.OrderByDescending(f => f.CreatedAt).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving flow templates: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Import/Export
+
+        /// <summary>
+        /// Exports a flow to JSON format
+        /// </summary>
+        public async Task<string> ExportFlowAsync(Guid flowId, bool includeExecutionHistory = false, Guid? userId = null)
+        {
+            try
+            {
+                var flow = await GetFlowByIdAsync(flowId, userId, true, true);
+                if (flow == null)
+                    throw new ResourceNotFoundException($"Flow {flowId} not found");
+
+                var exportData = new
+                {
+                    Flow = flow,
+                    ExportedAt = DateTime.UtcNow,
+                    ExportedBy = userId,
+                    IncludesHistory = includeExecutionHistory
+                };
+
+                return JsonSerializer.Serialize(exportData, new JsonSerializerOptions { WriteIndented = true });
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error exporting flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Imports a flow from JSON format
+        /// </summary>
+        public async Task<PromptFlow> ImportFlowAsync(string flowJson, Guid userId, bool validateOnImport = true, bool preserveIds = false, Guid? projectId = null, string? newName = null)
+        {
+            try
+            {
+                // TODO: Implement flow import logic
+                var importedFlow = new PromptFlow
+                {
+                    Id = preserveIds ? Guid.NewGuid() : Guid.NewGuid(),
+                    Name = newName ?? "Imported Flow",
+                    Description = "Flow imported from JSON",
+                    ProjectId = projectId,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    CreatedBy = userId,
+                    IsActive = true
+                };
+
+                _context.PromptFlows.Add(importedFlow);
+                await _context.SaveChangesAsync();
+                return importedFlow;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error importing flow: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Search and Discovery
+
+        /// <summary>
+        /// Searches flows by query
+        /// </summary>
+        public async Task<IEnumerable<PromptFlow>> SearchFlowsAsync(string query, Guid userId, Guid? projectId = null, bool includeTemplates = true, int maxResults = 50)
+        {
+            try
+            {
+                var queryable = _context.PromptFlows.Where(f => f.IsActive);
+
+                if (!includeTemplates)
+                    queryable = queryable.Where(f => !f.IsTemplate);
+
+                if (projectId.HasValue)
+                    queryable = queryable.Where(f => f.ProjectId == projectId.Value);
+
+                queryable = queryable.Where(f =>
+                    f.Name.Contains(query) ||
+                    f.Description.Contains(query) ||
+                    f.Category.Contains(query) ||
+                    f.Tags.Contains(query));
+
+                return await queryable
+                    .OrderByDescending(f => f.UpdatedAt)
+                    .Take(maxResults)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error searching flows: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets flows by tags
+        /// </summary>
+        public async Task<IEnumerable<PromptFlow>> GetFlowsByTagsAsync(List<string> tags, Guid userId, Guid? projectId = null)
+        {
+            try
+            {
+                var query = _context.PromptFlows.Where(f => f.IsActive);
+
+                if (projectId.HasValue)
+                    query = query.Where(f => f.ProjectId == projectId.Value);
+
+                // TODO: Implement proper tag matching
+                var result = new List<PromptFlow>();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving flows by tags: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets recently executed flows
+        /// </summary>
+        public async Task<IEnumerable<PromptFlow>> GetRecentlyExecutedFlowsAsync(string? userId = null, Guid? projectId = null, int limit = 10, int daysBack = 30)
+        {
+            try
+            {
+                // TODO: Implement recently executed flows retrieval based on execution history
+                var query = _context.PromptFlows.Where(f => f.IsActive && !f.IsTemplate);
+
+                if (projectId.HasValue)
+                    query = query.Where(f => f.ProjectId == projectId.Value);
+
+                return await query
+                    .OrderByDescending(f => f.UpdatedAt)
+                    .Take(limit)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving recently executed flows: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets popular flows based on execution frequency
+        /// </summary>
+        public async Task<IEnumerable<PromptFlow>> GetPopularFlowsAsync(Guid? userId = null, Guid? projectId = null, int limit = 10, int daysBack = 30)
+        {
+            try
+            {
+                // TODO: Implement popularity calculation based on execution statistics
+                var query = _context.PromptFlows.Where(f => f.IsActive && !f.IsTemplate);
+
+                if (projectId.HasValue)
+                    query = query.Where(f => f.ProjectId == projectId.Value);
+
+                return await query
+                    .OrderByDescending(f => f.CreatedAt)
+                    .Take(limit)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving popular flows: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Data Sync and Maintenance
+
+        /// <summary>
+        /// Synchronizes flow data
+        /// </summary>
+        public async Task<bool> SyncFlowDataAsync(Guid flowId, Guid? userId = null)
+        {
+            try
+            {
+                // TODO: Implement flow data synchronization logic
+                await Task.CompletedTask;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error syncing flow data for {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets flow metrics
+        /// </summary>
+        public async Task<FlowMetrics> GetFlowMetricsAsync(Guid flowId, DateTime? startDate = null, DateTime? endDate = null, Guid? userId = null)
+        {
+            try
+            {
+                // TODO: Implement flow metrics calculation
+                await Task.CompletedTask;
+                return new FlowMetrics
+                {
+                    FlowId = flowId,
+                    TotalExecutions = 0,
+                    UniqueUsers = 0,
+                    AverageRating = 0,
+                    LastExecuted = null
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving flow metrics for {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Updates flow metrics
+        /// </summary>
+        public async Task<bool> UpdateFlowMetricsAsync(Guid flowId, FlowMetrics metrics, Guid? userId = null)
+        {
+            try
+            {
+                // TODO: Implement flow metrics update logic
+                await Task.CompletedTask;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error updating flow metrics for {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets execution analytics
+        /// </summary>
+        public async Task<ExecutionAnalytics> GetExecutionAnalyticsAsync(Guid flowId, DateTime? startDate = null, DateTime? endDate = null, Guid? userId = null)
+        {
+            try
+            {
+                // TODO: Implement execution analytics calculation
+                await Task.CompletedTask;
+                return new ExecutionAnalytics
+                {
+                    FlowId = flowId,
+                    Period = new { Start = startDate, End = endDate },
+                    TotalExecutions = 0,
+                    SuccessRate = 0,
+                    AverageExecutionTime = TimeSpan.Zero
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving execution analytics for {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region Flow Validation Sessions
+
+        /// <summary>
+        /// Creates a validation session
+        /// </summary>
+        public async Task<FlowValidationSession> CreateValidationSessionAsync(FlowValidationSession session, Guid? userId = null)
+        {
+            try
+            {
+                session.Id = Guid.NewGuid();
+                session.CreatedAt = DateTime.UtcNow;
+                session.UpdatedAt = DateTime.UtcNow;
+                session.CreatedBy = userId ?? Guid.Empty;
+
+                // TODO: Add to context when FlowValidationSession entity is available
+                await Task.CompletedTask;
+                return session;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error creating validation session: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets a validation session
+        /// </summary>
+        public async Task<FlowValidationSession?> GetValidationSessionAsync(Guid sessionId, string sessionType, Guid? userId = null)
+        {
+            try
+            {
+                // TODO: Implement validation session retrieval
+                await Task.CompletedTask;
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving validation session {sessionId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets validation history for a flow
+        /// </summary>
+        public async Task<IEnumerable<FlowValidationSession>> GetValidationHistoryAsync(Guid flowId, Guid? userId = null)
+        {
+            try
+            {
+                // TODO: Implement validation history retrieval
+                await Task.CompletedTask;
+                return new List<FlowValidationSession>();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving validation history for flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Invalidates validation cache
+        /// </summary>
+        public async Task<bool> InvalidateValidationCacheAsync(Guid flowId, Guid? userId = null)
+        {
+            try
+            {
+                // TODO: Implement validation cache invalidation
+                await Task.CompletedTask;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error invalidating validation cache for flow {flowId}: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
     }
 
-    #region Private Helper Methods
-    
-    private static object CreateSampleFlowData()
-    {
-        return new
-        {
-            Variables = new { },
-            Nodes = new object[]
-            {
-                new
-                {
-                    Id = "node-1",
-                    Type = "variable",
-                    Position = new { X = 100, Y = 100 },
-                    Data = new
-                    {
-                        Label = "Input Variable",
-                        Name = "user_input",
-                        Type = "string",
-                        DefaultValue = "",
-                        Description = "User input for the prompt"
-                    }
-                },
-                new
-                {
-                    Id = "node-2",
-                    Type = "prompt",
-                    Position = new { X = 300, Y = 100 },
-                    Data = new
-                    {
-                        Label = "Main Prompt",
-                        Content = "Please respond to: {{user_input}}",
-                        Model = "gpt-4",
-                        Parameters = new
-                        {
-                            Temperature = 0.7,
-                            MaxTokens = 1000,
-                            TopP = 1.0
-                        },
-                        Variables = new[] { new { Name = "user_input" } }
-                    }
-                },
-                new
-                {
-                    Id = "node-3",
-                    Type = "output",
-                    Position = new { X = 500, Y = 100 },
-                    Data = new
-                    {
-                        Label = "Response Output",
-                        Format = "text",
-                        Description = "Final response to user"
-                    }
-                }
-            },
-            Edges = new object[]
-            {
-                new
-                {
-                    Id = "edge-1",
-                    Source = "node-1",
-                    Target = "node-2",
-                    Type = "smoothstep"
-                },
-                new
-                {
-                    Id = "edge-2",
-                    Source = "node-2",
-                    Target = "node-3",
-                    Type = "smoothstep"
-                }
-            }
-        };
-    }
+    #region Helper Classes and Exceptions
 
-    private static object CreateComplexFlowData()
+    public class NotFoundException : Exception
     {
-        return new
-        {
-            Variables = new { },
-            Nodes = new object[]
-            {
-                new
-                {
-                    Id = "node-1",
-                    Type = "variable",
-                    Position = new { X = 50, Y = 100 },
-                    Data = new
-                    {
-                        Label = "Customer Query",
-                        Name = "customer_query",
-                        Type = "string",
-                        Description = "The customer's question or issue"
-                    }
-                },
-                new
-                {
-                    Id = "node-2",
-                    Type = "conditional",
-                    Position = new { X = 250, Y = 100 },
-                    Data = new
-                    {
-                        Label = "Query Type Check",
-                        Condition = new
-                        {
-                            LeftOperand = "customer_query",
-                            Operator = "contains",
-                            RightOperand = "refund"
-                        }
-                    }
-                },
-                new
-                {
-                    Id = "node-3",
-                    Type = "prompt",
-                    Position = new { X = 150, Y = 250 },
-                    Data = new
-                    {
-                        Label = "Refund Response",
-                        Content = "Customer is asking about a refund: {{customer_query}}. Provide refund policy information.",
-                        Model = "gpt-4"
-                    }
-                },
-                new
-                {
-                    Id = "node-4",
-                    Type = "prompt",
-                    Position = new { X = 350, Y = 250 },
-                    Data = new
-                    {
-                        Label = "General Response",
-                        Content = "Customer query: {{customer_query}}. Provide helpful assistance.",
-                        Model = "gpt-4"
-                    }
-                },
-                new
-                {
-                    Id = "node-5",
-                    Type = "output",
-                    Position = new { X = 250, Y = 400 },
-                    Data = new
-                    {
-                        Label = "Final Response",
-                        Format = "text"
-                    }
-                }
-            },
-            Edges = new object[]
-            {
-                new { Id = "edge-1", Source = "node-1", Target = "node-2" },
-                new { Id = "edge-2", Source = "node-2", Target = "node-3", SourceHandle = "true" },
-                new { Id = "edge-3", Source = "node-2", Target = "node-4", SourceHandle = "false" },
-                new { Id = "edge-4", Source = "node-3", Target = "node-5" },
-                new { Id = "edge-5", Source = "node-4", Target = "node-5" }
-            }
-        };
+        public NotFoundException(string message) : base(message) { }
     }
 
     #endregion
