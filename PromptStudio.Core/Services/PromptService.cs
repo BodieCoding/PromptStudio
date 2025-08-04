@@ -1,5 +1,10 @@
 using PromptStudio.Core.Domain;
 using PromptStudio.Core.Interfaces;
+using PromptStudio.Core.Interfaces.Data;
+using PromptStudio.Core.Interfaces.Templates;
+using PromptStudio.Core.Interfaces.Execution;
+using PromptStudio.Core.Interfaces.Lab;
+using PromptStudio.Core.Interfaces.Library;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -60,7 +65,7 @@ public class PromptService : IPromptService
     /// <returns>The resolved prompt with variables substituted</returns>
     public string ResolvePrompt(PromptTemplate template, Dictionary<string, string> variableValues)
     {
-        var resolvedContent = template.Content;
+        string resolvedContent = template.Content?.ToString() ?? string.Empty;
 
         foreach (var variable in template.Variables)
         {

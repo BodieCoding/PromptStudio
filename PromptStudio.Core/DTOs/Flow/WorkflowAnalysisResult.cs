@@ -321,7 +321,7 @@ public class OptimizationRecommendation
     /// Gets or sets the estimated impact of implementing the recommendation.
     /// </summary>
     /// <value>Quantitative and qualitative impact assessment for the recommendation.</value>
-    public OptimizationImpact? EstimatedImpact { get; set; }
+    public OptimizationImpactAssessment? EstimatedImpact { get; set; }
 
     /// <summary>
     /// Gets or sets the implementation complexity for the recommendation.
@@ -479,7 +479,7 @@ public class FailurePatternAnalysis
 }
 
 /// <summary>Simple optimization impact assessment</summary>
-public class OptimizationImpact
+public class OptimizationImpactAssessment
 {
     public double PerformanceImprovement { get; set; }
     public decimal CostReduction { get; set; }

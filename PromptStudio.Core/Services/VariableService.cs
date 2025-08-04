@@ -1,5 +1,6 @@
 using PromptStudio.Core.Domain;
 using PromptStudio.Core.Interfaces;
+using PromptStudio.Core.Interfaces.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Text.RegularExpressions;

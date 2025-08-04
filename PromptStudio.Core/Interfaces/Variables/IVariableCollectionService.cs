@@ -397,7 +397,7 @@ public interface IVariableCollectionService
     ///   <item>Creates detailed performance metrics for optimization insights</item>
     /// </list>
     /// </remarks>
-    Task<BatchExecutionResult> ExecuteBatchAsync(
+    Task<PromptStudio.Core.DTOs.Execution.BatchExecutionResult> ExecuteWithVariableCollectionAsync(
         Guid collectionId, 
         Guid templateId, 
         Guid tenantId, 

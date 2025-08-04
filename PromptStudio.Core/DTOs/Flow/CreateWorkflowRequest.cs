@@ -311,48 +311,6 @@ public class VariableValidationRules
 }
 
 /// <summary>
-/// Represents retry policy configuration for workflow execution resilience.
-/// </summary>
-public class RetryPolicy
-{
-    /// <summary>
-    /// Gets or sets the maximum number of retry attempts.
-    /// </summary>
-    /// <value>Maximum number of times to retry failed workflow executions.</value>
-    public int MaxAttempts { get; set; } = 3;
-
-    /// <summary>
-    /// Gets or sets the delay between retry attempts.
-    /// </summary>
-    /// <value>Time delay between consecutive retry attempts.</value>
-    public TimeSpan RetryDelay { get; set; } = TimeSpan.FromSeconds(30);
-
-    /// <summary>
-    /// Gets or sets the backoff strategy for retry delays.
-    /// </summary>
-    /// <value>Strategy for calculating retry delays (exponential, linear, etc.).</value>
-    public BackoffStrategy BackoffStrategy { get; set; } = BackoffStrategy.Exponential;
-}
-
-/// <summary>
-/// Represents concurrency settings for parallel workflow execution.
-/// </summary>
-public class ConcurrencySettings
-{
-    /// <summary>
-    /// Gets or sets the maximum number of parallel nodes.
-    /// </summary>
-    /// <value>Maximum number of nodes that can execute concurrently.</value>
-    public int MaxParallelNodes { get; set; } = 5;
-
-    /// <summary>
-    /// Gets or sets whether to enable parallel execution optimization.
-    /// </summary>
-    /// <value>True to optimize for parallel execution; otherwise, false.</value>
-    public bool EnableParallelOptimization { get; set; } = true;
-}
-
-/// <summary>
 /// Enumeration of supported workflow categories for organization and management.
 /// </summary>
 public enum WorkflowCategory

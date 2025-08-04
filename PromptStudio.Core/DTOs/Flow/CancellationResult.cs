@@ -722,20 +722,6 @@ public enum PostCancellationRecommendationType
     ProcessImprovement = 5
 }
 
-/// <summary>
-/// Enumeration of error severity levels for cleanup operations.
-/// </summary>
-public enum ErrorSeverity
-{
-    /// <summary>Low severity error</summary>
-    Low = 0,
-    /// <summary>Medium severity error</summary>
-    Medium = 1,
-    /// <summary>High severity error</summary>
-    High = 2,
-    /// <summary>Critical severity error</summary>
-    Critical = 3
-}
 
 /// <summary>
 /// Enumeration of impact severity levels for cancellation analysis.

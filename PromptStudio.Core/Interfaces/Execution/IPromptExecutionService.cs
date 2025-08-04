@@ -183,7 +183,7 @@ public interface IPromptExecutionService
     /// <param name="timeRange">Time range for statistics</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Library execution statistics</returns>
-    Task<LibraryExecutionStatistics> GetLibraryExecutionStatisticsAsync(Guid libraryId, Guid tenantId, TimeSpan? timeRange = null, CancellationToken cancellationToken = default);
+    Task<PromptStudio.Core.DTOs.Statistics.LibraryExecutionStatistics> GetLibraryExecutionStatisticsAsync(Guid libraryId, Guid tenantId, TimeSpan? timeRange = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get most frequently executed templates with advanced metrics

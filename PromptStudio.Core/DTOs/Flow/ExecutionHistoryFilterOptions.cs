@@ -227,25 +227,4 @@ public class ResourceUsageRangeFilter
     public NumericRangeFilter<long>? StorageUsageRange { get; set; }
 }
 
-/// <summary>
-/// Enumeration of execution types for categorizing workflow executions.
-/// </summary>
-public enum ExecutionType
-{
-    /// <summary>Manual execution initiated by user action</summary>
-    Manual = 0,
-    /// <summary>Scheduled execution based on time triggers</summary>
-    Scheduled = 1,
-    /// <summary>Event-triggered execution based on system events</summary>
-    Triggered = 2,
-    /// <summary>API-initiated execution from external systems</summary>
-    Api = 3,
-    /// <summary>Retry execution from previous failure</summary>
-    Retry = 4,
-    /// <summary>Recovery execution from system restoration</summary>
-    Recovery = 5,
-    /// <summary>Test execution for validation purposes</summary>
-    Test = 6,
-    /// <summary>Debug execution for troubleshooting</summary>
-    Debug = 7
-}
+
