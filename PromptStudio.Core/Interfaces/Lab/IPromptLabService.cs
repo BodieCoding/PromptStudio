@@ -362,5 +362,14 @@ public interface IPromptLabService
     /// <returns>True if name is unique, false otherwise</returns>
     Task<bool> IsLabNameUniqueAsync(string name, Guid? tenantId = null, Guid? excludeLabId = null);
 
+    /// <summary>
+    /// Check if a lab exists by ID
+    /// </summary>
+    /// <param name="labId">Lab ID to check</param>
+    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
+    /// <param name="includeDeleted">Whether to include soft-deleted labs</param>
+    /// <returns>True if lab exists, false otherwise</returns>
+    Task<bool> LabExistsAsync(Guid labId, Guid? tenantId = null, bool includeDeleted = false);
+
     #endregion
 }

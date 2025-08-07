@@ -43,7 +43,8 @@ public class PromptLibraryService : IPromptLibraryService
 
     #endregion
 
-    #region Library CRUD Operations    /// <summary>
+    #region Library CRUD Operations   
+    /// <summary>
     /// Get all prompt libraries
     /// </summary>
     /// <param name="promptLabId">Optional prompt lab ID to filter by</param>
@@ -312,22 +313,35 @@ public class PromptLibraryService : IPromptLibraryService
             .Select(v => v.Name)
             .Distinct()
             .Count();
-        var totalContentSize = library.PromptTemplates.Sum(pt => pt.Content?.ContentSize ?? 0);
-        var lastTemplateCreated = library.PromptTemplates.Any() 
-            ? library.PromptTemplates.Max(pt => pt.CreatedAt) 
+        var lastTemplateCreated = library.PromptTemplates.Any()
+            ? library.PromptTemplates.Max(pt => pt.CreatedAt)
             : (DateTime?)null;
         // TODO: Update last execution when PromptExecution relationship is fixed
-        var lastExecution = (DateTime?)null;
 
         return new LibraryStatistics
         {
-            TemplateCount = templateCount,
+            LibraryId = library.Id,
+            LibraryName = library.Name,
+            TotalTemplates = templateCount,
+            ActiveTemplates = library.PromptTemplates.Count(pt => pt.Status == TemplateStatus.Published),
+            DraftTemplates = library.PromptTemplates.Count(pt => pt.Status == TemplateStatus.Draft),
+            ArchivedTemplates = library.PromptTemplates.Count(pt => pt.Status == TemplateStatus.Archived),
             TotalExecutions = totalExecutions,
-            UniqueVariableCount = uniqueVariables,
-            TotalContentSize = totalContentSize,
-            LastTemplateCreated = lastTemplateCreated,
-            LastExecution = lastExecution,
-            AverageExecutionsPerTemplate = templateCount > 0 ? (double)totalExecutions / templateCount : 0
+            SuccessfulExecutions = 0, // Placeholder until execution tracking is implemented
+            FailedExecutions = 0, // Placeholder until execution tracking is implemented
+            SuccessRate = 0, // Placeholder until execution tracking is implemented
+            AverageExecutionTime = TimeSpan.Zero, // Placeholder until execution tracking is implemented
+            UniqueUsers = 0, // Placeholder until user tracking is implemented
+            CreatedAt = library.CreatedAt,
+            LastModified = library.UpdatedAt,
+            StatisticsGeneratedAt = DateTime.UtcNow,
+            StatisticsPeriod = TimeSpan.FromDays(30), // Default to 30 days
+            ExtendedMetrics = new Dictionary<string, object>
+            {
+                { "UniqueVariableCount", uniqueVariables },
+                { "LastTemplateCreated", (object?)lastTemplateCreated ?? DateTime.MinValue },
+                { "TemplatesWithExecutions", 0 } // Placeholder until execution tracking is implemented
+            }
         };
     }
 

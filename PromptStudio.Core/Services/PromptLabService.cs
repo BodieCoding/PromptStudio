@@ -499,5 +499,23 @@ public class PromptLabService : IPromptLabService
         return !await query.AnyAsync();
     }
 
+    public async Task<bool> LabExistsAsync(Guid labId, Guid? tenantId = null, bool includeDeleted = false)
+    {
+        var query = _context.PromptLabs
+            .Where(lab => lab.Id == labId);
+
+        if (!includeDeleted)
+        {
+            query = query.Where(lab => lab.DeletedAt == null);
+        }
+
+        if (tenantId.HasValue)
+        {
+            query = query.Where(lab => lab.OrganizationId == tenantId.Value);
+        }
+
+        return await query.AnyAsync();
+    }
+
     #endregion
 }

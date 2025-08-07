@@ -13,11 +13,11 @@ namespace PromptStudio.Core.Services;
 /// Service implementation for comprehensive prompt template lifecycle management within library contexts.
 /// Provides template creation, versioning, content validation, and collaborative features.
 /// </summary>
-public class TemplateService : IPromptTemplateService
+public class PromptTemplateService : IPromptTemplateService
 {
     private readonly IPromptStudioDbContext _context;
 
-    public TemplateService(IPromptStudioDbContext context)
+    public PromptTemplateService(IPromptStudioDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
