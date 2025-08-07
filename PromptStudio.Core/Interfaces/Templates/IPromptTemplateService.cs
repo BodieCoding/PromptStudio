@@ -60,7 +60,7 @@ public interface IPromptTemplateService
     /// <param name="userId">Creator identifier for ownership and audit trails</param>
     /// <param name="variables">Variable definitions with types and constraints</param>
     /// <param name="tags">Optional metadata tags for enhanced categorization</param>
-    /// <param name="isPublic">Whether template is publicly discoverable</param>
+    /// <param name="requiresApproval">Whether template requires approval before publication</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Created template with generated identifiers and initial version</returns>
     /// <exception cref="ArgumentException">Thrown when name, content, or variables are invalid</exception>
@@ -115,7 +115,7 @@ public interface IPromptTemplateService
         string userId,
         IEnumerable<PromptVariable>? variables = null,
         IEnumerable<string>? tags = null,
-        bool isPublic = false,
+        bool requiresApproval = false,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -168,7 +168,7 @@ public interface IPromptTemplateService
     /// <param name="category">Optional filter by template category</param>
     /// <param name="tags">Optional filter by tags using AND logic</param>
     /// <param name="searchTerm">Optional text search across names, descriptions, and content</param>
-    /// <param name="isPublic">Optional filter by public visibility</param>
+    /// <param name="requiresApproval">Optional filter by approval requirements</param>
     /// <param name="hasExecutions">Optional filter for templates with execution history</param>
     /// <param name="includeArchived">Whether to include archived templates</param>
     /// <param name="sortBy">Sorting criteria for results</param>
@@ -202,7 +202,7 @@ public interface IPromptTemplateService
         TemplateCategory? category = null,
         IEnumerable<string>? tags = null,
         string? searchTerm = null,
-        bool? isPublic = null,
+        bool? requiresApproval = null,
         bool? hasExecutions = null,
         bool includeArchived = false,
         string sortBy = "Name",
@@ -267,7 +267,7 @@ public interface IPromptTemplateService
     /// <param name="description">Updated description (optional)</param>
     /// <param name="category">Updated category classification (optional)</param>
     /// <param name="tags">Updated tag collection (optional)</param>
-    /// <param name="isPublic">Updated public visibility setting (optional)</param>
+    /// <param name="requiresApproval">Updated approval requirement setting (optional)</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Updated template with new metadata</returns>
     /// <exception cref="ArgumentException">Thrown when templateId is invalid or name violates constraints</exception>
@@ -280,7 +280,7 @@ public interface IPromptTemplateService
     /// <item><description>User must have administrative access to template</description></item>
     /// <item><description>Name changes must maintain uniqueness within library scope</description></item>
     /// <item><description>Category changes affect organization and discovery</description></item>
-    /// <item><description>Public visibility changes require special permissions</description></item>
+    /// <item><description>Approval requirement changes require special permissions</description></item>
     /// </list>
     /// 
     /// <para><strong>Implementation Notes:</strong></para>
@@ -298,7 +298,7 @@ public interface IPromptTemplateService
         string? description = null,
         TemplateCategory? category = null,
         IEnumerable<string>? tags = null,
-        bool? isPublic = null,
+        bool? requiresApproval = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>

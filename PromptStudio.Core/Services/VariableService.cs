@@ -21,6 +21,8 @@ public class VariableService : IVariableService
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
+    #region Variable Extraction & Resolution
+
     /// <summary>
     /// Extracts variable names from a prompt template content
     /// </summary>
@@ -77,7 +79,7 @@ public class VariableService : IVariableService
     /// <returns>CSV content with headers for all variables</returns>
     public string GenerateVariableCsvTemplate(PromptTemplate template)
     {
-        var variableNames = ExtractVariableNames(template.Content);
+        var variableNames = ExtractVariableNames(template.Content.Content);
         if (!variableNames.Any())
         {
             return "No variables found in this prompt template.";
@@ -185,27 +187,32 @@ public class VariableService : IVariableService
     }
 
     /// <summary>
-    /// Get variable collections for a prompt template
+    /// Gets all variable collections for a prompt template
     /// </summary>
-    /// <param name="promptId">Prompt template ID</param>
+    /// <param name="promptId">Prompt template ID to filter by</param>
     /// <returns>List of variable collections</returns>
-    public async Task<List<VariableCollection>> GetVariableCollectionsAsync(int promptId)
+    public async Task<List<VariableCollection>> GetVariableCollectionsAsync(Guid? promptId = null)
     {
-        return await _context.VariableCollections
-            .Where(vc => vc.PromptTemplateId == promptId)
-            .OrderBy(vc => vc.Name)
-            .ToListAsync();
+        var query = _context.VariableCollections.AsQueryable();
+        
+        if (promptId.HasValue)
+        {
+            query = query.Where(vc => vc.PromptTemplateId == promptId.Value);
+        }
+        
+        return await query.OrderBy(vc => vc.Name).ToListAsync();
     }
 
     /// <summary>
-    /// Create a variable collection from CSV data
+    /// Creates a variable collection from CSV data
     /// </summary>
     /// <param name="name">Collection name</param>
-    /// <param name="promptId">Prompt template ID</param>
-    /// <param name="csvData">CSV data with variables</param>
+    /// <param name="csvData">CSV data with variable values</param>
+    /// <param name="promptId">Associated prompt template ID</param>
     /// <param name="description">Optional collection description</param>
-    /// <returns>Created variable collection</returns>
-    public async Task<VariableCollection> CreateVariableCollectionAsync(string name, int promptId, string csvData, string? description = null)
+    /// <returns>The created variable collection</returns>
+    public async Task<VariableCollection> CreateVariableCollectionFromCsvAsync(string name, string csvData, 
+        Guid promptId, string? description = null)
     {
         var template = await _context.PromptTemplates
             .Include(pt => pt.Variables)
@@ -216,11 +223,12 @@ public class VariableService : IVariableService
             throw new ArgumentException($"Prompt template with ID {promptId} not found");
         }
 
-        var expectedVariables = ExtractVariableNames(template.Content);
+        var expectedVariables = ExtractVariableNames(template.Content.Content);
         var variableSets = ParseVariableCsv(csvData, expectedVariables);
 
         var collection = new VariableCollection
         {
+            Id = Guid.NewGuid(),
             Name = name,
             Description = description ?? "",
             PromptTemplateId = promptId,
@@ -240,7 +248,7 @@ public class VariableService : IVariableService
     /// </summary>
     /// <param name="templateId">Prompt template ID</param>
     /// <returns>CSV template content</returns>
-    public async Task<string> GenerateCsvTemplateAsync(int templateId)
+    public async Task<string> GenerateCsvTemplateAsync(Guid templateId)
     {
         var template = await _context.PromptTemplates
             .Include(pt => pt.Variables)
@@ -259,12 +267,65 @@ public class VariableService : IVariableService
     /// </summary>
     /// <param name="promptId">Prompt template ID</param>
     /// <returns>List of variable collections</returns>
-    public async Task<List<VariableCollection>> ListVariableCollectionsAsync(int promptId)
+    public async Task<List<VariableCollection>> ListVariableCollectionsAsync(Guid? promptId = null)
     {
         return await GetVariableCollectionsAsync(promptId);
     }
 
+    /// <summary>
+    /// Gets a specific variable collection by ID
+    /// </summary>
+    /// <param name="collectionId">Variable collection ID</param>
+    /// <returns>Variable collection or null if not found</returns>
+    public async Task<VariableCollection?> GetVariableCollectionAsync(Guid collectionId)
+    {
+        return await _context.VariableCollections
+            .FirstOrDefaultAsync(vc => vc.Id == collectionId);
+    }
+
+    /// <summary>
+    /// Deletes a variable collection
+    /// </summary>
+    /// <param name="collectionId">Variable collection ID</param>
+    /// <returns>True if collection was deleted, false if not found</returns>
+    public async Task<bool> DeleteVariableCollectionAsync(Guid collectionId)
+    {
+        var collection = await _context.VariableCollections
+            .FirstOrDefaultAsync(vc => vc.Id == collectionId);
+
+        if (collection == null)
+        {
+            return false;
+        }
+
+        _context.VariableCollections.Remove(collection);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+    #endregion
     #region Private Helper Methods
+
+    /// <summary>
+    /// Resolves variables in a prompt template with provided values
+    /// </summary>
+    /// <param name="template">The prompt template containing variable placeholders</param>
+    /// <param name="variables">Dictionary of variable names and their values</param>
+    /// <returns>The resolved prompt with variables substituted</returns>
+    public async Task<string> ResolveVariablesAsync(string template, Dictionary<string, object> variables)
+    {
+        await Task.CompletedTask; // For async compliance
+        
+        var resolvedContent = template;
+
+        foreach (var variable in variables)
+        {
+            var placeholder = $"{{{{{variable.Key}}}}}";
+            var value = variable.Value?.ToString() ?? "";
+            resolvedContent = resolvedContent.Replace(placeholder, value);
+        }
+
+        return resolvedContent;
+    }
 
     /// <summary>
     /// Resolves a prompt template by substituting variables with provided values
@@ -274,7 +335,7 @@ public class VariableService : IVariableService
     /// <returns>The resolved prompt with variables substituted</returns>
     private string ResolvePrompt(PromptTemplate template, Dictionary<string, string> variableValues)
     {
-        var resolvedContent = template.Content;
+        var resolvedContent = template.Content.Content;
 
         foreach (var variable in template.Variables)
         {

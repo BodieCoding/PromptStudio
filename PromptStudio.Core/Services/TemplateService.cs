@@ -33,7 +33,7 @@ public class TemplateService : IPromptTemplateService
         string userId,
         IEnumerable<PromptVariable>? variables = null,
         IEnumerable<string>? tags = null,
-        bool isPublic = false,
+        bool requiresApproval = false,
         CancellationToken cancellationToken = default)
     {
         // Validate library exists and user has access
@@ -67,7 +67,7 @@ public class TemplateService : IPromptTemplateService
             PromptLibraryId = libraryId,
             Content = new PromptContent { Content = content },
             Category = category,
-            IsPublic = isPublic,
+            RequiresApproval = requiresApproval,
             Version = "1.0.0",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -110,7 +110,7 @@ public class TemplateService : IPromptTemplateService
 
         if (includeExecutions)
         {
-            query = query.Include(t => t.PromptExecutions.Take(10));
+            query = query.Include(t => t.Executions.Take(10));
         }
 
         query = query.Where(t => t.Id == templateId && t.DeletedAt == null);
@@ -134,7 +134,7 @@ public class TemplateService : IPromptTemplateService
         TemplateCategory? category = null,
         IEnumerable<string>? tags = null,
         string? searchTerm = null,
-        bool? isPublic = null,
+        bool? requiresApproval = null,
         bool? hasExecutions = null,
         bool includeArchived = false,
         string sortBy = "Name",
@@ -155,9 +155,9 @@ public class TemplateService : IPromptTemplateService
             query = query.Where(t => t.Category == category.Value);
         }
 
-        if (isPublic.HasValue)
+        if (requiresApproval.HasValue)
         {
-            query = query.Where(t => t.IsPublic == isPublic.Value);
+            query = query.Where(t => t.RequiresApproval == requiresApproval.Value);
         }
 
         if (!string.IsNullOrEmpty(searchTerm))
@@ -219,8 +219,8 @@ public class TemplateService : IPromptTemplateService
         // TODO: Implement access control validation
 
         // Update content
-        template.Content = new PromptContent { Value = content };
-        
+        template.Content = new PromptContent { Content = content };
+
         // Update variables if provided
         if (variables != null)
         {
@@ -251,7 +251,7 @@ public class TemplateService : IPromptTemplateService
         string? description = null,
         TemplateCategory? category = null,
         IEnumerable<string>? tags = null,
-        bool? isPublic = null,
+        bool? requiresApproval = null,
         CancellationToken cancellationToken = default)
     {
         var template = await _context.PromptTemplates
@@ -299,9 +299,9 @@ public class TemplateService : IPromptTemplateService
             template.Tags = System.Text.Json.JsonSerializer.Serialize(tags);
         }
 
-        if (isPublic.HasValue)
+        if (requiresApproval.HasValue)
         {
-            template.IsPublic = isPublic.Value;
+            template.RequiresApproval = requiresApproval.Value;
         }
 
         template.UpdatedAt = DateTime.UtcNow;
@@ -326,20 +326,27 @@ public class TemplateService : IPromptTemplateService
 
         // TODO: Implement comprehensive template analysis
         // For now, return a basic analysis result
-
+       
         return new TemplateAnalysisResult
         {
-            TemplateId = templateId,
-            Version = template.Version,
-            ComplexityScore = 0.5, // Placeholder
-            QualityScore = 0.8, // Placeholder
-            OptimizationSuggestions = new List<string>
-            {
+            ComplexityScore = 0.5, // Placeholder for complexity score
+            VariableCount = template.Variables?.Count ?? 0,
+            TokenCount = template.Content?.Content?.Length ?? 0, // Simplified token count
+            QualityIssues = 
+            [
+                "No major quality issues detected"
+            ],
+            OptimizationSuggestions =
+            [
                 "Consider adding more specific variable descriptions",
                 "Template content could benefit from clearer structure"
-            },
-            QualityIssues = new List<string>(),
-            AnalyzedAt = DateTime.UtcNow
+            ],
+            Metrics = new Dictionary<string, object>
+            {
+                { "variableCount", template.Variables?.Count ?? 0 },
+                { "tokenCount", template.Content?.Content?.Length ?? 0 },
+                { "executionTime", 100 } // Placeholder for execution time in ms
+            }
         };
     }
 
@@ -360,7 +367,7 @@ public class TemplateService : IPromptTemplateService
 
         return new PagedResult<TemplateVersion>
         {
-            Items = new List<TemplateVersion>(),
+            Items = [],
             TotalCount = 0,
             Skip = (pageNumber - 1) * pageSize,
             Take = pageSize

@@ -700,7 +700,7 @@ namespace PromptStudio.Core.Services
             try
             {
                 var query = _context.PromptExecutions
-                    .Where(e => e.PromptLibraryId == libraryId && e.CreatedAt < cutoffDate);
+                    .Where(e => e.Id == libraryId && e.CreatedAt < cutoffDate);
 
                 if (templateId.HasValue)
                     query = query.Where(e => e.PromptTemplateId == templateId.Value);
