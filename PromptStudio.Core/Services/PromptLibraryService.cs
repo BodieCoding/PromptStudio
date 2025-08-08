@@ -32,7 +32,7 @@ public class PromptLibraryService : IPromptLibraryService
     /// <param name="promptTemplateService">Prompt template service for template operations</param>
     /// <param name="promptLabService">Prompt lab service for lab operations</param>
     public PromptLibraryService(
-        IPromptStudioDbContext context, 
+        IPromptStudioDbContext context,
         IPromptTemplateService promptTemplateService,
         IPromptLabService promptLabService)
     {
@@ -44,6 +44,7 @@ public class PromptLibraryService : IPromptLibraryService
     #endregion
 
     #region Library CRUD Operations   
+
     /// <summary>
     /// Get all prompt libraries
     /// </summary>
@@ -63,7 +64,9 @@ public class PromptLibraryService : IPromptLibraryService
         }
 
         return await query.OrderBy(l => l.Name).ToListAsync();
-    }    /// <summary>
+    }
+
+    /// <summary>
     /// Get a prompt library by ID
     /// </summary>
     /// <param name="id">Library ID</param>
@@ -75,7 +78,9 @@ public class PromptLibraryService : IPromptLibraryService
             .Include(l => l.PromptTemplates.Where(pt => pt.DeletedAt == null))
                 .ThenInclude(pt => pt.Variables)
             .FirstOrDefaultAsync(l => l.Id == id);
-    }    /// <summary>
+    }   
+    
+    /// <summary>
     /// Create a new prompt library
     /// </summary>
     /// <param name="name">Library name</param>
@@ -111,7 +116,9 @@ public class PromptLibraryService : IPromptLibraryService
         await _context.SaveChangesAsync();
 
         return library;
-    }    /// <summary>
+    }
+
+    /// <summary>
     /// Update an existing prompt library
     /// </summary>
     /// <param name="libraryId">Library ID</param>
@@ -171,7 +178,9 @@ public class PromptLibraryService : IPromptLibraryService
         }
 
         return library;
-    }    /// <summary>
+    }
+
+    /// <summary>
     /// Delete a prompt library by ID (soft delete)
     /// </summary>
     /// <param name="libraryId">Library ID</param>
@@ -194,7 +203,7 @@ public class PromptLibraryService : IPromptLibraryService
             // Soft delete the library and its templates
             library.DeletedAt = DateTime.UtcNow;
             library.UpdatedAt = DateTime.UtcNow;
-            
+
             // Soft delete all templates in the library
             foreach (var template in library.PromptTemplates)
             {
@@ -213,7 +222,9 @@ public class PromptLibraryService : IPromptLibraryService
 
     #endregion
 
-    #region Library Discovery    /// <summary>
+    #region Library Discovery    
+
+    /// <summary>
     /// Search prompt libraries by name or description
     /// </summary>
     /// <param name="searchTerm">Search term to match against name or description</param>
@@ -233,13 +244,15 @@ public class PromptLibraryService : IPromptLibraryService
 
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
-            query = query.Where(l => 
-                l.Name.Contains(searchTerm) || 
+            query = query.Where(l =>
+                l.Name.Contains(searchTerm) ||
                 (l.Description != null && l.Description.Contains(searchTerm)));
         }
 
         return await query.OrderBy(l => l.Name).ToListAsync();
-    }    /// <summary>
+    }
+
+    /// <summary>
     /// Get libraries by visibility level
     /// </summary>
     /// <param name="visibility">Visibility level to filter by</param>
@@ -270,7 +283,7 @@ public class PromptLibraryService : IPromptLibraryService
     public async Task<List<PromptLibrary>> GetRecentlyUpdatedLibrariesAsync(int daysBack = 7, Guid? promptLabId = null)
     {
         var cutoffDate = DateTime.UtcNow.AddDays(-daysBack);
-        
+
         var query = _context.PromptLibraries
             .Where(l => l.DeletedAt == null) // Apply soft delete filter
             .Include(l => l.PromptTemplates.Where(pt => pt.DeletedAt == null))
@@ -287,7 +300,9 @@ public class PromptLibraryService : IPromptLibraryService
 
     #endregion
 
-    #region Library Statistics    /// <summary>
+    #region Library Statistics    
+
+    /// <summary>
     /// Get library statistics including template count, execution count, etc.
     /// </summary>
     /// <param name="libraryId">Library ID</param>
@@ -372,7 +387,9 @@ public class PromptLibraryService : IPromptLibraryService
 
     #endregion
 
-    #region Library Validation    /// <summary>
+    #region Library Validation    
+
+    /// <summary>
     /// Check if a library name is unique within a prompt lab
     /// </summary>
     /// <param name="name">Library name to check</param>
@@ -436,7 +453,9 @@ public class PromptLibraryService : IPromptLibraryService
 
     #endregion
 
-    #region Import/Export    /// <summary>
+    #region Import/Export    
+
+    /// <summary>
     /// Import a prompt library from JSON data
     /// </summary>
     /// <param name="jsonContent">JSON content representing the library and its templates</param>
@@ -447,7 +466,7 @@ public class PromptLibraryService : IPromptLibraryService
     public async Task<PromptLibrary?> ImportLibraryFromJsonAsync(string jsonContent, Guid promptLabId, bool importExecutionHistory, bool overwriteExisting)
     {
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        
+
         // TODO: Implement JSON import logic similar to the legacy collection import
         // This would need to be adapted to work with the new PromptLibrary structure
         await Task.CompletedTask; // Satisfy async requirement
@@ -499,14 +518,14 @@ public class PromptLibraryService : IPromptLibraryService
                     v.DefaultValue,
                     v.Type
                 }),
-                ExecutionHistory = includeExecutionHistory 
+                ExecutionHistory = includeExecutionHistory
                     ? new object[] { } // TODO: Implement when execution relationship is fixed
                     : null
             })
         };
 
-        return JsonSerializer.Serialize(exportData, new JsonSerializerOptions 
-        { 
+        return JsonSerializer.Serialize(exportData, new JsonSerializerOptions
+        {
             WriteIndented = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         });
