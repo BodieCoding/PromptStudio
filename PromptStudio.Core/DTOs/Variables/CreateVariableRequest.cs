@@ -40,7 +40,7 @@ public class CreateVariableRequest
     /// <summary>
     /// Gets or sets the validation constraints for the variable
     /// </summary>
-    public Dictionary<string, object> ValidationConstraints { get; set; } = new();
+    public Dictionary<string, object> ValidationConstraints { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the template ID this variable is associated with
@@ -50,10 +50,10 @@ public class CreateVariableRequest
     /// <summary>
     /// Gets or sets additional metadata for the variable
     /// </summary>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 
     /// <summary>
     /// Gets or sets tags for categorizing the variable
     /// </summary>
-    public List<string> Tags { get; set; } = new();
+    public List<string> Tags { get; set; } = [];
 }

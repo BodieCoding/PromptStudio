@@ -526,5 +526,5 @@ public class FlowVariant : AuditableEntity
     /// Navigation property for Entity Framework relationships.
     /// Use Include() in queries when execution details are needed for analysis.
     /// </remarks>
-    public virtual ICollection<FlowExecution> Executions { get; set; } = new List<FlowExecution>();
+    public virtual ICollection<FlowExecution> Executions { get; set; } = [];
 }

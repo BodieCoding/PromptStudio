@@ -23,5 +23,5 @@ public class DetailedModelInfo : ModelInfo
     /// <summary>
     /// Supported features (function_calling, vision, etc.)
     /// </summary>
-    public List<string> Features { get; set; } = new();
+    public List<string> Features { get; set; } = [];
 }

@@ -338,7 +338,7 @@ public class PromptTemplate : AuditableEntity
     /// Variables enable template reusability by allowing dynamic content substitution.
     /// Each variable defines type, validation rules, and default values.
     /// </remarks>
-    public virtual ICollection<PromptVariable> Variables { get; set; } = new List<PromptVariable>();
+    public virtual ICollection<PromptVariable> Variables { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the collection of execution records for this template.
@@ -349,7 +349,7 @@ public class PromptTemplate : AuditableEntity
     /// Execution history is essential for performance analysis, debugging,
     /// quality assessment, and compliance auditing.
     /// </remarks>
-    public virtual ICollection<PromptExecution> Executions { get; set; } = new List<PromptExecution>();
+    public virtual ICollection<PromptExecution> Executions { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the collection of variable collections associated with this template.
@@ -360,7 +360,7 @@ public class PromptTemplate : AuditableEntity
     /// Variable collections enable batch testing, A/B testing, and systematic
     /// evaluation of template performance across different input scenarios.
     /// </remarks>
-    public virtual ICollection<VariableCollection> VariableCollections { get; set; } = new List<VariableCollection>();
+    public virtual ICollection<VariableCollection> VariableCollections { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the collection of version history records for this template.
@@ -371,7 +371,7 @@ public class PromptTemplate : AuditableEntity
     /// Version tracking enables rollback capabilities, change impact analysis,
     /// and compliance with version control requirements.
     /// </remarks>
-    public virtual ICollection<TemplateVersion> Versions { get; set; } = new List<TemplateVersion>();
+    public virtual ICollection<TemplateVersion> Versions { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the collection of permission records governing access to this template.
@@ -382,5 +382,5 @@ public class PromptTemplate : AuditableEntity
     /// Granular permissions enable secure collaboration and governance
     /// in multi-tenant and team-based environments.
     /// </remarks>
-    public virtual ICollection<TemplatePermission> Permissions { get; set; } = new List<TemplatePermission>();
+    public virtual ICollection<TemplatePermission> Permissions { get; set; } = [];
 }

@@ -245,7 +245,7 @@ public class PromptLibrary : AuditableEntity
     /// Templates within a library share governance settings, permissions,
     /// and organizational context while maintaining individual execution history.
     /// </remarks>
-    public virtual ICollection<PromptTemplate> PromptTemplates { get; set; } = new List<PromptTemplate>();
+    public virtual ICollection<PromptTemplate> PromptTemplates { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the collection of permission records governing access to this library.
@@ -256,5 +256,5 @@ public class PromptLibrary : AuditableEntity
     /// Granular permissions enable secure collaboration, role-based access control,
     /// and compliance with organizational security requirements.
     /// </remarks>
-    public virtual ICollection<LibraryPermission> Permissions { get; set; } = new List<LibraryPermission>();
+    public virtual ICollection<LibraryPermission> Permissions { get; set; } = [];
 }

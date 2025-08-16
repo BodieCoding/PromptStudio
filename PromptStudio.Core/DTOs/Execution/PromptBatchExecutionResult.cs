@@ -45,7 +45,7 @@ public class PromptBatchExecutionResult
     /// <summary>
     /// Individual execution results
     /// </summary>
-    public List<PromptExecutionBatchItem> Results { get; set; } = new();
+    public List<PromptExecutionBatchItem> Results { get; set; } = [];
 
     /// <summary>
     /// Overall success rate
@@ -75,5 +75,5 @@ public class PromptBatchExecutionResult
     /// <summary>
     /// Performance insights
     /// </summary>
-    public Dictionary<string, object> PerformanceMetrics { get; set; } = new();
+    public Dictionary<string, object> PerformanceMetrics { get; set; } = [];
 }

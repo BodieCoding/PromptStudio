@@ -28,23 +28,23 @@ public class CollectionUpdateResult
     /// Gets or sets validation errors that occurred during the update.
     /// </summary>
     /// <value>Collection of validation error messages.</value>
-    public List<string> ValidationErrors { get; set; } = new();
+    public List<string> ValidationErrors { get; set; } = [];
 
     /// <summary>
     /// Gets or sets warning messages from the update operation.
     /// </summary>
     /// <value>Collection of warning messages for non-critical issues.</value>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
 
     /// <summary>
     /// Gets or sets details about the changes made to the collection.
     /// </summary>
     /// <value>Dictionary containing information about what was changed.</value>
-    public Dictionary<string, object> ChangeDetails { get; set; } = new();
+    public Dictionary<string, object> ChangeDetails { get; set; } = [];
 
     /// <summary>
     /// Gets or sets statistics about the update operation.
     /// </summary>
     /// <value>Dictionary containing update operation statistics.</value>
-    public Dictionary<string, object> UpdateStatistics { get; set; } = new();
+    public Dictionary<string, object> UpdateStatistics { get; set; } = [];
 }

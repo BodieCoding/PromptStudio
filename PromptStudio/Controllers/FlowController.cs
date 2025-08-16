@@ -161,7 +161,7 @@ namespace PromptStudio.Controllers
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public object FlowData { get; set; } = new { };
-        public List<string> Tags { get; set; } = new();
+        public List<string> Tags { get; set; } = [];
     }
 
     public class UpdateFlowRequest
@@ -169,18 +169,18 @@ namespace PromptStudio.Controllers
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public object FlowData { get; set; } = new { };
-        public List<string> Tags { get; set; } = new();
+        public List<string> Tags { get; set; } = [];
     }
 
     public class ExecuteFlowRequest
     {
-        public Dictionary<string, object> Variables { get; set; } = new();
+        public Dictionary<string, object> Variables { get; set; } = [];
     }
 
     public class FlowExecutionResult
     {
         public int ExecutionId { get; set; }
-        public Dictionary<string, object> Output { get; set; } = new();
+        public Dictionary<string, object> Output { get; set; } = [];
         public bool Success { get; set; }
         public string? ErrorMessage { get; set; }
         public DateTime ExecutedAt { get; set; }

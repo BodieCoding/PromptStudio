@@ -37,11 +37,11 @@ public class FlowValidationResult
     /// Gets or sets the collection of validation errors that prevent flow execution.
     /// </summary>
     /// <value>A list of critical errors that must be resolved before the flow can be executed.</value>
-    public List<ValidationError> Errors { get; set; } = new();
+    public List<ValidationError> Errors { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of validation warnings that suggest improvements.
     /// </summary>
     /// <value>A list of non-critical issues that should be addressed for optimal flow performance and maintainability.</value>
-    public List<ValidationWarning> Warnings { get; set; } = new();
+    public List<ValidationWarning> Warnings { get; set; } = [];
 }

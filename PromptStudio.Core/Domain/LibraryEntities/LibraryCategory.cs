@@ -191,7 +191,7 @@ public class LibraryCategory : AuditableEntity
     /// Navigation property for Entity Framework Core.
     /// Supports hierarchical category management and tree operations.
     /// </remarks>
-    public virtual ICollection<LibraryCategory> ChildCategories { get; set; } = new List<LibraryCategory>();
+    public virtual ICollection<LibraryCategory> ChildCategories { get; set; } = [];
     
     /// <summary>
     /// Gets or sets whether this is a system-defined category.
@@ -325,5 +325,5 @@ public class LibraryCategory : AuditableEntity
     /// Navigation property for Entity Framework Core.
     /// Enables efficient querying of libraries by category.
     /// </remarks>
-    public virtual ICollection<PromptLibrary> PromptLibraries { get; set; } = new List<PromptLibrary>();
+    public virtual ICollection<PromptLibrary> PromptLibraries { get; set; } = [];
 }

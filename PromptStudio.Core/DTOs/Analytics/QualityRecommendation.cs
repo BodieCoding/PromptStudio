@@ -60,5 +60,5 @@ public class QualityRecommendation
     /// Gets or sets the list of specific action items to implement the recommendation.
     /// </summary>
     /// <value>A list of concrete steps that can be taken to implement the quality improvement.</value>
-    public List<string> ActionItems { get; set; } = new();
+    public List<string> ActionItems { get; set; } = [];
 }

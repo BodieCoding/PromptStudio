@@ -50,12 +50,12 @@ public class ExecutionReport
     /// <summary>
     /// Detailed analytics sections
     /// </summary>
-    public List<ExecutionReportSection> Sections { get; set; } = new();
+    public List<ExecutionReportSection> Sections { get; set; } = [];
 
     /// <summary>
     /// Key performance indicators
     /// </summary>
-    public List<ExecutionReportKPI> KeyPerformanceIndicators { get; set; } = new();
+    public List<ExecutionReportKPI> KeyPerformanceIndicators { get; set; } = [];
 
     /// <summary>
     /// Charts and visualizations data
@@ -65,12 +65,12 @@ public class ExecutionReport
     /// <summary>
     /// Recommendations based on the analysis
     /// </summary>
-    public List<string> Recommendations { get; set; } = new();
+    public List<string> Recommendations { get; set; } = [];
 
     /// <summary>
     /// Report parameters used for generation
     /// </summary>
-    public Dictionary<string, object> Parameters { get; set; } = new();
+    public Dictionary<string, object> Parameters { get; set; } = [];
 
     /// <summary>
     /// Report metadata
@@ -121,17 +121,17 @@ public class ExecutionReportSummary
     /// <summary>
     /// Key highlights and insights
     /// </summary>
-    public List<string> KeyHighlights { get; set; } = new();
+    public List<string> KeyHighlights { get; set; } = [];
 
     /// <summary>
     /// Notable trends or patterns
     /// </summary>
-    public List<string> NotableTrends { get; set; } = new();
+    public List<string> NotableTrends { get; set; } = [];
 
     /// <summary>
     /// Areas of concern
     /// </summary>
-    public List<string> Concerns { get; set; } = new();
+    public List<string> Concerns { get; set; } = [];
 }
 
 /// <summary>
@@ -162,7 +162,7 @@ public class ExecutionReportSection
     /// <summary>
     /// Section content/data
     /// </summary>
-    public Dictionary<string, object> Content { get; set; } = new();
+    public Dictionary<string, object> Content { get; set; } = [];
 
     /// <summary>
     /// Subsections
@@ -249,7 +249,7 @@ public class ExecutionReportChart
     /// <summary>
     /// Chart data
     /// </summary>
-    public Dictionary<string, object> Data { get; set; } = new();
+    public Dictionary<string, object> Data { get; set; } = [];
 
     /// <summary>
     /// Chart configuration options

@@ -193,7 +193,7 @@ public class WorkflowCategory : AuditableEntity
     /// Navigation property for Entity Framework Core.
     /// Supports hierarchical category management and tree operations.
     /// </remarks>
-    public virtual ICollection<WorkflowCategory> ChildCategories { get; set; } = new List<WorkflowCategory>();
+    public virtual ICollection<WorkflowCategory> ChildCategories { get; set; } = [];
     
     /// <summary>
     /// Gets or sets whether this is a system-defined workflow category.
@@ -327,5 +327,5 @@ public class WorkflowCategory : AuditableEntity
     /// Navigation property for Entity Framework Core.
     /// Enables efficient querying of workflows by category.
     /// </remarks>
-    public virtual ICollection<PromptFlow> PromptFlows { get; set; } = new List<PromptFlow>();
+    public virtual ICollection<PromptFlow> PromptFlows { get; set; } = [];
 }

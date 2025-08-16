@@ -55,23 +55,23 @@ public class LibraryPerformanceAnalytics
     /// Gets or sets the performance metrics breakdown by individual template.
     /// </summary>
     /// <value>A dictionary mapping template identifiers to their performance scores for comparative analysis.</value>
-    public Dictionary<string, double> TemplatePerformance { get; set; } = new();
+    public Dictionary<string, double> TemplatePerformance { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the performance metrics breakdown by model used in the library.
     /// </summary>
     /// <value>A dictionary mapping model names to their detailed performance metrics within this library context.</value>
-    public Dictionary<string, ModelPerformanceMetrics> ModelPerformance { get; set; } = new();
+    public Dictionary<string, ModelPerformanceMetrics> ModelPerformance { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of performance insights generated from the analytics.
     /// </summary>
     /// <value>A list of performance insights providing actionable intelligence for optimization.</value>
-    public List<PerformanceInsight> Insights { get; set; } = new();
+    public List<PerformanceInsight> Insights { get; set; } = [];
 
     /// <summary>
     /// Gets or sets additional custom performance metrics specific to this library.
     /// </summary>
     /// <value>A dictionary containing extended metrics and library-specific performance indicators.</value>
-    public Dictionary<string, object> CustomMetrics { get; set; } = new();
+    public Dictionary<string, object> CustomMetrics { get; set; } = [];
 }

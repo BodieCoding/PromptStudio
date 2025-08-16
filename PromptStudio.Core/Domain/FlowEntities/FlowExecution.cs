@@ -54,7 +54,6 @@ namespace PromptStudio.Core.Domain;
 ///     ExecutedBy = currentUser.Id,
 ///     Environment = "production",
 ///     Status = FlowExecutionStatus.Running,
-///     TenantId = currentTenantId
 /// };
 /// 
 /// // Completing execution with results
@@ -302,6 +301,6 @@ public class FlowExecution : AuditableEntity
     public DateTime? FeedbackAt { get; set; }
 
     // Navigation properties
-    public virtual ICollection<NodeExecution> NodeExecutions { get; set; } = new List<NodeExecution>();
-    public virtual ICollection<ExecutionMetric> Metrics { get; set; } = new List<ExecutionMetric>();
+    public virtual ICollection<NodeExecution> NodeExecutions { get; set; } = [];
+    public virtual ICollection<ExecutionMetric> Metrics { get; set; } = [];
 }

@@ -26,7 +26,7 @@ public class VariableFilterOptions
     /// <summary>
     /// Gets or sets tags to filter by
     /// </summary>
-    public List<string> Tags { get; set; } = new();
+    public List<string> Tags { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the template ID to filter variables by

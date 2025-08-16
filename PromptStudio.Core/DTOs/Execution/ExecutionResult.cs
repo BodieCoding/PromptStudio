@@ -49,7 +49,7 @@ public class ExecutionResult
     /// <value>
     /// A list of error messages. Empty list indicates no errors occurred.
     /// </value>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of warning messages generated during execution.
@@ -58,7 +58,7 @@ public class ExecutionResult
     /// <value>
     /// A list of warning messages. Empty list indicates no warnings were generated.
     /// </value>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the unique identifier for this execution instance.
@@ -105,7 +105,7 @@ public class ExecutionResult
     /// <value>
     /// A dictionary containing execution metadata such as token counts, model information, or custom properties.
     /// </value>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the identifier of the prompt template that was executed.
@@ -123,7 +123,7 @@ public class ExecutionResult
     /// <value>
     /// A dictionary of variable names and their values used during execution.
     /// </value>
-    public Dictionary<string, string> Variables { get; set; } = new();
+    public Dictionary<string, string> Variables { get; set; } = [];
 
     /// <summary>
     /// Gets a value indicating whether the execution encountered any errors.
@@ -198,7 +198,7 @@ public class ExecutionResult
         {
             IsSuccess = false,
             ExecutionId = executionId ?? Guid.NewGuid(),
-            Errors = new List<string> { error }
+            Errors = [error]
         };
     }
 

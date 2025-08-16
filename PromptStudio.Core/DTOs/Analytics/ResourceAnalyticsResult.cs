@@ -50,7 +50,7 @@ public class ResourceAnalyticsResult
     /// <summary>
     /// Resource optimization recommendations
     /// </summary>
-    public List<ResourceOptimizationRecommendation> Recommendations { get; set; } = new();
+    public List<ResourceOptimizationRecommendation> Recommendations { get; set; } = [];
 }
 
 /// <summary>
@@ -106,7 +106,7 @@ public class ResourceAnalyticsSummary
     /// <summary>
     /// Key resource insights
     /// </summary>
-    public List<string> KeyInsights { get; set; } = new();
+    public List<string> KeyInsights { get; set; } = [];
 }
 
 /// <summary>
@@ -142,17 +142,17 @@ public class ResourceUtilizationAnalytics
     /// <summary>
     /// Utilization by resource type
     /// </summary>
-    public Dictionary<string, ResourceTypeUtilization> ByResourceType { get; set; } = new();
+    public Dictionary<string, ResourceTypeUtilization> ByResourceType { get; set; } = [];
 
     /// <summary>
     /// Utilization by provider
     /// </summary>
-    public Dictionary<string, ProviderUtilization> ByProvider { get; set; } = new();
+    public Dictionary<string, ProviderUtilization> ByProvider { get; set; } = [];
 
     /// <summary>
     /// Peak utilization periods
     /// </summary>
-    public List<PeakUtilizationPeriod> PeakPeriods { get; set; } = new();
+    public List<PeakUtilizationPeriod> PeakPeriods { get; set; } = [];
 }
 
 /// <summary>
@@ -183,7 +183,7 @@ public class ResourcePerformanceAnalytics
     /// <summary>
     /// Performance by resource type
     /// </summary>
-    public Dictionary<string, ResourceTypePerformance> ByResourceType { get; set; } = new();
+    public Dictionary<string, ResourceTypePerformance> ByResourceType { get; set; } = [];
 
     /// <summary>
     /// SLA compliance analytics
@@ -214,12 +214,12 @@ public class ResourceCapacityAnalytics
     /// <summary>
     /// Capacity constraints
     /// </summary>
-    public List<CapacityConstraint> Constraints { get; set; } = new();
+    public List<CapacityConstraint> Constraints { get; set; } = [];
 
     /// <summary>
     /// Scaling recommendations
     /// </summary>
-    public List<ScalingRecommendation> ScalingRecommendations { get; set; } = new();
+    public List<ScalingRecommendation> ScalingRecommendations { get; set; } = [];
 
     /// <summary>
     /// Capacity planning insights
@@ -235,27 +235,27 @@ public class ResourceEfficiencyAnalytics
     /// <summary>
     /// Efficiency metrics by resource
     /// </summary>
-    public Dictionary<string, ResourceEfficiencyMetrics> ByResource { get; set; } = new();
+    public Dictionary<string, ResourceEfficiencyMetrics> ByResource { get; set; } = [];
 
     /// <summary>
     /// Resource rightsizing opportunities
     /// </summary>
-    public List<RightsizingOpportunity> RightsizingOpportunities { get; set; } = new();
+    public List<RightsizingOpportunity> RightsizingOpportunities { get; set; } = [];
 
     /// <summary>
     /// Idle resource identification
     /// </summary>
-    public List<IdleResourceAlert> IdleResources { get; set; } = new();
+    public List<IdleResourceAlert> IdleResources { get; set; } = [];
 
     /// <summary>
     /// Over-provisioned resource alerts
     /// </summary>
-    public List<OverProvisionedResourceAlert> OverProvisionedResources { get; set; } = new();
+    public List<OverProvisionedResourceAlert> OverProvisionedResources { get; set; } = [];
 
     /// <summary>
     /// Resource consolidation opportunities
     /// </summary>
-    public List<ResourceConsolidationOpportunity> ConsolidationOpportunities { get; set; } = new();
+    public List<ResourceConsolidationOpportunity> ConsolidationOpportunities { get; set; } = [];
 }
 
 /// <summary>
@@ -266,7 +266,7 @@ public class ResourceCostAnalytics
     /// <summary>
     /// Cost by resource type
     /// </summary>
-    public Dictionary<string, ResourceTypeCost> CostByResourceType { get; set; } = new();
+    public Dictionary<string, ResourceTypeCost> CostByResourceType { get; set; } = [];
 
     /// <summary>
     /// Cost efficiency metrics
@@ -276,12 +276,12 @@ public class ResourceCostAnalytics
     /// <summary>
     /// Cost allocation by project
     /// </summary>
-    public Dictionary<string, ProjectResourceCost> CostByProject { get; set; } = new();
+    public Dictionary<string, ProjectResourceCost> CostByProject { get; set; } = [];
 
     /// <summary>
     /// Cost optimization opportunities
     /// </summary>
-    public List<ResourceCostOptimization> CostOptimizations { get; set; } = new();
+    public List<ResourceCostOptimization> CostOptimizations { get; set; } = [];
 
     /// <summary>
     /// Reserved instance analytics
@@ -296,8 +296,8 @@ public class CpuUtilizationAnalytics
     public double AverageUtilization { get; set; }
     public double PeakUtilization { get; set; }
     public double MinUtilization { get; set; }
-    public Dictionary<string, double> UtilizationByResource { get; set; } = new();
-    public List<CpuBottleneck> Bottlenecks { get; set; } = new();
+    public Dictionary<string, double> UtilizationByResource { get; set; } = [];
+    public List<CpuBottleneck> Bottlenecks { get; set; } = [];
 }
 
 public class MemoryUtilizationAnalytics
@@ -305,8 +305,8 @@ public class MemoryUtilizationAnalytics
     public double AverageUtilization { get; set; }
     public double PeakUtilization { get; set; }
     public double MinUtilization { get; set; }
-    public Dictionary<string, double> UtilizationByResource { get; set; } = new();
-    public List<MemoryPressureAlert> PressureAlerts { get; set; } = new();
+    public Dictionary<string, double> UtilizationByResource { get; set; } = [];
+    public List<MemoryPressureAlert> PressureAlerts { get; set; } = [];
 }
 
 public class StorageUtilizationAnalytics
@@ -315,8 +315,8 @@ public class StorageUtilizationAnalytics
     public double PeakUtilization { get; set; }
     public long TotalCapacityGB { get; set; }
     public long UsedCapacityGB { get; set; }
-    public Dictionary<string, StorageTypeUtilization> ByStorageType { get; set; } = new();
-    public List<StorageCapacityAlert> CapacityAlerts { get; set; } = new();
+    public Dictionary<string, StorageTypeUtilization> ByStorageType { get; set; } = [];
+    public List<StorageCapacityAlert> CapacityAlerts { get; set; } = [];
 }
 
 public class NetworkUtilizationAnalytics
@@ -324,17 +324,17 @@ public class NetworkUtilizationAnalytics
     public double AverageBandwidthUtilization { get; set; }
     public double PeakBandwidthUtilization { get; set; }
     public long TotalDataTransferredGB { get; set; }
-    public Dictionary<string, double> UtilizationByRegion { get; set; } = new();
-    public List<NetworkBottleneck> Bottlenecks { get; set; } = new();
+    public Dictionary<string, double> UtilizationByRegion { get; set; } = [];
+    public List<NetworkBottleneck> Bottlenecks { get; set; } = [];
 }
 
 public class GpuUtilizationAnalytics
 {
     public double AverageUtilization { get; set; }
     public double PeakUtilization { get; set; }
-    public Dictionary<string, double> UtilizationByGpuType { get; set; } = new();
-    public Dictionary<string, double> MemoryUtilizationByGpu { get; set; } = new();
-    public List<GpuBottleneck> Bottlenecks { get; set; } = new();
+    public Dictionary<string, double> UtilizationByGpuType { get; set; } = [];
+    public Dictionary<string, double> MemoryUtilizationByGpu { get; set; } = [];
+    public List<GpuBottleneck> Bottlenecks { get; set; } = [];
 }
 
 public class ResourceTypeUtilization
@@ -377,16 +377,16 @@ public class ResourceTypePerformance
 public class SlaComplianceAnalytics
 {
     public double OverallSlaCompliance { get; set; }
-    public Dictionary<string, double> ComplianceByService { get; set; } = new();
-    public List<SlaViolation> Violations { get; set; } = new();
+    public Dictionary<string, double> ComplianceByService { get; set; } = [];
+    public List<SlaViolation> Violations { get; set; } = [];
 }
 
 public class CapacityForecastAnalysis
 {
-    public List<CapacityForecast> Forecasts { get; set; } = new();
+    public List<CapacityForecast> Forecasts { get; set; } = [];
     public DateTime ProjectedCapacityExhaustion { get; set; }
     public double ForecastAccuracy { get; set; }
-    public List<string> ForecastAssumptions { get; set; } = new();
+    public List<string> ForecastAssumptions { get; set; } = [];
 }
 
 public class CapacityConstraint
@@ -411,9 +411,9 @@ public class ScalingRecommendation
 
 public class CapacityPlanningInsights
 {
-    public List<string> KeyFindings { get; set; } = new();
-    public List<string> Recommendations { get; set; } = new();
-    public Dictionary<string, double> GrowthProjections { get; set; } = new();
+    public List<string> KeyFindings { get; set; } = [];
+    public List<string> Recommendations { get; set; } = [];
+    public Dictionary<string, double> GrowthProjections { get; set; } = [];
 }
 
 public class ResourceEfficiencyMetrics
@@ -423,7 +423,7 @@ public class ResourceEfficiencyMetrics
     public double EfficiencyScore { get; set; }
     public double UtilizationRate { get; set; }
     public decimal CostEfficiency { get; set; }
-    public List<string> EfficiencyFactors { get; set; } = new();
+    public List<string> EfficiencyFactors { get; set; } = [];
 }
 
 public class IdleResourceAlert
@@ -447,7 +447,7 @@ public class OverProvisionedResourceAlert
 
 public class ResourceConsolidationOpportunity
 {
-    public List<string> ResourceIds { get; set; } = new();
+    public List<string> ResourceIds { get; set; } = [];
     public string ConsolidationType { get; set; } = string.Empty;
     public string RecommendedConfiguration { get; set; } = string.Empty;
     public decimal PotentialSavings { get; set; }
@@ -466,8 +466,8 @@ public class ResourceTypeCost
 public class ResourceCostEfficiency
 {
     public decimal CostPerUtilizationPoint { get; set; }
-    public Dictionary<string, decimal> EfficiencyByResourceType { get; set; } = new();
-    public List<CostInefficiency> Inefficiencies { get; set; } = new();
+    public Dictionary<string, decimal> EfficiencyByResourceType { get; set; } = [];
+    public List<CostInefficiency> Inefficiencies { get; set; } = [];
 }
 
 public class ProjectResourceCost
@@ -475,7 +475,7 @@ public class ProjectResourceCost
     public Guid ProjectId { get; set; }
     public string ProjectName { get; set; } = string.Empty;
     public decimal TotalCost { get; set; }
-    public Dictionary<string, decimal> CostByResourceType { get; set; } = new();
+    public Dictionary<string, decimal> CostByResourceType { get; set; } = [];
     public double UtilizationRate { get; set; }
 }
 
@@ -485,14 +485,14 @@ public class ResourceCostOptimization
     public string Description { get; set; } = string.Empty;
     public decimal PotentialSavings { get; set; }
     public string ImplementationEffort { get; set; } = string.Empty;
-    public List<string> AffectedResources { get; set; } = new();
+    public List<string> AffectedResources { get; set; } = [];
 }
 
 public class ReservedInstanceAnalytics
 {
     public decimal ReservedInstanceCoverage { get; set; }
     public decimal PotentialSavingsFromReservedInstances { get; set; }
-    public List<ReservedInstanceRecommendation> Recommendations { get; set; } = new();
+    public List<ReservedInstanceRecommendation> Recommendations { get; set; } = [];
 }
 
 // Additional supporting classes
@@ -604,7 +604,7 @@ public class ResourceOptimizationRecommendation
     public string Priority { get; set; } = "medium";
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public List<string> AffectedResources { get; set; } = new();
+    public List<string> AffectedResources { get; set; } = [];
     public decimal PotentialSavings { get; set; }
     public double ExpectedEfficiencyGain { get; set; }
     public string ImplementationComplexity { get; set; } = string.Empty;

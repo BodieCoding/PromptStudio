@@ -300,7 +300,7 @@ public class WorkflowLibrary : AuditableEntity
     /// Primary organizational relationship for workflow management, discovery,
     /// and execution within the library context and access control framework.
     /// </remarks>
-    public virtual ICollection<PromptFlow> PromptFlows { get; set; } = new List<PromptFlow>();
+    public virtual ICollection<PromptFlow> PromptFlows { get; set; } = [];
 
     /// <summary>
     /// Collection of access permissions for granular library security and collaboration.
@@ -310,6 +310,6 @@ public class WorkflowLibrary : AuditableEntity
     /// Enables fine-grained access control, team collaboration, and security
     /// management through explicit permission assignments and role-based access.
     /// </remarks>
-    public virtual ICollection<WorkflowLibraryPermission> Permissions { get; set; } = new List<WorkflowLibraryPermission>();
+    public virtual ICollection<WorkflowLibraryPermission> Permissions { get; set; } = [];
 }
 

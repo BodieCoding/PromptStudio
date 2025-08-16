@@ -67,19 +67,19 @@ public class ModelProviderConfig : AuditableEntity
     public required string ModelName { get; set; }
 
     /// <summary>
-    /// Gets or sets the category or type of provider service.
+    /// Gets or sets the category or type of model provider service.
     /// Categorizes the provider for filtering and management purposes.
     /// </summary>
-    /// <value>The provider type from the ProviderType enumeration.</value>
+    /// <value>The model provider type from the ModelProviderType enumeration.</value>
     /// <example>
     /// <code>
-    /// ProviderType = ProviderType.OpenAI;      // OpenAI-compatible API
-    /// ProviderType = ProviderType.Anthropic;   // Anthropic Claude
-    /// ProviderType = ProviderType.Azure;       // Azure OpenAI Service
-    /// ProviderType = ProviderType.Custom;      // Custom/enterprise provider
+    /// ModelProviderType = ModelProviderType.OpenAI;      // OpenAI-compatible API
+    /// ModelProviderType = ModelProviderType.Anthropic;   // Anthropic Claude
+    /// ModelProviderType = ModelProviderType.Azure;       // Azure OpenAI Service
+    /// ModelProviderType = ModelProviderType.Custom;      // Custom/enterprise provider
     /// </code>
     /// </example>
-    public required ProviderType ProviderType { get; set; }
+    public required ModelProviderType ModelProviderType { get; set; }
 
     /// <summary>
     /// Gets or sets the API endpoint URL for the provider service.
@@ -219,7 +219,7 @@ public class ModelProviderConfig : AuditableEntity
     /// Tracks operational status for monitoring and alerting.
     /// </summary>
     /// <value>The provider health status from the ProviderHealthStatus enumeration.</value>
-    public ProviderHealthStatus HealthStatus { get; set; } = ProviderHealthStatus.Unknown;
+    public ModelProviderHealthStatus HealthStatus { get; set; } = ModelProviderHealthStatus.Unknown;
 
     /// <summary>
     /// Gets or sets the timestamp of the last successful health check.
@@ -241,91 +241,4 @@ public class ModelProviderConfig : AuditableEntity
     /// </code>
     /// </example>
     public string? Notes { get; set; }
-}
-
-/// <summary>
-/// Enumeration of AI model provider types supported in the PromptStudio system.
-/// Categorizes different provider technologies and APIs for configuration management.
-/// </summary>
-public enum ProviderType
-{
-    /// <summary>
-    /// OpenAI API-compatible providers.
-    /// Includes OpenAI and OpenAI-compatible services.
-    /// </summary>
-    OpenAI,
-
-    /// <summary>
-    /// Anthropic Claude API providers.
-    /// Anthropic's Claude models and API.
-    /// </summary>
-    Anthropic,
-
-    /// <summary>
-    /// Azure OpenAI Service.
-    /// Microsoft Azure's hosted OpenAI models.
-    /// </summary>
-    Azure,
-
-    /// <summary>
-    /// Google AI Platform providers.
-    /// Google's AI/ML services including Vertex AI.
-    /// </summary>
-    Google,
-
-    /// <summary>
-    /// Amazon Web Services AI services.
-    /// AWS Bedrock, SageMaker, and related services.
-    /// </summary>
-    AWS,
-
-    /// <summary>
-    /// Hugging Face model hosting.
-    /// Hugging Face Inference API and endpoints.
-    /// </summary>
-    HuggingFace,
-
-    /// <summary>
-    /// Open source or self-hosted models.
-    /// Local deployments, Ollama, etc.
-    /// </summary>
-    OpenSource,
-
-    /// <summary>
-    /// Custom or enterprise-specific providers.
-    /// Organization-specific or custom integrations.
-    /// </summary>
-    Custom
-}
-
-/// <summary>
-/// Enumeration of provider health status values.
-/// Tracks the operational status of model provider configurations.
-/// </summary>
-public enum ProviderHealthStatus
-{
-    /// <summary>
-    /// Health status is unknown or not yet checked.
-    /// </summary>
-    Unknown,
-
-    /// <summary>
-    /// Provider is healthy and operational.
-    /// </summary>
-    Healthy,
-
-    /// <summary>
-    /// Provider is experiencing performance issues but still functional.
-    /// </summary>
-    Degraded,
-
-    /// <summary>
-    /// Provider is unhealthy or not responding.
-    /// </summary>
-    Unhealthy,
-
-    /// <summary>
-    /// Provider is temporarily disabled for maintenance.
-    /// </summary>
-    Maintenance
 }

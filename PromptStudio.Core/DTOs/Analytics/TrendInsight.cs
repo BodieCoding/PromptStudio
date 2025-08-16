@@ -83,12 +83,12 @@ public class TrendInsight
     /// Contains quantitative analysis results, trend data, and statistical evidence.
     /// Service layers can extract specific metrics for validation and drill-down analysis.
     /// </summary>
-    public Dictionary<string, object> Data { get; set; } = new();
+    public Dictionary<string, object> Data { get; set; } = [];
     
     /// <summary>
     /// Actionable recommendations for addressing the insight and capturing optimization opportunities.
     /// Ordered by priority with specific, implementable steps for insight resolution.
     /// Service layers can convert these into action items and implementation workflows.
     /// </summary>
-    public List<string> Recommendations { get; set; } = new();
+    public List<string> Recommendations { get; set; } = [];
 }

@@ -217,7 +217,7 @@ public class AnalyticsReportResult
     /// <summary>
     /// Report sections
     /// </summary>
-    public List<AnalyticsReportSection> Sections { get; set; } = new();
+    public List<AnalyticsReportSection> Sections { get; set; } = [];
 
     /// <summary>
     /// Report summary
@@ -242,12 +242,12 @@ public class AnalyticsReportResult
     /// <summary>
     /// Report insights and key findings
     /// </summary>
-    public List<AnalyticsReportInsight> Insights { get; set; } = new();
+    public List<AnalyticsReportInsight> Insights { get; set; } = [];
 
     /// <summary>
     /// Report recommendations
     /// </summary>
-    public List<AnalyticsReportRecommendation> Recommendations { get; set; } = new();
+    public List<AnalyticsReportRecommendation> Recommendations { get; set; } = [];
 }
 
 /// <summary>
@@ -455,17 +455,17 @@ public class AnalyticsExportMetadata
     /// <summary>
     /// Export parameters used
     /// </summary>
-    public Dictionary<string, object> Parameters { get; set; } = new();
+    public Dictionary<string, object> Parameters { get; set; } = [];
 
     /// <summary>
     /// Data quality metrics
     /// </summary>
-    public Dictionary<string, double> QualityMetrics { get; set; } = new();
+    public Dictionary<string, double> QualityMetrics { get; set; } = [];
 
     /// <summary>
     /// Export notes
     /// </summary>
-    public List<string> Notes { get; set; } = new();
+    public List<string> Notes { get; set; } = [];
 }
 
 /// <summary>
@@ -501,7 +501,7 @@ public class AnalyticsExportSummary
     /// <summary>
     /// Key statistics from exported data
     /// </summary>
-    public Dictionary<string, double> KeyStatistics { get; set; } = new();
+    public Dictionary<string, double> KeyStatistics { get; set; } = [];
 }
 
 /// <summary>
@@ -522,7 +522,7 @@ public class AnalyticsExportSecurity
     /// <summary>
     /// Access permissions
     /// </summary>
-    public List<string> AccessPermissions { get; set; } = new();
+    public List<string> AccessPermissions { get; set; } = [];
 
     /// <summary>
     /// Download restrictions
@@ -532,7 +532,7 @@ public class AnalyticsExportSecurity
     /// <summary>
     /// Security audit trail
     /// </summary>
-    public List<AnalyticsExportAuditEntry> AuditTrail { get; set; } = new();
+    public List<AnalyticsExportAuditEntry> AuditTrail { get; set; } = [];
 }
 
 /// <summary>
@@ -564,7 +564,7 @@ public class AnalyticsExportNotificationSettings
     /// <summary>
     /// Email addresses to notify
     /// </summary>
-    public List<string> EmailAddresses { get; set; } = new();
+    public List<string> EmailAddresses { get; set; } = [];
 
     /// <summary>
     /// Notify on completion
@@ -636,27 +636,27 @@ public class AnalyticsReportSummary
     /// <summary>
     /// Key performance indicators
     /// </summary>
-    public Dictionary<string, double> KeyPerformanceIndicators { get; set; } = new();
+    public Dictionary<string, double> KeyPerformanceIndicators { get; set; } = [];
 
     /// <summary>
     /// Summary insights
     /// </summary>
-    public List<string> SummaryInsights { get; set; } = new();
+    public List<string> SummaryInsights { get; set; } = [];
 
     /// <summary>
     /// Critical findings
     /// </summary>
-    public List<string> CriticalFindings { get; set; } = new();
+    public List<string> CriticalFindings { get; set; } = [];
 
     /// <summary>
     /// Trend highlights
     /// </summary>
-    public List<string> TrendHighlights { get; set; } = new();
+    public List<string> TrendHighlights { get; set; } = [];
 
     /// <summary>
     /// Performance scores
     /// </summary>
-    public Dictionary<string, double> PerformanceScores { get; set; } = new();
+    public Dictionary<string, double> PerformanceScores { get; set; } = [];
 }
 
 /// <summary>
@@ -703,12 +703,12 @@ public class AnalyticsReportMetadata
     /// <summary>
     /// Report generation parameters
     /// </summary>
-    public Dictionary<string, object> GenerationParameters { get; set; } = new();
+    public Dictionary<string, object> GenerationParameters { get; set; } = [];
 
     /// <summary>
     /// Data sources used
     /// </summary>
-    public List<string> DataSources { get; set; } = new();
+    public List<string> DataSources { get; set; } = [];
 
     /// <summary>
     /// Report template information
@@ -728,7 +728,7 @@ public class AnalyticsReportMetadata
     /// <summary>
     /// Report quality metrics
     /// </summary>
-    public Dictionary<string, double> QualityMetrics { get; set; } = new();
+    public Dictionary<string, double> QualityMetrics { get; set; } = [];
 }
 
 /// <summary>
@@ -800,7 +800,7 @@ public class AnalyticsReportRecommendation
     /// <summary>
     /// Implementation steps
     /// </summary>
-    public List<string> ImplementationSteps { get; set; } = new();
+    public List<string> ImplementationSteps { get; set; } = [];
 
     /// <summary>
     /// Expected impact
@@ -867,7 +867,7 @@ public class AnalyticsReportDistributionSettings
     /// <summary>
     /// Email distribution list
     /// </summary>
-    public List<string> EmailAddresses { get; set; } = new();
+    public List<string> EmailAddresses { get; set; } = [];
 
     /// <summary>
     /// Distribute via file share

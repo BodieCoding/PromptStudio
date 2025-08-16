@@ -228,15 +228,6 @@ public class Variable : AuditableEntity
     public string? Metadata { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether this variable is currently active and available for use.
-    /// Enables temporary deactivation without deletion for lifecycle management.
-    /// </summary>
-    /// <value>
-    /// True if the variable is active and available; false if temporarily disabled.
-    /// </value>
-    public bool IsActive { get; set; } = true;
-
-    /// <summary>
     /// Gets or sets the version number for this variable definition.
     /// Supports variable evolution and compatibility tracking across template versions.
     /// </summary>
@@ -245,23 +236,6 @@ public class Variable : AuditableEntity
     /// </value>
     public string Version { get; set; } = "1.0";
 
-    /// <summary>
-    /// Gets or sets the identifier of the user or system that created this variable.
-    /// Provides accountability and ownership tracking for variable management.
-    /// </summary>
-    /// <value>
-    /// The creator identifier, or null if not tracked.
-    /// </value>
-    public string? CreatedBy { get; set; }
-
-    /// <summary>
-    /// Gets or sets the identifier of the user or system that last modified this variable.
-    /// Supports change tracking and audit requirements for variable management.
-    /// </summary>
-    /// <value>
-    /// The last modifier identifier, or null if not tracked.
-    /// </value>
-    public string? LastModifiedBy { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of prompt templates that use this variable.
@@ -270,7 +244,7 @@ public class Variable : AuditableEntity
     /// <value>
     /// Navigation property to related prompt templates. Lazy-loaded by Entity Framework.
     /// </value>
-    public virtual ICollection<PromptTemplate> PromptTemplates { get; set; } = new List<PromptTemplate>();
+    public virtual ICollection<PromptTemplate> PromptTemplates { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of variable collections that include this variable.
@@ -279,7 +253,7 @@ public class Variable : AuditableEntity
     /// <value>
     /// Navigation property to related variable collections. Lazy-loaded by Entity Framework.
     /// </value>
-    public virtual ICollection<VariableCollection> VariableCollections { get; set; } = new List<VariableCollection>();
+    public virtual ICollection<VariableCollection> VariableCollections { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of execution logs that reference this variable.
@@ -288,7 +262,7 @@ public class Variable : AuditableEntity
     /// <value>
     /// Navigation property to related execution logs. Lazy-loaded by Entity Framework.
     /// </value>
-    public virtual ICollection<PromptExecution> ExecutionLogs { get; set; } = new List<PromptExecution>();
+    public virtual ICollection<PromptExecution> ExecutionLogs { get; set; } = [];
 
     /// <summary>
     /// Gets a value indicating whether this variable has validation constraints.
@@ -314,7 +288,7 @@ public class Variable : AuditableEntity
     /// True if a default value is specified; false otherwise.
     /// </value>
     public bool HasDefaultValue => !string.IsNullOrEmpty(DefaultValue);
-
+   
     /// <summary>
     /// Gets the allowed values as a parsed collection for enumeration handling.
     /// Computed property that deserializes the AllowedValues JSON for programmatic access.
@@ -325,16 +299,16 @@ public class Variable : AuditableEntity
     public ICollection<string> GetAllowedValues()
     {
         if (string.IsNullOrEmpty(AllowedValues))
-            return new List<string>();
+            return [];
 
         try
         {
             var values = System.Text.Json.JsonSerializer.Deserialize<string[]>(AllowedValues);
-            return values?.ToList() ?? new List<string>();
+            return values?.ToList() ?? [];
         }
         catch
         {
-            return new List<string>();
+            return [];
         }
     }
 
@@ -348,16 +322,16 @@ public class Variable : AuditableEntity
     public ICollection<string> GetTags()
     {
         if (string.IsNullOrEmpty(Tags))
-            return new List<string>();
+            return [];
 
         try
         {
             var tags = System.Text.Json.JsonSerializer.Deserialize<string[]>(Tags);
-            return tags?.ToList() ?? new List<string>();
+            return tags?.ToList() ?? [];
         }
         catch
         {
-            return new List<string>();
+            return [];
         }
     }
 
@@ -420,27 +394,18 @@ public class Variable : AuditableEntity
         var stringValue = value.ToString()!;
 
         // Type-specific validation
-        switch (DataType)
+        return DataType switch
         {
-            case VariableType.String:
-                return ValidateStringValue(stringValue);
-            case VariableType.Integer:
-                return ValidateIntegerValue(stringValue);
-            case VariableType.Decimal:
-                return ValidateDecimalValue(stringValue);
-            case VariableType.Boolean:
-                return ValidateBooleanValue(stringValue);
-            case VariableType.Date:
-                return ValidateDateValue(stringValue);
-            case VariableType.Email:
-                return ValidateEmailValue(stringValue);
-            case VariableType.Url:
-                return ValidateUrlValue(stringValue);
-            case VariableType.Json:
-                return ValidateJsonValue(stringValue);
-            default:
-                return ValidateStringValue(stringValue);
-        }
+            VariableType.String => ValidateStringValue(stringValue),
+            VariableType.Integer => ValidateIntegerValue(stringValue),
+            VariableType.Decimal => ValidateDecimalValue(stringValue),
+            VariableType.Boolean => ValidateBooleanValue(stringValue),
+            VariableType.Date => ValidateDateValue(stringValue),
+            VariableType.Email => ValidateEmailValue(stringValue),
+            VariableType.Url => ValidateUrlValue(stringValue),
+            VariableType.Json => ValidateJsonValue(stringValue),
+            _ => ValidateStringValue(stringValue),
+        };
     }
 
     /// <summary>
@@ -478,7 +443,7 @@ public class Variable : AuditableEntity
 
         // Allowed values validation
         var allowedValues = GetAllowedValues();
-        if (allowedValues.Any() && !allowedValues.Contains(value))
+        if (allowedValues.Count != 0 && !allowedValues.Contains(value))
         {
             result.IsValid = false;
             result.ErrorMessage = ValidationErrorMessage ?? $"Value must be one of: {string.Join(", ", allowedValues)}";
@@ -549,16 +514,17 @@ public class Variable : AuditableEntity
 
         return result;
     }
-
     /// <summary>
     /// Validates a boolean value.
     /// </summary>
     private VariableValidationResult ValidateBooleanValue(string value)
     {
+        string[] sourceArray = ["0", "1", "yes", "no", "y", "n"];
+        
         var result = new VariableValidationResult { IsValid = true };
 
-        if (!bool.TryParse(value, out _) && 
-            !new[] { "0", "1", "yes", "no", "y", "n" }.Contains(value.ToLowerInvariant()))
+        if (!bool.TryParse(value, out _) &&
+            !sourceArray.Contains(value.ToLowerInvariant()))
         {
             result.IsValid = false;
             result.ErrorMessage = ValidationErrorMessage ?? "Value must be a valid boolean (true/false, yes/no, 1/0).";
@@ -643,71 +609,4 @@ public class Variable : AuditableEntity
     {
         return $"Variable: {Name} ({DataType}) - {(IsRequired ? "Required" : "Optional")} - {(IsActive ? "Active" : "Inactive")}";
     }
-}
-
-/// <summary>
-/// Defines the supported data types for variables in the prompt templating system.
-/// </summary>
-public enum VariableType
-{
-    /// <summary>
-    /// String/text data type for general text content.
-    /// </summary>
-    String = 0,
-
-    /// <summary>
-    /// Integer numeric data type for whole numbers.
-    /// </summary>
-    Integer = 1,
-
-    /// <summary>
-    /// Decimal numeric data type for fractional numbers.
-    /// </summary>
-    Decimal = 2,
-
-    /// <summary>
-    /// Boolean data type for true/false values.
-    /// </summary>
-    Boolean = 3,
-
-    /// <summary>
-    /// Date/time data type for temporal values.
-    /// </summary>
-    Date = 4,
-
-    /// <summary>
-    /// Email address data type with built-in validation.
-    /// </summary>
-    Email = 5,
-
-    /// <summary>
-    /// URL data type with built-in validation.
-    /// </summary>
-    Url = 6,
-
-    /// <summary>
-    /// JSON data type for structured data.
-    /// </summary>
-    Json = 7
-}
-
-/// <summary>
-/// Represents the result of variable value validation.
-/// </summary>
-public class VariableValidationResult
-{
-    /// <summary>
-    /// Gets or sets a value indicating whether the validation passed.
-    /// </summary>
-    public bool IsValid { get; set; }
-
-    /// <summary>
-    /// Gets or sets the error message if validation failed.
-    /// </summary>
-    public string? ErrorMessage { get; set; }
-
-    /// <summary>
-    /// Gets or sets any warnings generated during validation.
-    /// </summary>
-    public string? Warning { get; set; }
 }

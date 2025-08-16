@@ -20,19 +20,19 @@ public class OperationResult
     /// Gets or sets error messages if the operation failed.
     /// </summary>
     /// <value>Collection of error messages describing what went wrong.</value>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
 
     /// <summary>
     /// Gets or sets warning messages for the operation.
     /// </summary>
     /// <value>Collection of warning messages for non-critical issues.</value>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
 
     /// <summary>
     /// Gets or sets additional metadata about the operation.
     /// </summary>
     /// <value>Dictionary containing operation metadata and context information.</value>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 }
 
 /// <summary>

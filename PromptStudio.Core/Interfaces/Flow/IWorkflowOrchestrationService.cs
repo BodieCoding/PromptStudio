@@ -62,7 +62,6 @@ public interface IWorkflowOrchestrationService
     /// with full audit trail and tenant isolation capabilities.
     /// </summary>
     /// <param name="createRequest">Workflow creation request with definition and validation details</param>
-    /// <param name="tenantId">Tenant identifier for multi-tenant isolation</param>
     /// <param name="createdBy">User identifier for audit and tracking</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Created workflow entity with generated metadata and validation results</returns>
@@ -96,12 +95,11 @@ public interface IWorkflowOrchestrationService
     ///     Nodes = nodeDefinitions,
     ///     Edges = edgeDefinitions
     /// };
-    /// var workflow = await service.CreateWorkflowAsync(createRequest, tenantId, userId);
+    /// var workflow = await service.CreateWorkflowAsync(createRequest, userId);
     /// </code>
     /// </remarks>
     Task<PromptFlow> CreateWorkflowAsync(
         CreateWorkflowRequest createRequest, 
-        Guid tenantId, 
         Guid createdBy, 
         CancellationToken cancellationToken = default);
 
@@ -111,7 +109,6 @@ public interface IWorkflowOrchestrationService
     /// for workflow management and optimization workflows.
     /// </summary>
     /// <param name="workflowId">Unique workflow identifier</param>
-    /// <param name="tenantId">Tenant identifier for access control</param>
     /// <param name="includeDefinition">Whether to include full workflow definition in response</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Workflow entity with metadata and optional definition, or null if not found</returns>
@@ -134,7 +131,6 @@ public interface IWorkflowOrchestrationService
     /// </remarks>
     Task<PromptFlow?> GetWorkflowByIdAsync(
         Guid workflowId, 
-        Guid tenantId, 
         bool includeDefinition = false, 
         CancellationToken cancellationToken = default);
 
@@ -143,7 +139,6 @@ public interface IWorkflowOrchestrationService
     /// Enables efficient workflow discovery and management with comprehensive filtering,
     /// sorting, and search capabilities for workflow development and operational workflows.
     /// </summary>
-    /// <param name="tenantId">Tenant identifier for workflow scope</param>
     /// <param name="filters">Optional filtering criteria for workflow selection</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Paginated list of workflows with metadata and statistics</returns>
@@ -165,7 +160,6 @@ public interface IWorkflowOrchestrationService
     /// </list>
     /// </remarks>
     Task<PagedResult<PromptFlow>> GetWorkflowsAsync(
-        Guid tenantId, 
         WorkflowFilterOptions? filters = null, 
         CancellationToken cancellationToken = default);
 
@@ -176,7 +170,6 @@ public interface IWorkflowOrchestrationService
     /// </summary>
     /// <param name="workflowId">Workflow identifier to update</param>
     /// <param name="updateRequest">Update request with modified workflow data</param>
-    /// <param name="tenantId">Tenant identifier for access control</param>
     /// <param name="updatedBy">User identifier for audit and tracking</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Updated workflow entity with validation results and change summary</returns>
@@ -204,7 +197,6 @@ public interface IWorkflowOrchestrationService
     Task<WorkflowUpdateResult> UpdateWorkflowAsync(
         Guid workflowId, 
         UpdateWorkflowRequest updateRequest, 
-        Guid tenantId, 
         Guid updatedBy, 
         CancellationToken cancellationToken = default);
 
@@ -214,7 +206,6 @@ public interface IWorkflowOrchestrationService
     /// with comprehensive audit trail and dependency analysis capabilities.
     /// </summary>
     /// <param name="workflowId">Workflow identifier to delete</param>
-    /// <param name="tenantId">Tenant identifier for access control</param>
     /// <param name="deletedBy">User identifier for audit and tracking</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Operation result with deletion status and impact analysis</returns>
@@ -239,7 +230,6 @@ public interface IWorkflowOrchestrationService
     /// </remarks>
     Task<OperationResult> DeleteWorkflowAsync(
         Guid workflowId, 
-        Guid tenantId, 
         Guid deletedBy, 
         CancellationToken cancellationToken = default);
 
@@ -253,7 +243,6 @@ public interface IWorkflowOrchestrationService
     /// and execution feasibility to ensure successful workflow execution and operational reliability.
     /// </summary>
     /// <param name="workflowDefinition">Workflow definition to validate</param>
-    /// <param name="tenantId">Tenant identifier for validation context</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Comprehensive validation result with detailed error and warning information</returns>
     /// <exception cref="ArgumentException">Thrown when workflow definition is malformed</exception>
@@ -277,7 +266,6 @@ public interface IWorkflowOrchestrationService
     /// </remarks>
     Task<FlowValidationResult> ValidateWorkflowAsync(
         WorkflowDefinition workflowDefinition, 
-        Guid tenantId, 
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -310,7 +298,6 @@ public interface IWorkflowOrchestrationService
     /// </remarks>
     Task<WorkflowAnalysisResult> AnalyzeWorkflowAsync(
         Guid workflowId, 
-        Guid tenantId, 
         CancellationToken cancellationToken = default);
 
     #endregion
@@ -324,7 +311,6 @@ public interface IWorkflowOrchestrationService
     /// </summary>
     /// <param name="workflowId">Workflow identifier for execution</param>
     /// <param name="inputVariables">Input variables for workflow execution</param>
-    /// <param name="tenantId">Tenant identifier for access control and isolation</param>
     /// <param name="executedBy">User identifier for audit and tracking</param>
     /// <param name="options">Optional execution configuration and processing settings</param>
     /// <param name="progress">Progress reporter for real-time execution monitoring</param>
@@ -353,7 +339,6 @@ public interface IWorkflowOrchestrationService
     Task<FlowExecutionResult> ExecuteWorkflowAsync(
         Guid workflowId, 
         Dictionary<string, object> inputVariables, 
-        Guid tenantId, 
         Guid executedBy, 
         FlowExecutionOptions? options = null, 
         IProgress<WorkflowExecutionProgress>? progress = null, 
@@ -365,7 +350,6 @@ public interface IWorkflowOrchestrationService
     /// with detailed status information, progress metrics, and operational control capabilities.
     /// </summary>
     /// <param name="executionId">Workflow execution identifier for monitoring</param>
-    /// <param name="tenantId">Tenant identifier for access control</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Real-time execution status with progress metrics and operational details</returns>
     /// <exception cref="NotFoundException">Thrown when execution is not found</exception>
@@ -389,7 +373,6 @@ public interface IWorkflowOrchestrationService
     /// </remarks>
     Task<WorkflowExecutionStatus> GetExecutionStatusAsync(
         Guid executionId, 
-        Guid tenantId, 
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -425,7 +408,6 @@ public interface IWorkflowOrchestrationService
     /// </remarks>
     Task<CancellationResult> CancelWorkflowExecutionAsync(
         Guid executionId, 
-        Guid tenantId, 
         Guid cancelledBy, 
         string? reason = null, 
         CancellationToken cancellationToken = default);
@@ -440,7 +422,6 @@ public interface IWorkflowOrchestrationService
     /// for workflow optimization, operational monitoring, and business intelligence workflows.
     /// </summary>
     /// <param name="workflowId">Workflow identifier for execution history</param>
-    /// <param name="tenantId">Tenant identifier for access control</param>
     /// <param name="filters">Optional filtering criteria for execution history</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Paginated execution history with comprehensive metrics and analytics</returns>
@@ -465,7 +446,6 @@ public interface IWorkflowOrchestrationService
     /// </remarks>
     Task<PagedResult<WorkflowExecutionHistory>> GetWorkflowExecutionHistoryAsync(
         Guid workflowId, 
-        Guid tenantId, 
         ExecutionHistoryFilterOptions? filters = null, 
         CancellationToken cancellationToken = default);
 
@@ -474,7 +454,6 @@ public interface IWorkflowOrchestrationService
     /// Provides detailed workflow analytics including usage patterns, performance metrics, cost analysis,
     /// and optimization recommendations for operational efficiency and business intelligence workflows.
     /// </summary>
-    /// <param name="tenantId">Tenant identifier for analytics scope</param>
     /// <param name="filters">Optional filtering criteria for analytics data</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Comprehensive workflow analytics with performance and optimization insights</returns>
@@ -497,7 +476,6 @@ public interface IWorkflowOrchestrationService
     /// </list>
     /// </remarks>
     Task<WorkflowAnalyticsResult> GetWorkflowAnalyticsAsync(
-        Guid tenantId, 
         WorkflowAnalyticsFilterOptions? filters = null, 
         CancellationToken cancellationToken = default);
 
@@ -507,7 +485,6 @@ public interface IWorkflowOrchestrationService
     /// optimization recommendations for improved efficiency, cost optimization, and operational effectiveness.
     /// </summary>
     /// <param name="workflowId">Workflow identifier for optimization analysis</param>
-    /// <param name="tenantId">Tenant identifier for access control</param>
     /// <param name="cancellationToken">Cancellation token for async operation control</param>
     /// <returns>Comprehensive optimization recommendations with implementation guidance</returns>
     /// <exception cref="NotFoundException">Thrown when workflow is not found</exception>
@@ -531,7 +508,6 @@ public interface IWorkflowOrchestrationService
     /// </remarks>
     Task<WorkflowOptimizationResult> GetOptimizationRecommendationsAsync(
         Guid workflowId, 
-        Guid tenantId, 
         CancellationToken cancellationToken = default);
 
     #endregion

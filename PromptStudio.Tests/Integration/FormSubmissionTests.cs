@@ -258,11 +258,11 @@ public class FormSubmissionTests : IClassFixture<PromptStudioWebApplicationFacto
         {
             Name = $"Test Prompt {Guid.NewGuid()}",
             Content = "Test {{variable1}} and {{variable2}}",
-            Variables = new List<PromptVariable>
-            {
+            Variables =
+            [
                 new PromptVariable { Name = "variable1", DefaultValue = "" },
                 new PromptVariable { Name = "variable2", DefaultValue = "" }
-            },
+            ],
             CollectionId = collectionId,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow

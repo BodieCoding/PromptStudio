@@ -69,31 +69,31 @@ public class WorkflowDefinition
     /// Gets or sets the workflow tags for enhanced searchability and organization.
     /// </summary>
     /// <value>A collection of tags for workflow classification and search optimization.</value>
-    public List<string> Tags { get; set; } = new();
+    public List<string> Tags { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the workflow node definitions with comprehensive configuration.
     /// </summary>
     /// <value>A collection of node definitions that define workflow execution logic.</value>
-    public List<WorkflowNodeDefinition> Nodes { get; set; } = new();
+    public List<WorkflowNodeDefinition> Nodes { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the workflow edge definitions for node connections and flow control.
     /// </summary>
     /// <value>A collection of edge definitions that define workflow execution flow.</value>
-    public List<WorkflowEdgeDefinition> Edges { get; set; } = new();
+    public List<WorkflowEdgeDefinition> Edges { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the workflow input variable definitions for parameterization.
     /// </summary>
     /// <value>A collection of input variable definitions for workflow parameterization.</value>
-    public List<WorkflowVariableDefinition> InputVariables { get; set; } = new();
+    public List<WorkflowVariableDefinition> InputVariables { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the workflow output variable definitions for result handling.
     /// </summary>
     /// <value>A collection of output variable definitions for workflow result management.</value>
-    public List<WorkflowVariableDefinition> OutputVariables { get; set; } = new();
+    public List<WorkflowVariableDefinition> OutputVariables { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the workflow configuration settings for execution control.

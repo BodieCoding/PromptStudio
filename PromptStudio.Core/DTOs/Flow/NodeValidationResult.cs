@@ -48,11 +48,11 @@ public class NodeValidationResult
     /// Gets or sets the collection of node-specific validation errors.
     /// </summary>
     /// <value>A list of error messages specific to this node that must be resolved.</value>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of node-specific validation warnings.
     /// </summary>
     /// <value>A list of warning messages specific to this node suggesting improvements or best practices.</value>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
 }

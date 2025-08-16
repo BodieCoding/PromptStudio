@@ -33,5 +33,5 @@ public class QualityMetrics
     /// <summary>
     /// Distribution of scores across ranges
     /// </summary>
-    public Dictionary<string, int> ScoreDistribution { get; set; } = new();
+    public Dictionary<string, int> ScoreDistribution { get; set; } = [];
 }

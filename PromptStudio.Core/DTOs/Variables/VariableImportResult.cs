@@ -86,7 +86,7 @@ public class VariableImportResult
     /// Includes validation errors, format problems, and system-level issues.
     /// Service layers should log these errors and provide appropriate user feedback for resolution.
     /// </summary>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
     
     /// <summary>
     /// Collection of warning messages for non-critical issues encountered during import operations.
@@ -94,7 +94,7 @@ public class VariableImportResult
     /// Does not prevent successful import but may indicate potential processing issues or improvements.
     /// Useful for import quality assessment and user guidance for optimal data preparation.
     /// </summary>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
     
     /// <summary>
     /// Number of data rows successfully imported and included in the variable collection.
@@ -118,5 +118,5 @@ public class VariableImportResult
     /// Supports custom statistics collection for specialized import scenarios and performance monitoring.
     /// Used by analytics services for import performance analysis and system optimization insights.
     /// </summary>
-    public Dictionary<string, object> ImportStatistics { get; set; } = new();
+    public Dictionary<string, object> ImportStatistics { get; set; } = [];
 }

@@ -440,5 +440,5 @@ public class ABTestVariant : AuditableEntity
     /// Navigation property for Entity Framework relationships.
     /// Use Include() in queries when detailed result analysis is needed.
     /// </remarks>
-    public virtual ICollection<ABTestResult> Results { get; set; } = new List<ABTestResult>();
+    public virtual ICollection<ABTestResult> Results { get; set; } = [];
 }

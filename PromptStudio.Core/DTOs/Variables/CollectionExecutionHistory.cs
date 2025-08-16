@@ -30,7 +30,7 @@ public class CollectionExecutionHistory
     /// <summary>
     /// Gets or sets the list of execution records
     /// </summary>
-    public List<ExecutionRecord> Executions { get; set; } = new();
+    public List<ExecutionRecord> Executions { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the total execution count
@@ -60,7 +60,7 @@ public class CollectionExecutionHistory
     /// <summary>
     /// Gets or sets performance statistics
     /// </summary>
-    public Dictionary<string, object> Statistics { get; set; } = new();
+    public Dictionary<string, object> Statistics { get; set; } = [];
 }
 
 /// <summary>
@@ -81,7 +81,7 @@ public class ExecutionRecord
     /// <summary>
     /// Gets or sets the variable values used
     /// </summary>
-    public Dictionary<string, string> VariableValues { get; set; } = new();
+    public Dictionary<string, string> VariableValues { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the execution result
@@ -111,5 +111,5 @@ public class ExecutionRecord
     /// <summary>
     /// Gets or sets execution metadata
     /// </summary>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 }

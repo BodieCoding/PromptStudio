@@ -55,7 +55,7 @@ public class OptimizationRecommendationsResult
     /// <summary>
     /// Prioritized list of all recommendations
     /// </summary>
-    public List<OptimizationRecommendation> PrioritizedRecommendations { get; set; } = new();
+    public List<OptimizationRecommendation> PrioritizedRecommendations { get; set; } = [];
 
     /// <summary>
     /// Implementation roadmap
@@ -111,17 +111,17 @@ public class OptimizationRecommendationsSummary
     /// <summary>
     /// Top optimization categories
     /// </summary>
-    public List<string> TopOptimizationCategories { get; set; } = new();
+    public List<string> TopOptimizationCategories { get; set; } = [];
 
     /// <summary>
     /// Quick wins (low effort, high impact)
     /// </summary>
-    public List<OptimizationRecommendation> QuickWins { get; set; } = new();
+    public List<OptimizationRecommendation> QuickWins { get; set; } = [];
 
     /// <summary>
     /// Key optimization insights
     /// </summary>
-    public List<string> KeyInsights { get; set; } = new();
+    public List<string> KeyInsights { get; set; } = [];
 }
 
 /// <summary>
@@ -132,37 +132,37 @@ public class PerformanceOptimizationRecommendations
     /// <summary>
     /// Response time optimization recommendations
     /// </summary>
-    public List<ResponseTimeOptimization> ResponseTimeOptimizations { get; set; } = new();
+    public List<ResponseTimeOptimization> ResponseTimeOptimizations { get; set; } = [];
 
     /// <summary>
     /// Throughput optimization recommendations
     /// </summary>
-    public List<ThroughputOptimization> ThroughputOptimizations { get; set; } = new();
+    public List<ThroughputOptimization> ThroughputOptimizations { get; set; } = [];
 
     /// <summary>
     /// Resource utilization optimization recommendations
     /// </summary>
-    public List<ResourceUtilizationOptimization> ResourceUtilizationOptimizations { get; set; } = new();
+    public List<ResourceUtilizationOptimization> ResourceUtilizationOptimizations { get; set; } = [];
 
     /// <summary>
     /// Caching optimization recommendations
     /// </summary>
-    public List<CachingOptimization> CachingOptimizations { get; set; } = new();
+    public List<CachingOptimization> CachingOptimizations { get; set; } = [];
 
     /// <summary>
     /// Database optimization recommendations
     /// </summary>
-    public List<DatabaseOptimization> DatabaseOptimizations { get; set; } = new();
+    public List<DatabaseOptimization> DatabaseOptimizations { get; set; } = [];
 
     /// <summary>
     /// API optimization recommendations
     /// </summary>
-    public List<ApiOptimization> ApiOptimizations { get; set; } = new();
+    public List<ApiOptimization> ApiOptimizations { get; set; } = [];
 
     /// <summary>
     /// Model inference optimization recommendations
     /// </summary>
-    public List<ModelInferenceOptimization> ModelInferenceOptimizations { get; set; } = new();
+    public List<ModelInferenceOptimization> ModelInferenceOptimizations { get; set; } = [];
 }
 
 /// <summary>
@@ -173,37 +173,37 @@ public class CostOptimizationRecommendations
     /// <summary>
     /// Infrastructure cost optimizations
     /// </summary>
-    public List<InfrastructureCostOptimization> InfrastructureOptimizations { get; set; } = new();
+    public List<InfrastructureCostOptimization> InfrastructureOptimizations { get; set; } = [];
 
     /// <summary>
     /// LLM provider cost optimizations
     /// </summary>
-    public List<LlmProviderCostOptimization> LlmProviderOptimizations { get; set; } = new();
+    public List<LlmProviderCostOptimization> LlmProviderOptimizations { get; set; } = [];
 
     /// <summary>
     /// Storage cost optimizations
     /// </summary>
-    public List<StorageCostOptimization> StorageOptimizations { get; set; } = new();
+    public List<StorageCostOptimization> StorageOptimizations { get; set; } = [];
 
     /// <summary>
     /// Compute cost optimizations
     /// </summary>
-    public List<ComputeCostOptimization> ComputeOptimizations { get; set; } = new();
+    public List<ComputeCostOptimization> ComputeOptimizations { get; set; } = [];
 
     /// <summary>
     /// Network cost optimizations
     /// </summary>
-    public List<NetworkCostOptimization> NetworkOptimizations { get; set; } = new();
+    public List<NetworkCostOptimization> NetworkOptimizations { get; set; } = [];
 
     /// <summary>
     /// License cost optimizations
     /// </summary>
-    public List<LicenseCostOptimization> LicenseOptimizations { get; set; } = new();
+    public List<LicenseCostOptimization> LicenseOptimizations { get; set; } = [];
 
     /// <summary>
     /// Resource rightsizing recommendations
     /// </summary>
-    public List<ResourceRightsizingRecommendation> RightsizingRecommendations { get; set; } = new();
+    public List<ResourceRightsizingRecommendation> RightsizingRecommendations { get; set; } = [];
 }
 
 /// <summary>
@@ -214,32 +214,32 @@ public class ResourceOptimizationRecommendations
     /// <summary>
     /// CPU optimization recommendations
     /// </summary>
-    public List<CpuOptimization> CpuOptimizations { get; set; } = new();
+    public List<CpuOptimization> CpuOptimizations { get; set; } = [];
 
     /// <summary>
     /// Memory optimization recommendations
     /// </summary>
-    public List<MemoryOptimization> MemoryOptimizations { get; set; } = new();
+    public List<MemoryOptimization> MemoryOptimizations { get; set; } = [];
 
     /// <summary>
     /// Storage optimization recommendations
     /// </summary>
-    public List<StorageOptimization> StorageOptimizations { get; set; } = new();
+    public List<StorageOptimization> StorageOptimizations { get; set; } = [];
 
     /// <summary>
     /// Network optimization recommendations
     /// </summary>
-    public List<NetworkOptimization> NetworkOptimizations { get; set; } = new();
+    public List<NetworkOptimization> NetworkOptimizations { get; set; } = [];
 
     /// <summary>
     /// Auto-scaling optimization recommendations
     /// </summary>
-    public List<AutoScalingOptimization> AutoScalingOptimizations { get; set; } = new();
+    public List<AutoScalingOptimization> AutoScalingOptimizations { get; set; } = [];
 
     /// <summary>
     /// Load balancing optimization recommendations
     /// </summary>
-    public List<LoadBalancingOptimization> LoadBalancingOptimizations { get; set; } = new();
+    public List<LoadBalancingOptimization> LoadBalancingOptimizations { get; set; } = [];
 }
 
 /// <summary>
@@ -250,27 +250,27 @@ public class WorkflowOptimizationRecommendations
     /// <summary>
     /// Process automation recommendations
     /// </summary>
-    public List<ProcessAutomationRecommendation> ProcessAutomations { get; set; } = new();
+    public List<ProcessAutomationRecommendation> ProcessAutomations { get; set; } = [];
 
     /// <summary>
     /// Parallel processing recommendations
     /// </summary>
-    public List<ParallelProcessingRecommendation> ParallelProcessingRecommendations { get; set; } = new();
+    public List<ParallelProcessingRecommendation> ParallelProcessingRecommendations { get; set; } = [];
 
     /// <summary>
     /// Workflow simplification recommendations
     /// </summary>
-    public List<WorkflowSimplificationRecommendation> WorkflowSimplifications { get; set; } = new();
+    public List<WorkflowSimplificationRecommendation> WorkflowSimplifications { get; set; } = [];
 
     /// <summary>
     /// Bottleneck elimination recommendations
     /// </summary>
-    public List<BottleneckEliminationRecommendation> BottleneckEliminations { get; set; } = new();
+    public List<BottleneckEliminationRecommendation> BottleneckEliminations { get; set; } = [];
 
     /// <summary>
     /// Integration optimization recommendations
     /// </summary>
-    public List<IntegrationOptimization> IntegrationOptimizations { get; set; } = new();
+    public List<IntegrationOptimization> IntegrationOptimizations { get; set; } = [];
 }
 
 /// <summary>
@@ -281,27 +281,27 @@ public class SecurityOptimizationRecommendations
     /// <summary>
     /// Access control optimizations
     /// </summary>
-    public List<AccessControlOptimization> AccessControlOptimizations { get; set; } = new();
+    public List<AccessControlOptimization> AccessControlOptimizations { get; set; } = [];
 
     /// <summary>
     /// Encryption optimizations
     /// </summary>
-    public List<EncryptionOptimization> EncryptionOptimizations { get; set; } = new();
+    public List<EncryptionOptimization> EncryptionOptimizations { get; set; } = [];
 
     /// <summary>
     /// Audit and compliance optimizations
     /// </summary>
-    public List<ComplianceOptimization> ComplianceOptimizations { get; set; } = new();
+    public List<ComplianceOptimization> ComplianceOptimizations { get; set; } = [];
 
     /// <summary>
     /// Vulnerability management optimizations
     /// </summary>
-    public List<VulnerabilityManagementOptimization> VulnerabilityOptimizations { get; set; } = new();
+    public List<VulnerabilityManagementOptimization> VulnerabilityOptimizations { get; set; } = [];
 
     /// <summary>
     /// Security monitoring optimizations
     /// </summary>
-    public List<SecurityMonitoringOptimization> SecurityMonitoringOptimizations { get; set; } = new();
+    public List<SecurityMonitoringOptimization> SecurityMonitoringOptimizations { get; set; } = [];
 }
 
 /// <summary>
@@ -312,27 +312,27 @@ public class ArchitectureOptimizationRecommendations
     /// <summary>
     /// Microservices architecture optimizations
     /// </summary>
-    public List<MicroservicesOptimization> MicroservicesOptimizations { get; set; } = new();
+    public List<MicroservicesOptimization> MicroservicesOptimizations { get; set; } = [];
 
     /// <summary>
     /// Service mesh optimizations
     /// </summary>
-    public List<ServiceMeshOptimization> ServiceMeshOptimizations { get; set; } = new();
+    public List<ServiceMeshOptimization> ServiceMeshOptimizations { get; set; } = [];
 
     /// <summary>
     /// API design optimizations
     /// </summary>
-    public List<ApiDesignOptimization> ApiDesignOptimizations { get; set; } = new();
+    public List<ApiDesignOptimization> ApiDesignOptimizations { get; set; } = [];
 
     /// <summary>
     /// Data architecture optimizations
     /// </summary>
-    public List<DataArchitectureOptimization> DataArchitectureOptimizations { get; set; } = new();
+    public List<DataArchitectureOptimization> DataArchitectureOptimizations { get; set; } = [];
 
     /// <summary>
     /// Scalability architecture optimizations
     /// </summary>
-    public List<ScalabilityArchitectureOptimization> ScalabilityOptimizations { get; set; } = new();
+    public List<ScalabilityArchitectureOptimization> ScalabilityOptimizations { get; set; } = [];
 }
 
 /// <summary>
@@ -343,27 +343,27 @@ public class OperationalOptimizationRecommendations
     /// <summary>
     /// Monitoring and alerting optimizations
     /// </summary>
-    public List<MonitoringOptimization> MonitoringOptimizations { get; set; } = new();
+    public List<MonitoringOptimization> MonitoringOptimizations { get; set; } = [];
 
     /// <summary>
     /// Deployment pipeline optimizations
     /// </summary>
-    public List<DeploymentOptimization> DeploymentOptimizations { get; set; } = new();
+    public List<DeploymentOptimization> DeploymentOptimizations { get; set; } = [];
 
     /// <summary>
     /// Backup and disaster recovery optimizations
     /// </summary>
-    public List<BackupOptimization> BackupOptimizations { get; set; } = new();
+    public List<BackupOptimization> BackupOptimizations { get; set; } = [];
 
     /// <summary>
     /// Log management optimizations
     /// </summary>
-    public List<LogManagementOptimization> LogManagementOptimizations { get; set; } = new();
+    public List<LogManagementOptimization> LogManagementOptimizations { get; set; } = [];
 
     /// <summary>
     /// Configuration management optimizations
     /// </summary>
-    public List<ConfigurationManagementOptimization> ConfigurationOptimizations { get; set; } = new();
+    public List<ConfigurationManagementOptimization> ConfigurationOptimizations { get; set; } = [];
 }
 
 /// <summary>
@@ -516,22 +516,22 @@ public class OptimizationRecommendation
     /// <summary>
     /// Implementation steps
     /// </summary>
-    public List<string> ImplementationSteps { get; set; } = new();
+    public List<string> ImplementationSteps { get; set; } = [];
 
     /// <summary>
     /// Prerequisites for implementation
     /// </summary>
-    public List<string> Prerequisites { get; set; } = new();
+    public List<string> Prerequisites { get; set; } = [];
 
     /// <summary>
     /// Potential risks
     /// </summary>
-    public List<string> Risks { get; set; } = new();
+    public List<string> Risks { get; set; } = [];
 
     /// <summary>
     /// Success metrics
     /// </summary>
-    public List<string> SuccessMetrics { get; set; } = new();
+    public List<string> SuccessMetrics { get; set; } = [];
 
     /// <summary>
     /// Recommended timeline for implementation
@@ -551,7 +551,7 @@ public class OptimizationRecommendation
     /// <summary>
     /// Related recommendations
     /// </summary>
-    public List<Guid> RelatedRecommendations { get; set; } = new();
+    public List<Guid> RelatedRecommendations { get; set; } = [];
 
     /// <summary>
     /// Supporting data and metrics
@@ -561,7 +561,7 @@ public class OptimizationRecommendation
     /// <summary>
     /// Tags for categorization
     /// </summary>
-    public List<string> Tags { get; set; } = new();
+    public List<string> Tags { get; set; } = [];
 
     /// <summary>
     /// Creation timestamp
@@ -582,7 +582,7 @@ public class OptimizationImplementationRoadmap
     /// <summary>
     /// Roadmap phases
     /// </summary>
-    public List<ImplementationPhase> Phases { get; set; } = new();
+    public List<ImplementationPhase> Phases { get; set; } = [];
 
     /// <summary>
     /// Total estimated duration (days)
@@ -607,17 +607,17 @@ public class OptimizationImplementationRoadmap
     /// <summary>
     /// Resource requirements
     /// </summary>
-    public Dictionary<string, int> ResourceRequirements { get; set; } = new();
+    public Dictionary<string, int> ResourceRequirements { get; set; } = [];
 
     /// <summary>
     /// Critical path recommendations
     /// </summary>
-    public List<Guid> CriticalPathRecommendations { get; set; } = new();
+    public List<Guid> CriticalPathRecommendations { get; set; } = [];
 
     /// <summary>
     /// Dependencies between recommendations
     /// </summary>
-    public List<RecommendationDependency> Dependencies { get; set; } = new();
+    public List<RecommendationDependency> Dependencies { get; set; } = [];
 }
 
 // Supporting classes for specific optimization types
@@ -627,7 +627,7 @@ public class ResponseTimeOptimization : OptimizationRecommendation
     public double CurrentResponseTimeMs { get; set; }
     public double TargetResponseTimeMs { get; set; }
     public double ExpectedImprovementMs { get; set; }
-    public List<string> OptimizationTechniques { get; set; } = new();
+    public List<string> OptimizationTechniques { get; set; } = [];
 }
 
 public class ThroughputOptimization : OptimizationRecommendation
@@ -635,7 +635,7 @@ public class ThroughputOptimization : OptimizationRecommendation
     public double CurrentThroughputRPS { get; set; }
     public double TargetThroughputRPS { get; set; }
     public double ExpectedImprovementRPS { get; set; }
-    public List<string> ScalingStrategies { get; set; } = new();
+    public List<string> ScalingStrategies { get; set; } = [];
 }
 
 public class ImplementationPhase
@@ -643,12 +643,12 @@ public class ImplementationPhase
     public int PhaseNumber { get; set; }
     public string PhaseName { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public List<Guid> RecommendationIds { get; set; } = new();
+    public List<Guid> RecommendationIds { get; set; } = [];
     public int EstimatedDurationDays { get; set; }
     public decimal EstimatedCost { get; set; }
     public decimal ExpectedSavings { get; set; }
-    public List<string> Deliverables { get; set; } = new();
-    public List<string> Milestones { get; set; } = new();
+    public List<string> Deliverables { get; set; } = [];
+    public List<string> Milestones { get; set; } = [];
 }
 
 public class RecommendationDependency

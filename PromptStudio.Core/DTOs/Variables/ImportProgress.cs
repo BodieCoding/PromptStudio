@@ -33,12 +33,12 @@ public class ImportProgress
     /// <summary>
     /// Gets or sets any errors encountered during import
     /// </summary>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
 
     /// <summary>
     /// Gets or sets any warnings generated during import
     /// </summary>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
 
     /// <summary>
     /// Gets or sets whether the import is complete
@@ -63,5 +63,5 @@ public class ImportProgress
     /// <summary>
     /// Gets or sets additional metadata about the import process
     /// </summary>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 }

@@ -1,0 +1,10 @@
+namespace PromptStudio.Core.DTOs.Analytics;
+
+// Security Optimization Classes
+public class AccessControlOptimization
+{
+    public string AccessMethod { get; set; } = string.Empty;
+    public string CurrentConfiguration { get; set; } = string.Empty;
+    public string RecommendedConfiguration { get; set; } = string.Empty;
+    public string SecurityImpact { get; set; } = string.Empty;
+}

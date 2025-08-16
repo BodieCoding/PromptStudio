@@ -50,5 +50,5 @@ public class FlowPerformanceMetrics
     /// <summary>
     /// Bottleneck nodes (nodes that take the longest time)
     /// </summary>
-    public List<NodePerformanceMetrics> BottleneckNodes { get; set; } = new();
+    public List<NodePerformanceMetrics> BottleneckNodes { get; set; } = [];
 }

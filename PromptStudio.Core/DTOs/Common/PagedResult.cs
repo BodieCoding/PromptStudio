@@ -31,7 +31,7 @@ public class PagedResult<T>
     /// Gets or sets the collection of items for the current page.
     /// </summary>
     /// <value>A list containing the items for this page, empty if no results are found.</value>
-    public List<T> Items { get; set; } = new();
+    public List<T> Items { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the number of items to skip from the beginning of the result set.
@@ -61,5 +61,5 @@ public class PagedResult<T>
     /// Gets or sets additional metadata associated with the paged result.
     /// </summary>
     /// <value>A dictionary containing optional metadata such as filtering info, sorting parameters, or performance metrics.</value>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 }

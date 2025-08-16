@@ -37,7 +37,7 @@ public class LibraryUsageTrends
     /// Gets or sets the time-series trend data points indexed by date.
     /// </summary>
     /// <value>A dictionary mapping dates to trend data points, representing usage patterns over time.</value>
-    public Dictionary<DateTime, UsageTrendPoint> TrendData { get; set; } = new();
+    public Dictionary<DateTime, UsageTrendPoint> TrendData { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the calculated growth rate as a decimal percentage.
@@ -49,11 +49,11 @@ public class LibraryUsageTrends
     /// Gets or sets the collection of AI-generated insights about the usage trends.
     /// </summary>
     /// <value>A list of trend insights providing analytical observations and recommendations.</value>
-    public List<TrendInsight> Insights { get; set; } = new();
+    public List<TrendInsight> Insights { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the forecasting data and predictions for future usage.
     /// </summary>
     /// <value>A dictionary containing various forecast models and their predictions, keyed by forecast type.</value>
-    public Dictionary<string, object> Forecasts { get; set; } = new();
+    public Dictionary<string, object> Forecasts { get; set; } = [];
 }

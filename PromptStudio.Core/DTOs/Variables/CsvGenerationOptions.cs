@@ -35,7 +35,7 @@ public class CsvGenerationOptions
     /// Gets or sets custom example values for specific variables
     /// Key is variable name, value is the example value to use
     /// </summary>
-    public Dictionary<string, string> CustomExamples { get; set; } = new();
+    public Dictionary<string, string> CustomExamples { get; set; } = [];
 
     /// <summary>
     /// Gets or sets whether to add descriptive comments as the first row

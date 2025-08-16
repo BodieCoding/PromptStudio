@@ -61,7 +61,7 @@ public class FlowExecutionOptions
     /// Gets or sets additional execution context data.
     /// </summary>
     /// <value>A dictionary containing custom context information for the execution.</value>
-    public Dictionary<string, object> Context { get; set; } = new();
+    public Dictionary<string, object> Context { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the maximum number of nodes to execute concurrently.
@@ -115,7 +115,7 @@ public class FlowExecutionOptions
     /// Gets or sets the list of custom metrics to track during execution.
     /// </summary>
     /// <value>A list of metric names to collect during execution.</value>
-    public List<string> CustomMetrics { get; set; } = new();
+    public List<string> CustomMetrics { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the maximum cost threshold for execution (execution will abort if exceeded).

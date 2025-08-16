@@ -37,35 +37,35 @@ public class VariableUsageAnalytics
     /// Gets or sets the usage frequency count for each variable across all template executions.
     /// </summary>
     /// <value>A dictionary mapping variable names to their usage counts, enabling identification of frequently used vs. underutilized variables.</value>
-    public Dictionary<string, long> VariableUsageCount { get; set; } = new();
+    public Dictionary<string, long> VariableUsageCount { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the most commonly used values for each variable to identify patterns and defaults.
     /// </summary>
     /// <value>A dictionary mapping variable names to lists of their most frequent values, ordered by usage frequency.</value>
-    public Dictionary<string, List<string>> MostCommonValues { get; set; } = new();
+    public Dictionary<string, List<string>> MostCommonValues { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the success rate correlation for each variable indicating execution quality impact.
     /// </summary>
     /// <value>A dictionary mapping variable names to success rates (0.0 to 1.0) when the variable is used.</value>
-    public Dictionary<string, double> VariableSuccessRates { get; set; } = new();
+    public Dictionary<string, double> VariableSuccessRates { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the performance impact analysis showing execution time correlation with variables.
     /// </summary>
     /// <value>A dictionary mapping variable names to average additional execution time when the variable is used.</value>
-    public Dictionary<string, TimeSpan> VariablePerformance { get; set; } = new();
+    public Dictionary<string, TimeSpan> VariablePerformance { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the list of variables defined but never used in template executions.
     /// </summary>
     /// <value>A list of variable names that are defined but unused, identifying cleanup opportunities.</value>
-    public List<string> UnusedVariables { get; set; } = new();
+    public List<string> UnusedVariables { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the list of variables that consistently correlate with high-performance executions.
     /// </summary>
     /// <value>A list of variable names that contribute to optimal template performance, useful for optimization recommendations.</value>
-    public List<string> HighPerformingVariables { get; set; } = new();
+    public List<string> HighPerformingVariables { get; set; } = [];
 }

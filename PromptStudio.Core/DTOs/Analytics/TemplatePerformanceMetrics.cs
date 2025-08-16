@@ -66,7 +66,7 @@ public class TemplatePerformanceMetrics
     /// Gets or sets the error distribution categorized by error type.
     /// </summary>
     /// <value>A dictionary mapping error type names to their occurrence counts, useful for error pattern analysis.</value>
-    public Dictionary<string, long> ErrorsByType { get; set; } = new();
+    public Dictionary<string, long> ErrorsByType { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the overall quality score for this template.
@@ -78,5 +78,5 @@ public class TemplatePerformanceMetrics
     /// Gets or sets the performance trend indicators over time.
     /// </summary>
     /// <value>A dictionary mapping metric names to trend values, enabling performance trajectory analysis.</value>
-    public Dictionary<string, double> PerformanceTrends { get; set; } = new();
+    public Dictionary<string, double> PerformanceTrends { get; set; } = [];
 }

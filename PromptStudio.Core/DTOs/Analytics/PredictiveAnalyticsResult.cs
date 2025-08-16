@@ -65,7 +65,7 @@ public class PredictiveAnalyticsResult
     /// <summary>
     /// Predictive insights and recommendations
     /// </summary>
-    public List<PredictiveInsight> Insights { get; set; } = new();
+    public List<PredictiveInsight> Insights { get; set; } = [];
 }
 
 /// <summary>
@@ -81,7 +81,7 @@ public class PredictiveAnalyticsSummary
     /// <summary>
     /// Primary prediction types included
     /// </summary>
-    public List<PredictionType> PredictionTypes { get; set; } = new();
+    public List<PredictionType> PredictionTypes { get; set; } = [];
 
     /// <summary>
     /// Time horizon for predictions
@@ -96,7 +96,7 @@ public class PredictiveAnalyticsSummary
     /// <summary>
     /// Key predicted metrics
     /// </summary>
-    public Dictionary<string, double> KeyPredictions { get; set; } = new();
+    public Dictionary<string, double> KeyPredictions { get; set; } = [];
 
     /// <summary>
     /// Prediction accuracy from historical validation
@@ -106,12 +106,12 @@ public class PredictiveAnalyticsSummary
     /// <summary>
     /// Most significant predicted changes
     /// </summary>
-    public List<string> SignificantChanges { get; set; } = new();
+    public List<string> SignificantChanges { get; set; } = [];
 
     /// <summary>
     /// Prediction risks and uncertainties
     /// </summary>
-    public List<string> PredictionRisks { get; set; } = new();
+    public List<string> PredictionRisks { get; set; } = [];
 }
 
 /// <summary>
@@ -142,7 +142,7 @@ public class UsageForecastingAnalytics
     /// <summary>
     /// Seasonal usage patterns
     /// </summary>
-    public List<SeasonalUsagePattern> SeasonalPatterns { get; set; } = new();
+    public List<SeasonalUsagePattern> SeasonalPatterns { get; set; } = [];
 
     /// <summary>
     /// Growth trend predictions
@@ -178,7 +178,7 @@ public class PerformancePredictionAnalytics
     /// <summary>
     /// Performance bottleneck predictions
     /// </summary>
-    public List<PredictedBottleneck> PredictedBottlenecks { get; set; } = new();
+    public List<PredictedBottleneck> PredictedBottlenecks { get; set; } = [];
 
     /// <summary>
     /// SLA violation predictions
@@ -209,12 +209,12 @@ public class CapacityPredictionAnalytics
     /// <summary>
     /// Scaling requirement predictions
     /// </summary>
-    public List<PredictedScalingRequirement> ScalingRequirements { get; set; } = new();
+    public List<PredictedScalingRequirement> ScalingRequirements { get; set; } = [];
 
     /// <summary>
     /// Capacity exhaustion predictions
     /// </summary>
-    public List<CapacityExhaustionPrediction> CapacityExhaustions { get; set; } = new();
+    public List<CapacityExhaustionPrediction> CapacityExhaustions { get; set; } = [];
 }
 
 /// <summary>
@@ -230,7 +230,7 @@ public class CostForecastingPredictiveAnalytics
     /// <summary>
     /// Cost by provider predictions
     /// </summary>
-    public Dictionary<string, CostPrediction> CostByProvider { get; set; } = new();
+    public Dictionary<string, CostPrediction> CostByProvider { get; set; } = [];
 
     /// <summary>
     /// Cost optimization predictions
@@ -245,7 +245,7 @@ public class CostForecastingPredictiveAnalytics
     /// <summary>
     /// Cost spike predictions
     /// </summary>
-    public List<CostSpikePrediction> CostSpikes { get; set; } = new();
+    public List<CostSpikePrediction> CostSpikes { get; set; } = [];
 }
 
 /// <summary>
@@ -256,17 +256,17 @@ public class AnomalyDetectionAnalytics
     /// <summary>
     /// Detected anomalies
     /// </summary>
-    public List<DetectedAnomaly> DetectedAnomalies { get; set; } = new();
+    public List<DetectedAnomaly> DetectedAnomalies { get; set; } = [];
 
     /// <summary>
     /// Predicted future anomalies
     /// </summary>
-    public List<PredictedAnomaly> PredictedAnomalies { get; set; } = new();
+    public List<PredictedAnomaly> PredictedAnomalies { get; set; } = [];
 
     /// <summary>
     /// Anomaly patterns
     /// </summary>
-    public List<AnomalyPattern> AnomalyPatterns { get; set; } = new();
+    public List<AnomalyPattern> AnomalyPatterns { get; set; } = [];
 
     /// <summary>
     /// Anomaly detection model performance
@@ -282,27 +282,27 @@ public class TrendPredictionAnalytics
     /// <summary>
     /// Usage trends
     /// </summary>
-    public List<UsageTrend> UsageTrends { get; set; } = new();
+    public List<UsageTrend> UsageTrends { get; set; } = [];
 
     /// <summary>
     /// Performance trends
     /// </summary>
-    public List<PerformanceTrend> PerformanceTrends { get; set; } = new();
+    public List<PerformanceTrend> PerformanceTrends { get; set; } = [];
 
     /// <summary>
     /// Cost trends
     /// </summary>
-    public List<CostTrend> CostTrends { get; set; } = new();
+    public List<CostTrend> CostTrends { get; set; } = [];
 
     /// <summary>
     /// Technology adoption trends
     /// </summary>
-    public List<TechnologyAdoptionTrend> TechnologyTrends { get; set; } = new();
+    public List<TechnologyAdoptionTrend> TechnologyTrends { get; set; } = [];
 
     /// <summary>
     /// Market trend impacts
     /// </summary>
-    public List<MarketTrendImpact> MarketTrends { get; set; } = new();
+    public List<MarketTrendImpact> MarketTrends { get; set; } = [];
 }
 
 /// <summary>
@@ -313,27 +313,27 @@ public class RiskPredictionAnalytics
     /// <summary>
     /// System failure risk predictions
     /// </summary>
-    public List<SystemFailureRisk> SystemFailureRisks { get; set; } = new();
+    public List<SystemFailureRisk> SystemFailureRisks { get; set; } = [];
 
     /// <summary>
     /// Security risk predictions
     /// </summary>
-    public List<SecurityRiskPrediction> SecurityRisks { get; set; } = new();
+    public List<SecurityRiskPrediction> SecurityRisks { get; set; } = [];
 
     /// <summary>
     /// Performance degradation risks
     /// </summary>
-    public List<PerformanceDegradationRisk> PerformanceRisks { get; set; } = new();
+    public List<PerformanceDegradationRisk> PerformanceRisks { get; set; } = [];
 
     /// <summary>
     /// Compliance risk predictions
     /// </summary>
-    public List<ComplianceRiskPrediction> ComplianceRisks { get; set; } = new();
+    public List<ComplianceRiskPrediction> ComplianceRisks { get; set; } = [];
 
     /// <summary>
     /// Business continuity risks
     /// </summary>
-    public List<BusinessContinuityRisk> BusinessContinuityRisks { get; set; } = new();
+    public List<BusinessContinuityRisk> BusinessContinuityRisks { get; set; } = [];
 
     /// <summary>
     /// Overall risk assessment
@@ -349,12 +349,12 @@ public class ModelConfidenceMetrics
     /// <summary>
     /// Model accuracy scores
     /// </summary>
-    public Dictionary<string, double> ModelAccuracy { get; set; } = new();
+    public Dictionary<string, double> ModelAccuracy { get; set; } = [];
 
     /// <summary>
     /// Prediction confidence intervals
     /// </summary>
-    public Dictionary<string, ConfidenceInterval> ConfidenceIntervals { get; set; } = new();
+    public Dictionary<string, ConfidenceInterval> ConfidenceIntervals { get; set; } = [];
 
     /// <summary>
     /// Model validation results
@@ -364,7 +364,7 @@ public class ModelConfidenceMetrics
     /// <summary>
     /// Feature importance scores
     /// </summary>
-    public Dictionary<string, double> FeatureImportance { get; set; } = new();
+    public Dictionary<string, double> FeatureImportance { get; set; } = [];
 
     /// <summary>
     /// Model performance metrics
@@ -457,30 +457,30 @@ public class TokenUsagePrediction
 {
     public long PredictedTokens { get; set; }
     public double ConfidenceLevel { get; set; }
-    public Dictionary<string, long> TokensByModel { get; set; } = new();
-    public List<TokenUsageForecastPoint> ForecastPoints { get; set; } = new();
+    public Dictionary<string, long> TokensByModel { get; set; } = [];
+    public List<TokenUsageForecastPoint> ForecastPoints { get; set; } = [];
 }
 
 public class ApiCallPrediction
 {
     public long PredictedApiCalls { get; set; }
     public double ConfidenceLevel { get; set; }
-    public Dictionary<string, long> CallsByEndpoint { get; set; } = new();
-    public List<ApiCallForecastPoint> ForecastPoints { get; set; } = new();
+    public Dictionary<string, long> CallsByEndpoint { get; set; } = [];
+    public List<ApiCallForecastPoint> ForecastPoints { get; set; } = [];
 }
 
 public class UserActivityPrediction
 {
     public int PredictedActiveUsers { get; set; }
     public double UserGrowthRate { get; set; }
-    public Dictionary<string, int> UsersByActivity { get; set; } = new();
-    public List<UserActivityForecastPoint> ForecastPoints { get; set; } = new();
+    public Dictionary<string, int> UsersByActivity { get; set; } = [];
+    public List<UserActivityForecastPoint> ForecastPoints { get; set; } = [];
 }
 
 public class ResourceDemandPrediction
 {
-    public Dictionary<string, double> DemandByResourceType { get; set; } = new();
-    public List<ResourceDemandForecastPoint> ForecastPoints { get; set; } = new();
+    public Dictionary<string, double> DemandByResourceType { get; set; } = [];
+    public List<ResourceDemandForecastPoint> ForecastPoints { get; set; } = [];
 }
 
 public class SeasonalUsagePattern
@@ -498,15 +498,15 @@ public class GrowthTrendPrediction
     public double MonthlyGrowthRate { get; set; }
     public double YearOverYearGrowth { get; set; }
     public string GrowthPattern { get; set; } = string.Empty;
-    public List<string> GrowthDrivers { get; set; } = new();
+    public List<string> GrowthDrivers { get; set; } = [];
 }
 
 public class PredictiveAnalyticsTimePoint
 {
     public DateTime Timestamp { get; set; }
-    public Dictionary<string, double> PredictedMetrics { get; set; } = new();
-    public Dictionary<string, double> ConfidenceLevels { get; set; } = new();
-    public Dictionary<string, ConfidenceInterval> ConfidenceIntervals { get; set; } = new();
+    public Dictionary<string, double> PredictedMetrics { get; set; } = [];
+    public Dictionary<string, double> ConfidenceLevels { get; set; } = [];
+    public Dictionary<string, ConfidenceInterval> ConfidenceIntervals { get; set; } = [];
 }
 
 public class PredictiveInsight
@@ -535,7 +535,7 @@ public class ModelValidationResults
     public double MeanAbsoluteError { get; set; }
     public double RootMeanSquareError { get; set; }
     public double R2Score { get; set; }
-    public List<string> ValidationNotes { get; set; } = new();
+    public List<string> ValidationNotes { get; set; } = [];
 }
 
 public class DetectedAnomaly
@@ -544,7 +544,7 @@ public class DetectedAnomaly
     public string AnomalyType { get; set; } = string.Empty;
     public double Severity { get; set; }
     public string Description { get; set; } = string.Empty;
-    public Dictionary<string, double> AffectedMetrics { get; set; } = new();
+    public Dictionary<string, double> AffectedMetrics { get; set; } = [];
 }
 
 public class PredictedAnomaly
@@ -561,7 +561,7 @@ public class AnomalyPattern
     public string PatternType { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public double Frequency { get; set; }
-    public List<string> TriggerConditions { get; set; } = new();
+    public List<string> TriggerConditions { get; set; } = [];
 }
 
 public class AnomalyDetectionModelMetrics
@@ -598,8 +598,8 @@ public class UserActivityForecastPoint
 public class ResourceDemandForecastPoint
 {
     public DateTime Timestamp { get; set; }
-    public Dictionary<string, double> PredictedDemand { get; set; } = new();
-    public Dictionary<string, ConfidenceInterval> ConfidenceIntervals { get; set; } = new();
+    public Dictionary<string, double> PredictedDemand { get; set; } = [];
+    public Dictionary<string, ConfidenceInterval> ConfidenceIntervals { get; set; } = [];
 }
 
 // Additional prediction classes would be defined here as needed...

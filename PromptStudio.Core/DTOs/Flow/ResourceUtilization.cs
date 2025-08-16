@@ -208,7 +208,7 @@ public class ResourceUtilization
     /// <value>
     /// A dictionary containing additional resource metrics and measurements.
     /// </value>
-    public Dictionary<string, object> AdditionalMetrics { get; set; } = new();
+    public Dictionary<string, object> AdditionalMetrics { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the context in which these metrics were collected.
@@ -217,7 +217,7 @@ public class ResourceUtilization
     /// <value>
     /// A dictionary containing context information for the measurements.
     /// </value>
-    public Dictionary<string, object> Context { get; set; } = new();
+    public Dictionary<string, object> Context { get; set; } = [];
 
     /// <summary>
     /// Initializes a new instance of the ResourceUtilization class with default values.

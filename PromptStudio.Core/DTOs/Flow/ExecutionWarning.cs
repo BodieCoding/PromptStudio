@@ -100,7 +100,7 @@ public class ExecutionWarning
     /// <value>
     /// A dictionary containing additional warning context and metadata.
     /// </value>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the recommended action to address this warning.

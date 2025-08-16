@@ -71,12 +71,12 @@ public class ModelRequest
     /// Common parameters: temperature, max_tokens, top_p, frequency_penalty, presence_penalty.
     /// Services should validate parameters against model capabilities and provider constraints.
     /// </summary>
-    public Dictionary<string, object> Parameters { get; set; } = new();
+    public Dictionary<string, object> Parameters { get; set; } = [];
     
     /// <summary>
     /// Template variables and their resolved values for execution context.
     /// Used for audit trails, debugging, and execution reproducibility.
     /// Service layers can use this for logging, analytics, and troubleshooting.
     /// </summary>
-    public Dictionary<string, object> Variables { get; set; } = new();
+    public Dictionary<string, object> Variables { get; set; } = [];
 }

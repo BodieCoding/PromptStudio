@@ -43,23 +43,23 @@ public class LibraryQualityAnalysis
     /// Gets or sets the detailed quality metrics breakdown by category.
     /// </summary>
     /// <value>A dictionary mapping quality metric names to their scores, providing granular quality insights.</value>
-    public Dictionary<string, double> QualityMetrics { get; set; } = new();
+    public Dictionary<string, double> QualityMetrics { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of quality issues identified in the library.
     /// </summary>
     /// <value>A list of quality issues requiring attention, ordered by severity and impact.</value>
-    public List<QualityIssue> Issues { get; set; } = new();
+    public List<QualityIssue> Issues { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of quality improvement recommendations.
     /// </summary>
     /// <value>A list of actionable recommendations for improving library quality, prioritized by impact.</value>
-    public List<QualityRecommendation> Recommendations { get; set; } = new();
+    public List<QualityRecommendation> Recommendations { get; set; } = [];
 
     /// <summary>
     /// Gets or sets additional detailed analysis data and supporting metrics.
     /// </summary>
     /// <value>A dictionary containing extended analysis results, statistical data, and quality trend information.</value>
-    public Dictionary<string, object> DetailedAnalysis { get; set; } = new();
+    public Dictionary<string, object> DetailedAnalysis { get; set; } = [];
 }

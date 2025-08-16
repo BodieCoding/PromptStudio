@@ -37,12 +37,12 @@ public class CsvFunctionalityTests : IDisposable
         {
             Name = "Test Prompt",
             Content = "Generate {{language}} code for {{description}} with {{complexity}} level",
-            Variables = new List<PromptVariable>
-            {
+            Variables =
+            [
                 new PromptVariable { Name = "language", DefaultValue = "" },
                 new PromptVariable { Name = "description", DefaultValue = "" },
                 new PromptVariable { Name = "complexity", DefaultValue = "" }
-            }
+            ]
         };
 
         _context.PromptTemplates.Add(prompt);
@@ -94,11 +94,11 @@ public class CsvFunctionalityTests : IDisposable
         {
             Name = "Code Generator",
             Content = "Generate {{language}} code: {{code}}",
-            Variables = new List<PromptVariable>
-            {
+            Variables =
+            [
                 new PromptVariable { Name = "language", DefaultValue = "" },
                 new PromptVariable { Name = "code", DefaultValue = "" }
-            },
+            ],
             CollectionId = collection.Id
         };
         _context.PromptTemplates.Add(prompt);
@@ -148,12 +148,12 @@ public class CsvFunctionalityTests : IDisposable
         {
             Name = "Template with Variables",
             Content = "Hello {{name}}, you are {{age}} years old and live in {{city}}",
-            Variables = new List<PromptVariable>
-            {
+            Variables =
+            [
                 new PromptVariable { Name = "name", DefaultValue = "" },
                 new PromptVariable { Name = "age", DefaultValue = "" },
                 new PromptVariable { Name = "city", DefaultValue = "" }
-            }
+            ]
         };
 
         var csvData = "name,age,city\nJohn,30,NYC\nJane,25,LA";

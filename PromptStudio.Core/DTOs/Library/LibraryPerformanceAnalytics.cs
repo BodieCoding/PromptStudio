@@ -60,12 +60,12 @@ public class LibraryPerformanceAnalytics
     /// <summary>
     /// Gets or sets performance by template
     /// </summary>
-    public Dictionary<Guid, TemplatePerformance> TemplatePerformance { get; set; } = new();
+    public Dictionary<Guid, TemplatePerformance> TemplatePerformance { get; set; } = [];
 
     /// <summary>
     /// Gets or sets performance trends over time
     /// </summary>
-    public List<PerformanceDataPoint> PerformanceTrend { get; set; } = new();
+    public List<PerformanceDataPoint> PerformanceTrend { get; set; } = [];
 
     /// <summary>
     /// Gets or sets resource utilization metrics
@@ -75,12 +75,12 @@ public class LibraryPerformanceAnalytics
     /// <summary>
     /// Gets or sets performance insights and recommendations
     /// </summary>
-    public List<string> Insights { get; set; } = new();
+    public List<string> Insights { get; set; } = [];
 
     /// <summary>
     /// Gets or sets bottlenecks identified in the analysis
     /// </summary>
-    public List<string> Bottlenecks { get; set; } = new();
+    public List<string> Bottlenecks { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the analysis completion timestamp

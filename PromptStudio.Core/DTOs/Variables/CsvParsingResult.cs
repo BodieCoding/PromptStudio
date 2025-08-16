@@ -68,7 +68,7 @@ public class CsvParsingResult
     /// Ready for immediate use in template execution and variable management workflows.
     /// Empty collection indicates parsing failure or no valid data rows in source.
     /// </summary>
-    public List<Dictionary<string, string>> VariableSets { get; set; } = new();
+    public List<Dictionary<string, string>> VariableSets { get; set; } = [];
     
     /// <summary>
     /// Collection of critical error messages encountered during CSV parsing operations.
@@ -76,7 +76,7 @@ public class CsvParsingResult
     /// Includes format errors, type validation failures, and structural problems with source data.
     /// Service layers should handle these errors before proceeding with data processing.
     /// </summary>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
     
     /// <summary>
     /// Collection of warning messages for non-critical issues encountered during parsing operations.
@@ -84,7 +84,7 @@ public class CsvParsingResult
     /// Does not prevent successful parsing but may indicate potential data processing issues.
     /// Useful for data quality improvement and user guidance for optimal data formats.
     /// </summary>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
     
     /// <summary>
     /// Dictionary mapping column names to their automatically inferred data types based on content analysis.
@@ -92,7 +92,7 @@ public class CsvParsingResult
     /// Keys represent column names, values specify the most appropriate .NET types for the data.
     /// Used for enhanced data validation and type-safe variable processing workflows.
     /// </summary>
-    public Dictionary<string, Type> InferredTypes { get; set; } = new();
+    public Dictionary<string, Type> InferredTypes { get; set; } = [];
     
     /// <summary>
     /// Total number of data rows processed during the parsing operation including both valid and invalid rows.
@@ -116,5 +116,5 @@ public class CsvParsingResult
     /// Supports custom statistics collection for specialized parsing scenarios and performance monitoring.
     /// Used by analytics services for import performance analysis and optimization insights.
     /// </summary>
-    public Dictionary<string, object> Statistics { get; set; } = new();
+    public Dictionary<string, object> Statistics { get; set; } = [];
 }

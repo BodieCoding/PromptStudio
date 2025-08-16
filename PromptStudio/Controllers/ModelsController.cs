@@ -70,7 +70,7 @@ namespace PromptStudio.Controllers
                 {
                     ModelId = request.ModelId,
                     Prompt = request.Prompt ?? "Hello, please respond with 'Model test successful!'",
-                    Parameters = request.Parameters ?? new Dictionary<string, object>()
+                    Parameters = request.Parameters ?? []
                 };
 
                 var response = await _modelProviderManager.ExecutePromptAsync(modelRequest);

@@ -49,13 +49,13 @@ public class LibraryValidationSummary
     /// Gets or sets the collection of library-specific validation errors.
     /// </summary>
     /// <value>A list of critical errors specific to this library that must be resolved.</value>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of library-specific validation warnings.
     /// </summary>
     /// <value>A list of non-critical issues specific to this library suggesting improvements.</value>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the count of invalid templates within the library.

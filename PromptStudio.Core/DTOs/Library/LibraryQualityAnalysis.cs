@@ -35,22 +35,22 @@ public class LibraryQualityAnalysis
     /// <summary>
     /// Gets or sets quality issues found
     /// </summary>
-    public List<QualityIssue> Issues { get; set; } = new();
+    public List<QualityIssue> Issues { get; set; } = [];
 
     /// <summary>
     /// Gets or sets optimization recommendations
     /// </summary>
-    public List<QualityRecommendation> Recommendations { get; set; } = new();
+    public List<QualityRecommendation> Recommendations { get; set; } = [];
 
     /// <summary>
     /// Gets or sets template-specific quality analysis
     /// </summary>
-    public Dictionary<Guid, TemplateQualityAnalysis> TemplateAnalysis { get; set; } = new();
+    public Dictionary<Guid, TemplateQualityAnalysis> TemplateAnalysis { get; set; } = [];
 
     /// <summary>
     /// Gets or sets historical quality trends
     /// </summary>
-    public List<QualityTrendPoint> QualityTrends { get; set; } = new();
+    public List<QualityTrendPoint> QualityTrends { get; set; } = [];
 
     /// <summary>
     /// Gets or sets benchmarks and comparisons
@@ -70,7 +70,7 @@ public class LibraryQualityAnalysis
     /// <summary>
     /// Gets or sets additional analysis metadata
     /// </summary>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 }
 
 /// <summary>
@@ -167,7 +167,7 @@ public class QualityIssue
     /// <summary>
     /// Gets or sets suggested resolution steps
     /// </summary>
-    public List<string> ResolutionSteps { get; set; } = new();
+    public List<string> ResolutionSteps { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the estimated effort to fix
@@ -218,12 +218,12 @@ public class QualityRecommendation
     /// <summary>
     /// Gets or sets the recommended actions
     /// </summary>
-    public List<string> RecommendedActions { get; set; } = new();
+    public List<string> RecommendedActions { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the success criteria for this recommendation
     /// </summary>
-    public List<string> SuccessCriteria { get; set; } = new();
+    public List<string> SuccessCriteria { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the priority level (1-10)
@@ -254,12 +254,12 @@ public class TemplateQualityAnalysis
     /// <summary>
     /// Gets or sets template-specific issues
     /// </summary>
-    public List<QualityIssue> Issues { get; set; } = new();
+    public List<QualityIssue> Issues { get; set; } = [];
 
     /// <summary>
     /// Gets or sets template-specific recommendations
     /// </summary>
-    public List<QualityRecommendation> Recommendations { get; set; } = new();
+    public List<QualityRecommendation> Recommendations { get; set; } = [];
 
     /// <summary>
     /// Gets or sets template complexity metrics
@@ -347,7 +347,7 @@ public class QualityBenchmarks
     /// <summary>
     /// Gets or sets comparison with similar libraries
     /// </summary>
-    public List<LibraryComparison> SimilarLibraries { get; set; } = new();
+    public List<LibraryComparison> SimilarLibraries { get; set; } = [];
 }
 
 /// <summary>
@@ -373,5 +373,5 @@ public class LibraryComparison
     /// <summary>
     /// Gets or sets key differences
     /// </summary>
-    public List<string> KeyDifferences { get; set; } = new();
+    public List<string> KeyDifferences { get; set; } = [];
 }

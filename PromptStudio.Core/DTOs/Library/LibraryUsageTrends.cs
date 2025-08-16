@@ -25,42 +25,42 @@ public class LibraryUsageTrends
     /// <summary>
     /// Gets or sets execution count trends over time
     /// </summary>
-    public List<TrendDataPoint> ExecutionTrends { get; set; } = new();
+    public List<TrendDataPoint> ExecutionTrends { get; set; } = [];
 
     /// <summary>
     /// Gets or sets user engagement trends over time
     /// </summary>
-    public List<TrendDataPoint> UserEngagementTrends { get; set; } = new();
+    public List<TrendDataPoint> UserEngagementTrends { get; set; } = [];
 
     /// <summary>
     /// Gets or sets success rate trends over time
     /// </summary>
-    public List<TrendDataPoint> SuccessRateTrends { get; set; } = new();
+    public List<TrendDataPoint> SuccessRateTrends { get; set; } = [];
 
     /// <summary>
     /// Gets or sets performance trends over time
     /// </summary>
-    public List<TrendDataPoint> PerformanceTrends { get; set; } = new();
+    public List<TrendDataPoint> PerformanceTrends { get; set; } = [];
 
     /// <summary>
     /// Gets or sets template popularity trends
     /// </summary>
-    public Dictionary<Guid, List<TrendDataPoint>> TemplatePopularityTrends { get; set; } = new();
+    public Dictionary<Guid, List<TrendDataPoint>> TemplatePopularityTrends { get; set; } = [];
 
     /// <summary>
     /// Gets or sets usage patterns by time of day
     /// </summary>
-    public Dictionary<int, double> HourlyUsagePattern { get; set; } = new();
+    public Dictionary<int, double> HourlyUsagePattern { get; set; } = [];
 
     /// <summary>
     /// Gets or sets usage patterns by day of week
     /// </summary>
-    public Dictionary<DayOfWeek, double> DailyUsagePattern { get; set; } = new();
+    public Dictionary<DayOfWeek, double> DailyUsagePattern { get; set; } = [];
 
     /// <summary>
     /// Gets or sets seasonal trends (if applicable)
     /// </summary>
-    public List<SeasonalTrend> SeasonalTrends { get; set; } = new();
+    public List<SeasonalTrend> SeasonalTrends { get; set; } = [];
 
     /// <summary>
     /// Gets or sets growth metrics
@@ -70,17 +70,17 @@ public class LibraryUsageTrends
     /// <summary>
     /// Gets or sets trend forecasts
     /// </summary>
-    public List<ForecastDataPoint> Forecasts { get; set; } = new();
+    public List<ForecastDataPoint> Forecasts { get; set; } = [];
 
     /// <summary>
     /// Gets or sets insights derived from trend analysis
     /// </summary>
-    public List<string> TrendInsights { get; set; } = new();
+    public List<string> TrendInsights { get; set; } = [];
 
     /// <summary>
     /// Gets or sets anomalies detected in the trends
     /// </summary>
-    public List<TrendAnomaly> Anomalies { get; set; } = new();
+    public List<TrendAnomaly> Anomalies { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the trend analysis completion timestamp
@@ -106,7 +106,7 @@ public class TrendDataPoint
     /// <summary>
     /// Gets or sets any additional metadata for this data point
     /// </summary>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 }
 
 /// <summary>
@@ -250,10 +250,10 @@ public class TrendAnomaly
     /// <summary>
     /// Gets or sets potential causes of the anomaly
     /// </summary>
-    public List<string> PotentialCauses { get; set; } = new();
+    public List<string> PotentialCauses { get; set; } = [];
 
     /// <summary>
     /// Gets or sets recommended actions to address the anomaly
     /// </summary>
-    public List<string> RecommendedActions { get; set; } = new();
+    public List<string> RecommendedActions { get; set; } = [];
 }

@@ -50,7 +50,7 @@ public class CostAnalyticsResult
     /// <summary>
     /// Cost optimization recommendations
     /// </summary>
-    public List<CostOptimizationRecommendation> Recommendations { get; set; } = new();
+    public List<CostOptimizationRecommendation> Recommendations { get; set; } = [];
 }
 
 /// <summary>
@@ -111,7 +111,7 @@ public class CostAnalyticsSummary
     /// <summary>
     /// Key cost insights
     /// </summary>
-    public List<string> KeyInsights { get; set; } = new();
+    public List<string> KeyInsights { get; set; } = [];
 }
 
 /// <summary>
@@ -122,37 +122,37 @@ public class CostBreakdownAnalytics
     /// <summary>
     /// Cost breakdown by provider
     /// </summary>
-    public Dictionary<string, ProviderCostBreakdown> ByProvider { get; set; } = new();
+    public Dictionary<string, ProviderCostBreakdown> ByProvider { get; set; } = [];
 
     /// <summary>
     /// Cost breakdown by model
     /// </summary>
-    public Dictionary<string, ModelCostBreakdown> ByModel { get; set; } = new();
+    public Dictionary<string, ModelCostBreakdown> ByModel { get; set; } = [];
 
     /// <summary>
     /// Cost breakdown by tenant
     /// </summary>
-    public Dictionary<string, TenantCostBreakdown> ByTenant { get; set; } = new();
+    public Dictionary<string, TenantCostBreakdown> ByTenant { get; set; } = [];
 
     /// <summary>
     /// Cost breakdown by cost category
     /// </summary>
-    public Dictionary<string, CategoryCostBreakdown> ByCategory { get; set; } = new();
+    public Dictionary<string, CategoryCostBreakdown> ByCategory { get; set; } = [];
 
     /// <summary>
     /// Cost breakdown by user
     /// </summary>
-    public Dictionary<string, UserCostBreakdown> ByUser { get; set; } = new();
+    public Dictionary<string, UserCostBreakdown> ByUser { get; set; } = [];
 
     /// <summary>
     /// Cost breakdown by project
     /// </summary>
-    public Dictionary<string, ProjectCostBreakdown> ByProject { get; set; } = new();
+    public Dictionary<string, ProjectCostBreakdown> ByProject { get; set; } = [];
 
     /// <summary>
     /// Cost breakdown by cost center
     /// </summary>
-    public Dictionary<string, CostCenterBreakdown> ByCostCenter { get; set; } = new();
+    public Dictionary<string, CostCenterBreakdown> ByCostCenter { get; set; } = [];
 }
 
 /// <summary>
@@ -163,12 +163,12 @@ public class UsageCostAnalytics
     /// <summary>
     /// Cost per token by model
     /// </summary>
-    public Dictionary<string, decimal> CostPerTokenByModel { get; set; } = new();
+    public Dictionary<string, decimal> CostPerTokenByModel { get; set; } = [];
 
     /// <summary>
     /// Cost per request by model
     /// </summary>
-    public Dictionary<string, decimal> CostPerRequestByModel { get; set; } = new();
+    public Dictionary<string, decimal> CostPerRequestByModel { get; set; } = [];
 
     /// <summary>
     /// Token usage and costs
@@ -239,7 +239,7 @@ public class BudgetAnalytics
     /// <summary>
     /// Budget alerts
     /// </summary>
-    public List<BudgetAlert> Alerts { get; set; } = new();
+    public List<BudgetAlert> Alerts { get; set; } = [];
 }
 
 /// <summary>
@@ -250,7 +250,7 @@ public class CostForecastingAnalytics
     /// <summary>
     /// Forecasted costs for upcoming periods
     /// </summary>
-    public List<CostForecast> Forecasts { get; set; } = new();
+    public List<CostForecast> Forecasts { get; set; } = [];
 
     /// <summary>
     /// Cost trend analysis
@@ -260,7 +260,7 @@ public class CostForecastingAnalytics
     /// <summary>
     /// Seasonal cost patterns
     /// </summary>
-    public List<SeasonalCostPattern> SeasonalPatterns { get; set; } = new();
+    public List<SeasonalCostPattern> SeasonalPatterns { get; set; } = [];
 
     /// <summary>
     /// Forecast confidence level
@@ -270,7 +270,7 @@ public class CostForecastingAnalytics
     /// <summary>
     /// Factors influencing forecast
     /// </summary>
-    public List<string> ForecastFactors { get; set; } = new();
+    public List<string> ForecastFactors { get; set; } = [];
 }
 
 /// <summary>
@@ -286,27 +286,27 @@ public class CostOptimizationAnalytics
     /// <summary>
     /// Optimization opportunities by category
     /// </summary>
-    public Dictionary<string, List<CostOptimizationOpportunity>> OpportunitiesByCategory { get; set; } = new();
+    public Dictionary<string, List<CostOptimizationOpportunity>> OpportunitiesByCategory { get; set; } = [];
 
     /// <summary>
     /// Resource rightsizing opportunities
     /// </summary>
-    public List<RightsizingOpportunity> RightsizingOpportunities { get; set; } = new();
+    public List<RightsizingOpportunity> RightsizingOpportunities { get; set; } = [];
 
     /// <summary>
     /// Provider switching opportunities
     /// </summary>
-    public List<ProviderSwitchingOpportunity> ProviderSwitchingOpportunities { get; set; } = new();
+    public List<ProviderSwitchingOpportunity> ProviderSwitchingOpportunities { get; set; } = [];
 
     /// <summary>
     /// Volume discount opportunities
     /// </summary>
-    public List<VolumeDiscountOpportunity> VolumeDiscountOpportunities { get; set; } = new();
+    public List<VolumeDiscountOpportunity> VolumeDiscountOpportunities { get; set; } = [];
 
     /// <summary>
     /// Unused resource identification
     /// </summary>
-    public List<UnusedResourceAlert> UnusedResources { get; set; } = new();
+    public List<UnusedResourceAlert> UnusedResources { get; set; } = [];
 }
 
 // Supporting classes for cost analytics data structures
@@ -318,7 +318,7 @@ public class ProviderCostBreakdown
     public double Percentage { get; set; }
     public long TotalRequests { get; set; }
     public decimal AverageCostPerRequest { get; set; }
-    public Dictionary<string, decimal> CostByModel { get; set; } = new();
+    public Dictionary<string, decimal> CostByModel { get; set; } = [];
 }
 
 public class ModelCostBreakdown
@@ -341,7 +341,7 @@ public class TenantCostBreakdown
     public double Percentage { get; set; }
     public int UserCount { get; set; }
     public decimal CostPerUser { get; set; }
-    public Dictionary<string, decimal> CostByCategory { get; set; } = new();
+    public Dictionary<string, decimal> CostByCategory { get; set; } = [];
 }
 
 public class CategoryCostBreakdown
@@ -360,7 +360,7 @@ public class UserCostBreakdown
     public double Percentage { get; set; }
     public long TotalRequests { get; set; }
     public decimal CostPerRequest { get; set; }
-    public Dictionary<string, decimal> CostByProvider { get; set; } = new();
+    public Dictionary<string, decimal> CostByProvider { get; set; } = [];
 }
 
 public class ProjectCostBreakdown
@@ -371,7 +371,7 @@ public class ProjectCostBreakdown
     public double Percentage { get; set; }
     public decimal? Budget { get; set; }
     public double? BudgetUtilization { get; set; }
-    public Dictionary<string, decimal> CostByCategory { get; set; } = new();
+    public Dictionary<string, decimal> CostByCategory { get; set; } = [];
 }
 
 public class CostCenterBreakdown
@@ -401,7 +401,7 @@ public class ApiUsageCostAnalysis
     public long TotalApiCalls { get; set; }
     public decimal TotalApiCost { get; set; }
     public decimal AverageCostPerCall { get; set; }
-    public Dictionary<string, ApiCallCostBreakdown> CostByEndpoint { get; set; } = new();
+    public Dictionary<string, ApiCallCostBreakdown> CostByEndpoint { get; set; } = [];
 }
 
 public class StorageCostAnalysis
@@ -409,7 +409,7 @@ public class StorageCostAnalysis
     public decimal TotalStorageCost { get; set; }
     public long TotalStorageGB { get; set; }
     public decimal CostPerGB { get; set; }
-    public Dictionary<string, decimal> CostByStorageType { get; set; } = new();
+    public Dictionary<string, decimal> CostByStorageType { get; set; } = [];
 }
 
 public class ComputeCostAnalysis
@@ -417,7 +417,7 @@ public class ComputeCostAnalysis
     public decimal TotalComputeCost { get; set; }
     public double TotalComputeHours { get; set; }
     public decimal CostPerHour { get; set; }
-    public Dictionary<string, decimal> CostByInstanceType { get; set; } = new();
+    public Dictionary<string, decimal> CostByInstanceType { get; set; } = [];
 }
 
 public class BudgetAlert
@@ -446,7 +446,7 @@ public class CostTrendAnalysis
     public string TrendDirection { get; set; } = string.Empty;
     public double TrendStrength { get; set; }
     public decimal MonthlyGrowthRate { get; set; }
-    public List<string> TrendDrivers { get; set; } = new();
+    public List<string> TrendDrivers { get; set; } = [];
     public bool IsSeasonalTrend { get; set; }
 }
 
@@ -467,7 +467,7 @@ public class CostOptimizationOpportunity
     public double ImpactScore { get; set; }
     public string Priority { get; set; } = "medium";
     public string ImplementationEffort { get; set; } = string.Empty;
-    public List<string> RequiredActions { get; set; } = new();
+    public List<string> RequiredActions { get; set; } = [];
 }
 
 public class RightsizingOpportunity
@@ -489,7 +489,7 @@ public class ProviderSwitchingOpportunity
     public decimal RecommendedCost { get; set; }
     public decimal PotentialSavings { get; set; }
     public double QualityImpact { get; set; }
-    public List<string> Considerations { get; set; } = new();
+    public List<string> Considerations { get; set; } = [];
 }
 
 public class VolumeDiscountOpportunity

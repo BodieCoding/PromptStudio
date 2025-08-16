@@ -69,19 +69,19 @@ public class TemplateAnalysisResult
     /// Ordered by potential impact with specific recommendations for template enhancement.
     /// Service layers can prioritize implementation based on development resources and goals.
     /// </summary>
-    public List<string> OptimizationSuggestions { get; set; } = new();
+    public List<string> OptimizationSuggestions { get; set; } = [];
     
     /// <summary>
     /// Identified quality issues requiring attention before production deployment.
     /// Includes structural problems, content issues, and potential execution risks.
     /// Service layers should address these issues to ensure template reliability and compliance.
     /// </summary>
-    public List<string> QualityIssues { get; set; } = new();
+    public List<string> QualityIssues { get; set; } = [];
     
     /// <summary>
     /// Detailed analysis metrics and specialized indicators for advanced template assessment.
     /// Common metrics: readability_score, maintainability_index, error_potential, optimization_potential.
     /// Service layers can extract specialized metrics for advanced analytics and decision-making.
     /// </summary>
-    public Dictionary<string, object> Metrics { get; set; } = new();
+    public Dictionary<string, object> Metrics { get; set; } = [];
 }

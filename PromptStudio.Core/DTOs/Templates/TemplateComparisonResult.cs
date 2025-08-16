@@ -80,7 +80,7 @@ public class TemplateComparisonResult
     /// Used for detailed change review, impact analysis, and change approval workflows.
     /// Essential for understanding the scope and nature of template modifications.
     /// </summary>
-    public List<string> ContentDifferences { get; set; } = new();
+    public List<string> ContentDifferences { get; set; } = [];
 
     /// <summary>
     /// Collection of variable definition changes including additions, removals, and modifications.
@@ -88,7 +88,7 @@ public class TemplateComparisonResult
     /// Critical for API compatibility analysis and downstream system impact assessment.
     /// Used for breaking change detection and migration planning workflows.
     /// </summary>
-    public List<string> VariableChanges { get; set; } = new();
+    public List<string> VariableChanges { get; set; } = [];
 
     /// <summary>
     /// Dictionary of quantitative metric changes between template versions including performance and quality indicators.
@@ -96,5 +96,5 @@ public class TemplateComparisonResult
     /// Keys represent metric names, values contain comparison data or delta calculations.
     /// Used for performance regression detection and optimization impact measurement.
     /// </summary>
-    public Dictionary<string, object> MetricChanges { get; set; } = new();
+    public Dictionary<string, object> MetricChanges { get; set; } = [];
 }

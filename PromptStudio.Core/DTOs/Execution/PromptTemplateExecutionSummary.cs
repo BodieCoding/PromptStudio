@@ -50,5 +50,5 @@ public class PromptTemplateExecutionSummary
     /// <summary>
     /// Additional performance metrics
     /// </summary>
-    public Dictionary<string, object> PerformanceMetrics { get; set; } = new();
+    public Dictionary<string, object> PerformanceMetrics { get; set; } = [];
 }

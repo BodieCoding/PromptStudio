@@ -9,5 +9,5 @@ public class ModelInfo
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string Provider { get; set; } = string.Empty;
-    public Dictionary<string, object> Capabilities { get; set; } = new();
+    public Dictionary<string, object> Capabilities { get; set; } = [];
 }

@@ -57,5 +57,5 @@ public class ImportCollectionRequest
     /// <summary>
     /// Gets or sets tags to apply to the imported collection
     /// </summary>
-    public List<string> Tags { get; set; } = new();
+    public List<string> Tags { get; set; } = [];
 }

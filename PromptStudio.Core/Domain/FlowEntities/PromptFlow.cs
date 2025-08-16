@@ -759,7 +759,7 @@ public class PromptFlow : AuditableEntity
     /// Collection of FlowNode entities belonging to this workflow.
     /// Loaded through Entity Framework navigation when needed.
     /// </value>
-    public virtual ICollection<FlowNode> Nodes { get; set; } = new List<FlowNode>();
+    public virtual ICollection<FlowNode> Nodes { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of edges that define workflow connections and flow.
@@ -772,7 +772,7 @@ public class PromptFlow : AuditableEntity
     /// Collection of FlowEdge entities defining workflow connections.
     /// Loaded through Entity Framework navigation when needed.
     /// </value>
-    public virtual ICollection<FlowEdge> Edges { get; set; } = new List<FlowEdge>();
+    public virtual ICollection<FlowEdge> Edges { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of executions performed with this workflow.
@@ -785,7 +785,7 @@ public class PromptFlow : AuditableEntity
     /// Collection of FlowExecution entities for this workflow.
     /// Loaded through Entity Framework navigation when needed.
     /// </value>
-    public virtual ICollection<FlowExecution> Executions { get; set; } = new List<FlowExecution>();
+    public virtual ICollection<FlowExecution> Executions { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of template usage relationships for this workflow.
@@ -798,7 +798,7 @@ public class PromptFlow : AuditableEntity
     /// Collection of WorkflowTemplateUsage entities tracking template dependencies.
     /// Loaded through Entity Framework navigation when needed.
     /// </value>
-    public virtual ICollection<WorkflowTemplateUsage> TemplateUsages { get; set; } = new List<WorkflowTemplateUsage>();
+    public virtual ICollection<WorkflowTemplateUsage> TemplateUsages { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of variants created for A/B testing and optimization.
@@ -811,7 +811,7 @@ public class PromptFlow : AuditableEntity
     /// Collection of FlowVariant entities for this workflow.
     /// Loaded through Entity Framework navigation when needed.
     /// </value>
-    public virtual ICollection<FlowVariant> Variants { get; set; } = new List<FlowVariant>();
+    public virtual ICollection<FlowVariant> Variants { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of AI-generated suggestions for workflow improvement.
@@ -824,5 +824,5 @@ public class PromptFlow : AuditableEntity
     /// Collection of WorkflowSuggestion entities for this workflow.
     /// Loaded through Entity Framework navigation when needed.
     /// </value>
-    public virtual ICollection<WorkflowSuggestion> Suggestions { get; set; } = new List<WorkflowSuggestion>();
+    public virtual ICollection<WorkflowSuggestion> Suggestions { get; set; } = [];
 }

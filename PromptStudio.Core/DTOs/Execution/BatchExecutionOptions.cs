@@ -52,14 +52,3 @@ public class BatchExecutionOptions
     /// </summary>
     public List<string>? Tags { get; set; }
 }
-
-/// <summary>
-/// Execution priority levels
-/// </summary>
-public enum ExecutionPriority
-{
-    Low = 0,
-    Normal = 1,
-    High = 2,
-    Critical = 3
-}

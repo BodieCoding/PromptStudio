@@ -65,7 +65,7 @@ public class VariableValidationResult
     /// A list of detailed error messages describing validation failures and constraint violations.
     /// Empty if no errors are present.
     /// </value>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of validation warnings that don't prevent execution but indicate potential issues.
@@ -74,7 +74,7 @@ public class VariableValidationResult
     /// A list of warning messages highlighting non-critical issues and recommendations.
     /// Empty if no warnings are present.
     /// </value>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
 
     /// <summary>
     /// Gets or sets a dictionary of variable-specific validation results and metadata.
@@ -83,7 +83,7 @@ public class VariableValidationResult
     /// A dictionary mapping variable names to their individual validation results and constraint information.
     /// Useful for providing targeted feedback on specific variable issues.
     /// </value>
-    public Dictionary<string, object> VariableResults { get; set; } = new();
+    public Dictionary<string, object> VariableResults { get; set; } = [];
 
     /// <summary>
     /// Gets or sets additional metadata about the validation process and results.
@@ -92,5 +92,5 @@ public class VariableValidationResult
     /// A dictionary containing validation metadata such as processing time, rule counts, and validation context.
     /// Used for analytics, debugging, and validation process optimization.
     /// </value>
-    public Dictionary<string, object> ValidationMetadata { get; set; } = new();
+    public Dictionary<string, object> ValidationMetadata { get; set; } = [];
 }

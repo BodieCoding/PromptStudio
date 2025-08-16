@@ -45,7 +45,7 @@ public class WorkflowAnalyticsResult
     /// <summary>
     /// Workflow optimization recommendations
     /// </summary>
-    public List<WorkflowRecommendation> Recommendations { get; set; } = new();
+    public List<WorkflowRecommendation> Recommendations { get; set; } = [];
 }
 
 /// <summary>
@@ -86,7 +86,7 @@ public class WorkflowAnalyticsSummary
     /// <summary>
     /// Key performance insights
     /// </summary>
-    public List<string> KeyInsights { get; set; } = new();
+    public List<string> KeyInsights { get; set; } = [];
 }
 
 /// <summary>
@@ -97,17 +97,17 @@ public class WorkflowExecutionAnalytics
     /// <summary>
     /// Execution success rate by workflow
     /// </summary>
-    public Dictionary<string, double> SuccessRateByWorkflow { get; set; } = new();
+    public Dictionary<string, double> SuccessRateByWorkflow { get; set; } = [];
 
     /// <summary>
     /// Average execution time by workflow
     /// </summary>
-    public Dictionary<string, double> ExecutionTimeByWorkflow { get; set; } = new();
+    public Dictionary<string, double> ExecutionTimeByWorkflow { get; set; } = [];
 
     /// <summary>
     /// Execution frequency by workflow
     /// </summary>
-    public Dictionary<string, long> ExecutionFrequency { get; set; } = new();
+    public Dictionary<string, long> ExecutionFrequency { get; set; } = [];
 
     /// <summary>
     /// Failed executions analysis
@@ -117,7 +117,7 @@ public class WorkflowExecutionAnalytics
     /// <summary>
     /// Peak execution times
     /// </summary>
-    public List<PeakExecutionTime> PeakExecutionTimes { get; set; } = new();
+    public List<PeakExecutionTime> PeakExecutionTimes { get; set; } = [];
 }
 
 /// <summary>
@@ -128,27 +128,27 @@ public class WorkflowEfficiencyAnalytics
     /// <summary>
     /// Efficiency score by workflow (0-100)
     /// </summary>
-    public Dictionary<string, double> EfficiencyScoreByWorkflow { get; set; } = new();
+    public Dictionary<string, double> EfficiencyScoreByWorkflow { get; set; } = [];
 
     /// <summary>
     /// Resource utilization efficiency
     /// </summary>
-    public Dictionary<string, double> ResourceUtilizationEfficiency { get; set; } = new();
+    public Dictionary<string, double> ResourceUtilizationEfficiency { get; set; } = [];
 
     /// <summary>
     /// Time-to-completion optimization opportunities
     /// </summary>
-    public List<TimeOptimizationOpportunity> TimeOptimizations { get; set; } = new();
+    public List<TimeOptimizationOpportunity> TimeOptimizations { get; set; } = [];
 
     /// <summary>
     /// Parallel processing opportunities
     /// </summary>
-    public List<ParallelProcessingOpportunity> ParallelProcessingOpportunities { get; set; } = new();
+    public List<ParallelProcessingOpportunity> ParallelProcessingOpportunities { get; set; } = [];
 
     /// <summary>
     /// Automation opportunities
     /// </summary>
-    public List<AutomationOpportunity> AutomationOpportunities { get; set; } = new();
+    public List<AutomationOpportunity> AutomationOpportunities { get; set; } = [];
 }
 
 /// <summary>
@@ -159,22 +159,22 @@ public class WorkflowBottleneckAnalysis
     /// <summary>
     /// Identified bottlenecks by workflow
     /// </summary>
-    public Dictionary<string, List<WorkflowBottleneck>> BottlenecksByWorkflow { get; set; } = new();
+    public Dictionary<string, List<WorkflowBottleneck>> BottlenecksByWorkflow { get; set; } = [];
 
     /// <summary>
     /// Most common bottleneck types
     /// </summary>
-    public Dictionary<string, long> CommonBottleneckTypes { get; set; } = new();
+    public Dictionary<string, long> CommonBottleneckTypes { get; set; } = [];
 
     /// <summary>
     /// Bottleneck impact analysis
     /// </summary>
-    public List<BottleneckImpactAnalysis> BottleneckImpacts { get; set; } = new();
+    public List<BottleneckImpactAnalysis> BottleneckImpacts { get; set; } = [];
 
     /// <summary>
     /// Bottleneck resolution recommendations
     /// </summary>
-    public List<BottleneckResolutionRecommendation> ResolutionRecommendations { get; set; } = new();
+    public List<BottleneckResolutionRecommendation> ResolutionRecommendations { get; set; } = [];
 }
 
 /// <summary>
@@ -185,17 +185,17 @@ public class WorkflowOptimizationAnalytics
     /// <summary>
     /// Optimization opportunities by workflow
     /// </summary>
-    public Dictionary<string, List<WorkflowOptimizationOpportunity>> OpportunitiesByWorkflow { get; set; } = new();
+    public Dictionary<string, List<WorkflowOptimizationOpportunity>> OpportunitiesByWorkflow { get; set; } = [];
 
     /// <summary>
     /// Design pattern recommendations
     /// </summary>
-    public List<DesignPatternRecommendation> DesignPatterns { get; set; } = new();
+    public List<DesignPatternRecommendation> DesignPatterns { get; set; } = [];
 
     /// <summary>
     /// Performance tuning suggestions
     /// </summary>
-    public List<PerformanceTuningSuggestion> PerformanceTuning { get; set; } = new();
+    public List<PerformanceTuningSuggestion> PerformanceTuning { get; set; } = [];
 
     /// <summary>
     /// Scalability analysis
@@ -215,12 +215,12 @@ public class FailedExecutionAnalysis
     /// <summary>
     /// Failure reasons breakdown
     /// </summary>
-    public Dictionary<string, long> FailureReasons { get; set; } = new();
+    public Dictionary<string, long> FailureReasons { get; set; } = [];
 
     /// <summary>
     /// Most problematic workflows
     /// </summary>
-    public List<ProblematicWorkflow> ProblematicWorkflows { get; set; } = new();
+    public List<ProblematicWorkflow> ProblematicWorkflows { get; set; } = [];
 
     /// <summary>
     /// Failure patterns over time
@@ -252,7 +252,7 @@ public class ParallelProcessingOpportunity
 {
     public Guid WorkflowId { get; set; }
     public string WorkflowName { get; set; } = string.Empty;
-    public List<string> ParallelizableSteps { get; set; } = new();
+    public List<string> ParallelizableSteps { get; set; } = [];
     public double ExpectedSpeedup { get; set; }
     public string Implementation { get; set; } = string.Empty;
 }
@@ -261,7 +261,7 @@ public class AutomationOpportunity
 {
     public Guid WorkflowId { get; set; }
     public string WorkflowName { get; set; } = string.Empty;
-    public List<string> AutomatableSteps { get; set; } = new();
+    public List<string> AutomatableSteps { get; set; } = [];
     public double TimeReduction { get; set; }
     public string AutomationComplexity { get; set; } = string.Empty;
     public double ROI { get; set; }
@@ -274,7 +274,7 @@ public class WorkflowBottleneck
     public double AverageDelay { get; set; }
     public double ImpactScore { get; set; }
     public string Description { get; set; } = string.Empty;
-    public List<string> SuggestedSolutions { get; set; } = new();
+    public List<string> SuggestedSolutions { get; set; } = [];
 }
 
 public class BottleneckImpactAnalysis
@@ -293,7 +293,7 @@ public class BottleneckResolutionRecommendation
     public string Description { get; set; } = string.Empty;
     public double ExpectedImprovement { get; set; }
     public string ImplementationComplexity { get; set; } = string.Empty;
-    public List<string> ImplementationSteps { get; set; } = new();
+    public List<string> ImplementationSteps { get; set; } = [];
 }
 
 public class WorkflowOptimizationOpportunity
@@ -302,7 +302,7 @@ public class WorkflowOptimizationOpportunity
     public string Description { get; set; } = string.Empty;
     public double ImpactScore { get; set; }
     public string Priority { get; set; } = "medium";
-    public List<string> RequiredActions { get; set; } = new();
+    public List<string> RequiredActions { get; set; } = [];
 }
 
 public class DesignPatternRecommendation
@@ -310,7 +310,7 @@ public class DesignPatternRecommendation
     public string PatternName { get; set; } = string.Empty;
     public string PatternType { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public List<Guid> ApplicableWorkflows { get; set; } = new();
+    public List<Guid> ApplicableWorkflows { get; set; } = [];
     public double ExpectedBenefit { get; set; }
     public string UseCaseDescription { get; set; } = string.Empty;
 }
@@ -335,12 +335,12 @@ public class ScalabilityAnalysis
     /// <summary>
     /// Scalability limitations
     /// </summary>
-    public List<ScalabilityLimitation> Limitations { get; set; } = new();
+    public List<ScalabilityLimitation> Limitations { get; set; } = [];
 
     /// <summary>
     /// Scalability improvement recommendations
     /// </summary>
-    public List<ScalabilityImprovement> Improvements { get; set; } = new();
+    public List<ScalabilityImprovement> Improvements { get; set; } = [];
 }
 
 public class ProblematicWorkflow
@@ -349,7 +349,7 @@ public class ProblematicWorkflow
     public string WorkflowName { get; set; } = string.Empty;
     public long FailureCount { get; set; }
     public double FailureRate { get; set; }
-    public List<string> CommonFailureReasons { get; set; } = new();
+    public List<string> CommonFailureReasons { get; set; } = [];
 }
 
 public class FailurePatternPoint

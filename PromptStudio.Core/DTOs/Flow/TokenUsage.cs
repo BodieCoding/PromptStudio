@@ -99,7 +99,7 @@ public class TokenUsage
     /// <value>
     /// A dictionary containing additional token usage metadata.
     /// </value>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 
     /// <summary>
     /// Initializes a new instance of the TokenUsage class with default values.

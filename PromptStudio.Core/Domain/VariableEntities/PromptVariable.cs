@@ -177,7 +177,7 @@ public class PromptVariable : AuditableEntity
     /// Must be compatible with default value and validation rules.</para>
     /// </remarks>
     [Required]
-    public VariableType Type { get; set; } = VariableType.Text;
+    public VariableType Type { get; set; } = VariableType.String;
     
     /// <summary>
     /// Gets or sets the unique identifier of the prompt template that owns this variable.

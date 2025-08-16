@@ -67,11 +67,11 @@ public class TemplateUsageAnalytics
     /// Gets or sets the usage statistics grouped by time period.
     /// </summary>
     /// <value>A dictionary mapping period identifiers (e.g., "2024-01", "week-1") to execution counts.</value>
-    public Dictionary<string, long> UsageByPeriod { get; set; } = new();
+    public Dictionary<string, long> UsageByPeriod { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the list of most frequently used variables in this template.
     /// </summary>
     /// <value>A list of variable names ordered by usage frequency, providing optimization insights.</value>
-    public List<string> MostUsedVariables { get; set; } = new();
+    public List<string> MostUsedVariables { get; set; } = [];
 }

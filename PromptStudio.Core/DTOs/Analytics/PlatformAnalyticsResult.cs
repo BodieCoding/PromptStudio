@@ -60,7 +60,7 @@ public class PlatformAnalyticsResult
     /// <summary>
     /// Recommendations for optimization
     /// </summary>
-    public List<AnalyticsRecommendation> Recommendations { get; set; } = new();
+    public List<AnalyticsRecommendation> Recommendations { get; set; } = [];
 
     /// <summary>
     /// Time-series data points
@@ -70,7 +70,7 @@ public class PlatformAnalyticsResult
     /// <summary>
     /// Alerts and notable events
     /// </summary>
-    public List<AnalyticsAlert> Alerts { get; set; } = new();
+    public List<AnalyticsAlert> Alerts { get; set; } = [];
 }
 
 /// <summary>
@@ -111,12 +111,12 @@ public class PlatformAnalyticsSummary
     /// <summary>
     /// Key achievements in this period
     /// </summary>
-    public List<string> KeyAchievements { get; set; } = new();
+    public List<string> KeyAchievements { get; set; } = [];
 
     /// <summary>
     /// Areas requiring attention
     /// </summary>
-    public List<string> AreasOfConcern { get; set; } = new();
+    public List<string> AreasOfConcern { get; set; } = [];
 }
 
 /// <summary>
@@ -147,12 +147,12 @@ public class UserEngagementAnalytics
     /// <summary>
     /// Feature adoption rates
     /// </summary>
-    public Dictionary<string, double> FeatureAdoptionRates { get; set; } = new();
+    public Dictionary<string, double> FeatureAdoptionRates { get; set; } = [];
 
     /// <summary>
     /// User activity distribution
     /// </summary>
-    public Dictionary<string, long> ActivityDistribution { get; set; } = new();
+    public Dictionary<string, long> ActivityDistribution { get; set; } = [];
 }
 
 /// <summary>
@@ -188,7 +188,7 @@ public class SystemPerformanceAnalytics
     /// <summary>
     /// Resource utilization metrics
     /// </summary>
-    public Dictionary<string, double> ResourceUtilization { get; set; } = new();
+    public Dictionary<string, double> ResourceUtilization { get; set; } = [];
 }
 
 /// <summary>
@@ -204,7 +204,7 @@ public class PlatformCostAnalytics
     /// <summary>
     /// Cost breakdown by category
     /// </summary>
-    public Dictionary<string, decimal> CostBreakdown { get; set; } = new();
+    public Dictionary<string, decimal> CostBreakdown { get; set; } = [];
 
     /// <summary>
     /// Cost per user
@@ -235,22 +235,22 @@ public class BusinessMetricsAnalytics
     /// <summary>
     /// Return on investment metrics
     /// </summary>
-    public Dictionary<string, decimal> ROIMetrics { get; set; } = new();
+    public Dictionary<string, decimal> ROIMetrics { get; set; } = [];
 
     /// <summary>
     /// Productivity metrics
     /// </summary>
-    public Dictionary<string, double> ProductivityMetrics { get; set; } = new();
+    public Dictionary<string, double> ProductivityMetrics { get; set; } = [];
 
     /// <summary>
     /// Customer satisfaction metrics
     /// </summary>
-    public Dictionary<string, double> SatisfactionMetrics { get; set; } = new();
+    public Dictionary<string, double> SatisfactionMetrics { get; set; } = [];
 
     /// <summary>
     /// Business impact scores
     /// </summary>
-    public Dictionary<string, double> ImpactScores { get; set; } = new();
+    public Dictionary<string, double> ImpactScores { get; set; } = [];
 }
 
 /// <summary>
@@ -261,12 +261,12 @@ public class UsagePatternAnalytics
     /// <summary>
     /// Peak usage hours
     /// </summary>
-    public List<int> PeakHours { get; set; } = new();
+    public List<int> PeakHours { get; set; } = [];
 
     /// <summary>
     /// Usage by day of week
     /// </summary>
-    public Dictionary<string, long> UsageByDayOfWeek { get; set; } = new();
+    public Dictionary<string, long> UsageByDayOfWeek { get; set; } = [];
 
     /// <summary>
     /// Geographic usage distribution
@@ -276,7 +276,7 @@ public class UsagePatternAnalytics
     /// <summary>
     /// Seasonal patterns identified
     /// </summary>
-    public List<string> SeasonalPatterns { get; set; } = new();
+    public List<string> SeasonalPatterns { get; set; } = [];
 }
 
 /// <summary>
@@ -297,12 +297,12 @@ public class QualityAnalytics
     /// <summary>
     /// Quality issues identified
     /// </summary>
-    public List<QualityIssue> QualityIssues { get; set; } = new();
+    public List<QualityIssue> QualityIssues { get; set; } = [];
 
     /// <summary>
     /// Quality recommendations
     /// </summary>
-    public List<QualityRecommendation> QualityRecommendations { get; set; } = new();
+    public List<QualityRecommendation> QualityRecommendations { get; set; } = [];
 }
 
 /// <summary>
@@ -323,12 +323,12 @@ public class PredictiveAnalytics
     /// <summary>
     /// Capacity planning recommendations
     /// </summary>
-    public List<CapacityRecommendation> CapacityRecommendations { get; set; } = new();
+    public List<CapacityRecommendation> CapacityRecommendations { get; set; } = [];
 
     /// <summary>
     /// Risk assessments
     /// </summary>
-    public List<RiskAssessment> RiskAssessments { get; set; } = new();
+    public List<RiskAssessment> RiskAssessments { get; set; } = [];
 }
 
 /// <summary>
@@ -498,5 +498,5 @@ public class RiskAssessment
     /// <summary>
     /// Mitigation strategies
     /// </summary>
-    public List<string> MitigationStrategies { get; set; } = new();
+    public List<string> MitigationStrategies { get; set; } = [];
 }

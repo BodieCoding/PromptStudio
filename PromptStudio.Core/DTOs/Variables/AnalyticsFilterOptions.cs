@@ -36,12 +36,12 @@ public class AnalyticsFilterOptions
     /// <summary>
     /// Gets or sets specific metrics to calculate
     /// </summary>
-    public List<string> Metrics { get; set; } = new();
+    public List<string> Metrics { get; set; } = [];
 
     /// <summary>
     /// Gets or sets tags to filter analytics by
     /// </summary>
-    public List<string> Tags { get; set; } = new();
+    public List<string> Tags { get; set; } = [];
 
     /// <summary>
     /// Gets or sets whether to include detailed breakdowns

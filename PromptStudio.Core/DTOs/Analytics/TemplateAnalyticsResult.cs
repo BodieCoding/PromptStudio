@@ -50,7 +50,7 @@ public class TemplateAnalyticsResult
     /// <summary>
     /// Template optimization recommendations
     /// </summary>
-    public List<TemplateRecommendation> Recommendations { get; set; } = new();
+    public List<TemplateRecommendation> Recommendations { get; set; } = [];
 }
 
 /// <summary>
@@ -91,7 +91,7 @@ public class TemplateAnalyticsSummary
     /// <summary>
     /// Key insights
     /// </summary>
-    public List<string> KeyInsights { get; set; } = new();
+    public List<string> KeyInsights { get; set; } = [];
 }
 
 /// <summary>
@@ -102,27 +102,27 @@ public class TemplatePerformanceAnalytics
     /// <summary>
     /// Average response time by template
     /// </summary>
-    public Dictionary<string, double> ResponseTimeByTemplate { get; set; } = new();
+    public Dictionary<string, double> ResponseTimeByTemplate { get; set; } = [];
 
     /// <summary>
     /// Success rate by template
     /// </summary>
-    public Dictionary<string, double> SuccessRateByTemplate { get; set; } = new();
+    public Dictionary<string, double> SuccessRateByTemplate { get; set; } = [];
 
     /// <summary>
     /// Cost efficiency by template
     /// </summary>
-    public Dictionary<string, decimal> CostEfficiencyByTemplate { get; set; } = new();
+    public Dictionary<string, decimal> CostEfficiencyByTemplate { get; set; } = [];
 
     /// <summary>
     /// Performance benchmarks
     /// </summary>
-    public Dictionary<string, PerformanceBenchmark> Benchmarks { get; set; } = new();
+    public Dictionary<string, PerformanceBenchmark> Benchmarks { get; set; } = [];
 
     /// <summary>
     /// Performance improvement opportunities
     /// </summary>
-    public List<PerformanceImprovement> ImprovementOpportunities { get; set; } = new();
+    public List<PerformanceImprovement> ImprovementOpportunities { get; set; } = [];
 }
 
 /// <summary>
@@ -133,12 +133,12 @@ public class TemplateQualityAnalytics
     /// <summary>
     /// Quality scores by template
     /// </summary>
-    public Dictionary<string, double> QualityScoreByTemplate { get; set; } = new();
+    public Dictionary<string, double> QualityScoreByTemplate { get; set; } = [];
 
     /// <summary>
     /// Quality distribution
     /// </summary>
-    public Dictionary<string, long> QualityDistribution { get; set; } = new();
+    public Dictionary<string, long> QualityDistribution { get; set; } = [];
 
     /// <summary>
     /// Quality trends over time
@@ -148,7 +148,7 @@ public class TemplateQualityAnalytics
     /// <summary>
     /// Quality improvement recommendations
     /// </summary>
-    public List<QualityImprovement> QualityImprovements { get; set; } = new();
+    public List<QualityImprovement> QualityImprovements { get; set; } = [];
 }
 
 /// <summary>
@@ -159,27 +159,27 @@ public class VariableEffectivenessAnalytics
     /// <summary>
     /// Variable usage frequency
     /// </summary>
-    public Dictionary<string, long> VariableUsageFrequency { get; set; } = new();
+    public Dictionary<string, long> VariableUsageFrequency { get; set; } = [];
 
     /// <summary>
     /// Variable effectiveness scores
     /// </summary>
-    public Dictionary<string, double> VariableEffectivenessScores { get; set; } = new();
+    public Dictionary<string, double> VariableEffectivenessScores { get; set; } = [];
 
     /// <summary>
     /// Most effective variables
     /// </summary>
-    public List<VariableEffectiveness> MostEffectiveVariables { get; set; } = new();
+    public List<VariableEffectiveness> MostEffectiveVariables { get; set; } = [];
 
     /// <summary>
     /// Underperforming variables
     /// </summary>
-    public List<VariableEffectiveness> UnderperformingVariables { get; set; } = new();
+    public List<VariableEffectiveness> UnderperformingVariables { get; set; } = [];
 
     /// <summary>
     /// Variable optimization suggestions
     /// </summary>
-    public List<VariableOptimizationSuggestion> OptimizationSuggestions { get; set; } = new();
+    public List<VariableOptimizationSuggestion> OptimizationSuggestions { get; set; } = [];
 }
 
 /// <summary>
@@ -190,22 +190,22 @@ public class TemplateOptimizationAnalytics
     /// <summary>
     /// Optimization opportunities by template
     /// </summary>
-    public Dictionary<string, List<OptimizationOpportunity>> OpportunitiesByTemplate { get; set; } = new();
+    public Dictionary<string, List<OptimizationOpportunity>> OpportunitiesByTemplate { get; set; } = [];
 
     /// <summary>
     /// Automated optimization suggestions
     /// </summary>
-    public List<AutomatedOptimizationSuggestion> AutomatedSuggestions { get; set; } = new();
+    public List<AutomatedOptimizationSuggestion> AutomatedSuggestions { get; set; } = [];
 
     /// <summary>
     /// A/B testing recommendations
     /// </summary>
-    public List<ABTestRecommendation> ABTestRecommendations { get; set; } = new();
+    public List<ABTestRecommendation> ABTestRecommendations { get; set; } = [];
 
     /// <summary>
     /// Template consolidation opportunities
     /// </summary>
-    public List<TemplateConsolidationOpportunity> ConsolidationOpportunities { get; set; } = new();
+    public List<TemplateConsolidationOpportunity> ConsolidationOpportunities { get; set; } = [];
 }
 
 // Supporting classes for the analytics data structures
@@ -262,7 +262,7 @@ public class VariableEffectiveness
     public double EffectivenessScore { get; set; }
     public long UsageCount { get; set; }
     public double AverageImpact { get; set; }
-    public List<string> UsageContexts { get; set; } = new();
+    public List<string> UsageContexts { get; set; } = [];
 }
 
 public class VariableOptimizationSuggestion
@@ -280,7 +280,7 @@ public class OptimizationOpportunity
     public string Description { get; set; } = string.Empty;
     public double ImpactScore { get; set; }
     public string ImplementationComplexity { get; set; } = string.Empty;
-    public List<string> RequiredActions { get; set; } = new();
+    public List<string> RequiredActions { get; set; } = [];
 }
 
 public class AutomatedOptimizationSuggestion
@@ -305,8 +305,8 @@ public class ABTestRecommendation
 
 public class TemplateConsolidationOpportunity
 {
-    public List<Guid> TemplateIds { get; set; } = new();
-    public List<string> TemplateNames { get; set; } = new();
+    public List<Guid> TemplateIds { get; set; } = [];
+    public List<string> TemplateNames { get; set; } = [];
     public string ConsolidationReason { get; set; } = string.Empty;
     public double SimilarityScore { get; set; }
     public string RecommendedAction { get; set; } = string.Empty;

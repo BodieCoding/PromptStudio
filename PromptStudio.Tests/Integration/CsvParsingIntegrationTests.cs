@@ -43,11 +43,11 @@ public class CsvParsingIntegrationTests : IClassFixture<PromptStudioWebApplicati
             {
                 Name = "Test Template",
                 Content = "Hello {{name}}, your age is {{age}}",
-                Variables = new List<PromptVariable>
-            {
+                Variables =
+            [
                 new() { Name = "name", Type = VariableType.Text },
                 new() { Name = "age", Type = VariableType.Number }
-            }
+            ]
             };
             context.PromptTemplates.Add(template);
             await context.SaveChangesAsync();
@@ -90,11 +90,11 @@ public class CsvParsingIntegrationTests : IClassFixture<PromptStudioWebApplicati
             {
                 Name = "Test Template For Parsing",
                 Content = "Hello {{name}}, your age is {{age}}",
-                Variables = new List<PromptVariable>
-                {
+                Variables =
+                [
                     new() { Name = "name", Type = VariableType.Text },
                     new() { Name = "age", Type = VariableType.Number }
-                }
+                ]
             };
             context.PromptTemplates.Add(template);
             context.SaveChanges();

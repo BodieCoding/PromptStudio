@@ -73,7 +73,7 @@ public class VariableSetExecutionResult
     /// Essential for correlating execution outcomes with specific input configurations.
     /// Used by error analysis services for troubleshooting and optimization insights.
     /// </summary>
-    public Dictionary<string, string> Variables { get; set; } = new();
+    public Dictionary<string, string> Variables { get; set; } = [];
     
     /// <summary>
     /// Complete resolved prompt content after variable substitution and processing.
@@ -113,5 +113,5 @@ public class VariableSetExecutionResult
     /// Supports extensible execution tracking and custom analytics requirements.
     /// Used by specialized services for advanced execution analysis and custom workflow support.
     /// </summary>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 }

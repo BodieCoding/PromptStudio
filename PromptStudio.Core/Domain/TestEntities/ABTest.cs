@@ -353,7 +353,7 @@ public class ABTest : AuditableEntity
     /// Contains all variants being compared in the experiment, including
     /// control and treatment variants with their respective configurations.
     /// </remarks>
-    public virtual ICollection<ABTestVariant> Variants { get; set; } = new List<ABTestVariant>();
+    public virtual ICollection<ABTestVariant> Variants { get; set; } = [];
 
     /// <summary>
     /// Collection of all execution results recorded for this experiment.
@@ -363,6 +363,6 @@ public class ABTest : AuditableEntity
     /// Complete record of all executions across all variants, providing
     /// the raw data foundation for statistical analysis and reporting.
     /// </remarks>
-    public virtual ICollection<ABTestResult> Results { get; set; } = new List<ABTestResult>();
+    public virtual ICollection<ABTestResult> Results { get; set; } = [];
 }
 

@@ -97,5 +97,5 @@ public class LibraryImportOptions
     /// Values are passed to import service extensions and custom processing handlers.
     /// Enables advanced import workflows without modifying core import logic.
     /// </summary>
-    public Dictionary<string, object> CustomOptions { get; set; } = new();
+    public Dictionary<string, object> CustomOptions { get; set; } = [];
 }

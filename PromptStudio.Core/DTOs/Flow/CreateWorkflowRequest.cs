@@ -56,7 +56,7 @@ public class CreateWorkflowRequest
     /// Gets or sets the workflow tags for enhanced searchability and organization.
     /// </summary>
     /// <value>A collection of tags for workflow classification and search optimization.</value>
-    public List<string> Tags { get; set; } = new();
+    public List<string> Tags { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the workflow node definitions with comprehensive configuration.
@@ -64,19 +64,19 @@ public class CreateWorkflowRequest
     /// <value>A collection of node definitions that define workflow execution logic.</value>
     [Required]
     [MinLength(1)]
-    public List<WorkflowNodeDefinition> Nodes { get; set; } = new();
+    public List<WorkflowNodeDefinition> Nodes { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the workflow edge definitions for node connections and flow control.
     /// </summary>
     /// <value>A collection of edge definitions that define workflow execution flow.</value>
-    public List<WorkflowEdgeDefinition> Edges { get; set; } = new();
+    public List<WorkflowEdgeDefinition> Edges { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the workflow input variable definitions for parameterization.
     /// </summary>
     /// <value>A collection of input variable definitions for workflow parameterization.</value>
-    public List<WorkflowVariableDefinition> InputVariables { get; set; } = new();
+    public List<WorkflowVariableDefinition> InputVariables { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the workflow configuration settings for execution control.
@@ -128,7 +128,7 @@ public class WorkflowNodeDefinition
     /// Gets or sets the node configuration with execution parameters.
     /// </summary>
     /// <value>Configuration data specific to the node type and execution requirements.</value>
-    public Dictionary<string, object> Configuration { get; set; } = new();
+    public Dictionary<string, object> Configuration { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the node position for visual workflow representation.
@@ -259,7 +259,7 @@ public class WorkflowConfiguration
     /// Gets or sets custom configuration properties for workflow execution.
     /// </summary>
     /// <value>Additional configuration properties for workflow customization.</value>
-    public Dictionary<string, object> CustomProperties { get; set; } = new();
+    public Dictionary<string, object> CustomProperties { get; set; } = [];
 }
 
 /// <summary>

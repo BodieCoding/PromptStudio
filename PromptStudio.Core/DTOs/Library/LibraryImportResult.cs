@@ -66,7 +66,7 @@ public class LibraryImportResult
     /// Empty collection indicates no libraries were successfully imported.
     /// Used for batch import operations and multi-library processing scenarios.
     /// </summary>
-    public List<PromptLibrary> ImportedLibraries { get; set; } = new();
+    public List<PromptLibrary> ImportedLibraries { get; set; } = [];
 
     /// <summary>
     /// Collection of critical error messages that prevented successful import completion.
@@ -74,7 +74,7 @@ public class LibraryImportResult
     /// Includes validation failures, permission errors, and system-level issues.
     /// Service layers should log these errors and provide appropriate user notifications.
     /// </summary>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
 
     /// <summary>
     /// Collection of warning messages for non-critical issues encountered during import.
@@ -82,7 +82,7 @@ public class LibraryImportResult
     /// Does not prevent successful import but may indicate data loss or limitations.
     /// Useful for audit trails and informing users about potential import impacts.
     /// </summary>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
 
     /// <summary>
     /// Total count of individual templates successfully imported across all libraries.
@@ -106,5 +106,5 @@ public class LibraryImportResult
     /// Supports custom statistics collection for specialized import scenarios.
     /// Used by analytics services for performance monitoring and optimization insights.
     /// </summary>
-    public Dictionary<string, object> ImportStatistics { get; set; } = new();
+    public Dictionary<string, object> ImportStatistics { get; set; } = [];
 }

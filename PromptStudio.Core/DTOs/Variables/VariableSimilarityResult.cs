@@ -33,7 +33,7 @@ public class VariableSimilarityResult
     /// <summary>
     /// Gets or sets the reasons for similarity
     /// </summary>
-    public List<SimilarityReason> SimilarityReasons { get; set; } = new();
+    public List<SimilarityReason> SimilarityReasons { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the template ID where this similar variable is used
@@ -58,31 +58,5 @@ public class VariableSimilarityResult
     /// <summary>
     /// Gets or sets additional metadata about the similarity
     /// </summary>
-    public Dictionary<string, object> Metadata { get; set; } = new();
-}
-
-/// <summary>
-/// Reason for variable similarity
-/// </summary>
-public class SimilarityReason
-{
-    /// <summary>
-    /// Gets or sets the type of similarity (Name, Type, Usage, Context, etc.)
-    /// </summary>
-    public string Type { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Gets or sets the description of the similarity reason
-    /// </summary>
-    public string Description { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Gets or sets the weight/importance of this similarity factor (0.0 to 1.0)
-    /// </summary>
-    public double Weight { get; set; }
-
-    /// <summary>
-    /// Gets or sets the confidence in this similarity reason (0.0 to 1.0)
-    /// </summary>
-    public double Confidence { get; set; } = 1.0;
+    public Dictionary<string, object> Metadata { get; set; } = [];
 }

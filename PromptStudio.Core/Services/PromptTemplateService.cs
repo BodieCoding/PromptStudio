@@ -13,14 +13,9 @@ namespace PromptStudio.Core.Services;
 /// Service implementation for comprehensive prompt template lifecycle management within library contexts.
 /// Provides template creation, versioning, content validation, and collaborative features.
 /// </summary>
-public class PromptTemplateService : IPromptTemplateService
+public class PromptTemplateService(IPromptStudioDbContext context) : IPromptTemplateService
 {
-    private readonly IPromptStudioDbContext _context;
-
-    public PromptTemplateService(IPromptStudioDbContext context)
-    {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-    }
+    private readonly IPromptStudioDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     #region Template Lifecycle Operations
 
@@ -36,16 +31,14 @@ public class PromptTemplateService : IPromptTemplateService
         bool requiresApproval = false,
         CancellationToken cancellationToken = default)
     {
-        // Validate library exists and user has access
+        
+        // Validate library exists
         var library = await _context.PromptLibraries
             .Where(l => l.Id == libraryId && l.DeletedAt == null)
-            .FirstOrDefaultAsync(cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken) ?? throw new ResourceNotFoundException($"Library with ID {libraryId} not found or inaccessible");
 
-        if (library == null)
-        {
-            throw new ResourceNotFoundException($"Library with ID {libraryId} not found or inaccessible");
-        }
-
+        // TODO: Validate user has access
+        
         // Check for name uniqueness within library
         var existingTemplate = await _context.PromptTemplates
             .Where(t => t.PromptLibraryId == libraryId && 
@@ -77,10 +70,10 @@ public class PromptTemplateService : IPromptTemplateService
         // Add variables if provided
         if (variables != null)
         {
-            template.Variables = variables.ToList();
+            template.Variables = [.. variables];
         }
 
-        // Add tags if provided (assuming Tags is a JSON string property)
+        // Add tags if provided (assume tags is a JSON string property)
         if (tags != null)
         {
             template.Tags = System.Text.Json.JsonSerializer.Serialize(tags);
@@ -101,6 +94,9 @@ public class PromptTemplateService : IPromptTemplateService
         bool includeAnalytics = false,
         CancellationToken cancellationToken = default)
     {
+        // TODO: Implement access control validation
+        // For now, return the template if found
+        
         var query = _context.PromptTemplates.AsQueryable();
 
         if (includeVariables)
@@ -121,9 +117,6 @@ public class PromptTemplateService : IPromptTemplateService
         }
 
         var template = await query.FirstOrDefaultAsync(cancellationToken);
-
-        // TODO: Implement access control validation
-        // For now, return the template if found
 
         return template;
     }
@@ -209,14 +202,10 @@ public class PromptTemplateService : IPromptTemplateService
         var template = await _context.PromptTemplates
             .Include(t => t.Variables)
             .Where(t => t.Id == templateId && t.DeletedAt == null)
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (template == null)
-        {
-            throw new ResourceNotFoundException($"Template with ID {templateId} not found");
-        }
+            .FirstOrDefaultAsync(cancellationToken) ?? throw new ResourceNotFoundException($"Template with ID {templateId} not found");
 
         // TODO: Implement access control validation
+        // TODO: Implement changeDescription
 
         // Update content
         template.Content = new PromptContent { Content = content };
@@ -227,7 +216,7 @@ public class PromptTemplateService : IPromptTemplateService
             template.Variables = variables.ToList();
         }
 
-        // Update version (simplified versioning for now)
+        // TODO: Version control
         var versionParts = template.Version.Split('.');
         if (majorVersion)
         {
@@ -256,12 +245,7 @@ public class PromptTemplateService : IPromptTemplateService
     {
         var template = await _context.PromptTemplates
             .Where(t => t.Id == templateId && t.DeletedAt == null)
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (template == null)
-        {
-            throw new ResourceNotFoundException($"Template with ID {templateId} not found");
-        }
+            .FirstOrDefaultAsync(cancellationToken) ?? throw new ResourceNotFoundException($"Template with ID {templateId} not found");
 
         // TODO: Implement access control validation
 
@@ -317,16 +301,11 @@ public class PromptTemplateService : IPromptTemplateService
         bool includePerformanceMetrics = false,
         CancellationToken cancellationToken = default)
     {
-        var template = await GetTemplateAsync(templateId, userId, version, true, includePerformanceMetrics, false, cancellationToken);
-
-        if (template == null)
-        {
-            throw new ResourceNotFoundException($"Template with ID {templateId} not found");
-        }
+        var template = await GetTemplateAsync(templateId, userId, version, true, includePerformanceMetrics, false, cancellationToken) ?? throw new ResourceNotFoundException($"Template with ID {templateId} not found");
 
         // TODO: Implement comprehensive template analysis
         // For now, return a basic analysis result
-       
+
         return new TemplateAnalysisResult
         {
             ComplexityScore = 0.5, // Placeholder for complexity score
@@ -364,7 +343,6 @@ public class PromptTemplateService : IPromptTemplateService
     {
         // TODO: Implement proper version history when TemplateVersion entity is available
         // For now, return empty result
-
         return new PagedResult<TemplateVersion>
         {
             Items = [],
@@ -372,6 +350,7 @@ public class PromptTemplateService : IPromptTemplateService
             Skip = (pageNumber - 1) * pageSize,
             Take = pageSize
         };
+       
     }
 
     public async Task<TemplateComparisonResult> CompareTemplateVersionsAsync(
@@ -402,12 +381,7 @@ public class PromptTemplateService : IPromptTemplateService
     {
         var template = await _context.PromptTemplates
             .Where(t => t.Id == templateId && t.DeletedAt == null)
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (template == null)
-        {
-            throw new ResourceNotFoundException($"Template with ID {templateId} not found");
-        }
+            .FirstOrDefaultAsync(cancellationToken) ?? throw new ResourceNotFoundException($"Template with ID {templateId} not found");
 
         // TODO: Implement proper version revert logic
         // For now, just update the version

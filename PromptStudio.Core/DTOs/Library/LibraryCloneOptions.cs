@@ -113,5 +113,5 @@ public class LibraryCloneOptions
     /// Values are passed to clone service extensions and custom processing handlers.
     /// Enables sophisticated cloning workflows without modifying core cloning logic.
     /// </summary>
-    public Dictionary<string, object> CustomOptions { get; set; } = new();
+    public Dictionary<string, object> CustomOptions { get; set; } = [];
 }

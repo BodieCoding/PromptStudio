@@ -56,7 +56,7 @@ public class LibraryValidationResult
     /// Includes schema violations, dependency conflicts, and security concerns.
     /// Must be addressed before library can be successfully deployed or imported.
     /// </summary>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
     
     /// <summary>
     /// Collection of warning messages for non-critical validation issues.
@@ -64,7 +64,7 @@ public class LibraryValidationResult
     /// Does not prevent deployment but may impact functionality or performance.
     /// Useful for continuous improvement and best practice adherence.
     /// </summary>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
     
     /// <summary>
     /// Normalized quality score ranging from 0.0 (lowest) to 1.0 (highest quality).
@@ -80,5 +80,5 @@ public class LibraryValidationResult
     /// Supports extensible validation frameworks and custom compliance requirements.
     /// Used by specialized validation services for in-depth analysis and reporting.
     /// </summary>
-    public Dictionary<string, object> ValidationDetails { get; set; } = new();
+    public Dictionary<string, object> ValidationDetails { get; set; } = [];
 }

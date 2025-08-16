@@ -57,40 +57,40 @@ public class CollectionAnalyticsResult
     /// <summary>
     /// Gets or sets execution counts by day
     /// </summary>
-    public Dictionary<DateTime, int> ExecutionsByDay { get; set; } = new();
+    public Dictionary<DateTime, int> ExecutionsByDay { get; set; } = [];
 
     /// <summary>
     /// Gets or sets success rates by day
     /// </summary>
-    public Dictionary<DateTime, double> SuccessRateByDay { get; set; } = new();
+    public Dictionary<DateTime, double> SuccessRateByDay { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the most frequently used variables
     /// </summary>
-    public Dictionary<string, int> VariableUsageFrequency { get; set; } = new();
+    public Dictionary<string, int> VariableUsageFrequency { get; set; } = [];
 
     /// <summary>
     /// Gets or sets common error types and their frequencies
     /// </summary>
-    public Dictionary<string, int> ErrorFrequency { get; set; } = new();
+    public Dictionary<string, int> ErrorFrequency { get; set; } = [];
 
     /// <summary>
     /// Gets or sets performance trends over time
     /// </summary>
-    public Dictionary<DateTime, double> PerformanceTrend { get; set; } = new();
+    public Dictionary<DateTime, double> PerformanceTrend { get; set; } = [];
 
     /// <summary>
     /// Gets or sets usage patterns and insights
     /// </summary>
-    public List<string> Insights { get; set; } = new();
+    public List<string> Insights { get; set; } = [];
 
     /// <summary>
     /// Gets or sets recommendations for optimization
     /// </summary>
-    public List<string> Recommendations { get; set; } = new();
+    public List<string> Recommendations { get; set; } = [];
 
     /// <summary>
     /// Gets or sets additional analytical metadata
     /// </summary>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 }

@@ -61,5 +61,5 @@ public class FlowExecutionResult
     /// Gets or sets the collection of individual node execution details.
     /// </summary>
     /// <value>A list of node execution information providing detailed execution trace for debugging and monitoring.</value>
-    public List<NodeExecutionInfo> NodeExecutions { get; set; } = new();
+    public List<NodeExecutionInfo> NodeExecutions { get; set; } = [];
 }

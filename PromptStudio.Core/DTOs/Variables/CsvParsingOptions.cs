@@ -109,5 +109,5 @@ public class CsvParsingOptions
     /// Keys represent column names (from headers or default names), values specify target types.
     /// Used for data validation, type conversion, and error detection during variable import workflows.
     /// </summary>
-    public Dictionary<string, Type> ColumnTypes { get; set; } = new();
+    public Dictionary<string, Type> ColumnTypes { get; set; } = [];
 }

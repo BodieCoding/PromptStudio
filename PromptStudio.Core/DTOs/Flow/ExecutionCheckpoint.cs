@@ -100,7 +100,7 @@ public class ExecutionCheckpoint
     /// <value>
     /// A dictionary of variable names and their values at checkpoint time.
     /// </value>
-    public Dictionary<string, object> Variables { get; set; } = new();
+    public Dictionary<string, object> Variables { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the execution context information at this checkpoint.
@@ -109,7 +109,7 @@ public class ExecutionCheckpoint
     /// <value>
     /// A dictionary containing execution context information.
     /// </value>
-    public Dictionary<string, object> Context { get; set; } = new();
+    public Dictionary<string, object> Context { get; set; } = [];
 
     /// <summary>
     /// Gets or sets additional metadata about this checkpoint.
@@ -118,7 +118,7 @@ public class ExecutionCheckpoint
     /// <value>
     /// A dictionary containing additional checkpoint metadata.
     /// </value>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the memory usage at this checkpoint.
@@ -145,7 +145,7 @@ public class ExecutionCheckpoint
     /// <value>
     /// A list of warnings that occurred before this checkpoint.
     /// </value>
-    public List<ExecutionWarning> Warnings { get; set; } = new();
+    public List<ExecutionWarning> Warnings { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the type or category of this checkpoint.

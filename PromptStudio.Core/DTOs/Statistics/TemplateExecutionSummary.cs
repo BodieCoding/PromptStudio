@@ -211,7 +211,7 @@ public class TemplateExecutionSummary
     /// <value>
     /// A dictionary mapping time period labels to execution counts.
     /// </value>
-    public Dictionary<string, long> ExecutionsByTimePeriod { get; set; } = new();
+    public Dictionary<string, long> ExecutionsByTimePeriod { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of most common error types encountered.
@@ -220,7 +220,7 @@ public class TemplateExecutionSummary
     /// <value>
     /// A dictionary mapping error types to occurrence counts.
     /// </value>
-    public Dictionary<string, long> CommonErrorTypes { get; set; } = new();
+    public Dictionary<string, long> CommonErrorTypes { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of variable usage statistics for this template.
@@ -229,7 +229,7 @@ public class TemplateExecutionSummary
     /// <value>
     /// A dictionary mapping variable names to usage statistics.
     /// </value>
-    public Dictionary<string, VariableUsageStats> VariableUsage { get; set; } = new();
+    public Dictionary<string, VariableUsageStats> VariableUsage { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the average input size for template executions in characters.
@@ -283,7 +283,7 @@ public class TemplateExecutionSummary
     /// <value>
     /// A dictionary containing template-specific metrics and analytics data.
     /// </value>
-    public Dictionary<string, object> AdditionalMetrics { get; set; } = new();
+    public Dictionary<string, object> AdditionalMetrics { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the timestamp when this summary was last updated.
@@ -301,7 +301,7 @@ public class TemplateExecutionSummary
     /// <value>
     /// A list of improvement recommendations, empty if no recommendations available.
     /// </value>
-    public List<string> ImprovementRecommendations { get; set; } = new();
+    public List<string> ImprovementRecommendations { get; set; } = [];
 
     /// <summary>
     /// Initializes a new instance of the TemplateExecutionSummary class with default values.

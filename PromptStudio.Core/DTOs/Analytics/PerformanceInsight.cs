@@ -60,11 +60,11 @@ public class PerformanceInsight
     /// Gets or sets additional contextual data supporting the insight.
     /// </summary>
     /// <value>A dictionary containing supporting metrics, thresholds, and contextual information.</value>
-    public Dictionary<string, object> Data { get; set; } = new();
+    public Dictionary<string, object> Data { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the list of actionable recommendations based on this insight.
     /// </summary>
     /// <value>A list of specific actions that can be taken to address the insight.</value>
-    public List<string> Recommendations { get; set; } = new();
+    public List<string> Recommendations { get; set; } = [];
 }

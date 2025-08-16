@@ -118,21 +118,21 @@ public class LibraryStatistics
     /// Key: category name, Value: template count in that category.
     /// Service layers can analyze content distribution patterns and organizational effectiveness.
     /// </summary>
-    public Dictionary<string, long> TemplatesByCategory { get; set; } = new();
+    public Dictionary<string, long> TemplatesByCategory { get; set; } = [];
 
     /// <summary>
     /// Distribution of executions by AI model for model usage analysis.
     /// Key: model identifier, Value: execution count for that model.
     /// Enables model performance comparison and optimization strategy development.
     /// </summary>
-    public Dictionary<string, long> ExecutionsByModel { get; set; } = new();
+    public Dictionary<string, long> ExecutionsByModel { get; set; } = [];
 
     /// <summary>
     /// List of most frequently used variables across library templates.
     /// Ordered by usage frequency to identify reuse patterns and optimization opportunities.
     /// Service layers can promote common variables for template standardization and efficiency.
     /// </summary>
-    public List<string> MostUsedVariables { get; set; } = new();
+    public List<string> MostUsedVariables { get; set; } = [];
 
     /// <summary>
     /// Comprehensive quality assessment metrics for library health evaluation.

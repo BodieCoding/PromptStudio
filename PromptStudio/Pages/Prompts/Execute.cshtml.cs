@@ -11,7 +11,7 @@ public class ExecuteModel(IPromptService promptService) : PageModel
     public PromptTemplate PromptTemplate { get; set; } = null!;
 
     [BindProperty]
-    public Dictionary<string, string> VariableValues { get; set; } = new();
+    public Dictionary<string, string> VariableValues { get; set; } = [];
 
     public string ResolvedPrompt { get; set; } = string.Empty;
 

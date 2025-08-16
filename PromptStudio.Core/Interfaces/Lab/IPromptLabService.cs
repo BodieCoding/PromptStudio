@@ -15,20 +15,18 @@ public interface IPromptLabService
     /// Get all prompt labs for a user/tenant
     /// </summary>
     /// <param name="userId">Optional user ID to filter by</param>
-    /// <param name="tenantId">Optional tenant ID to filter by</param>
     /// <param name="includeDeleted">Whether to include soft-deleted labs</param>
     /// <returns>List of prompt labs</returns>
-    Task<IEnumerable<PromptLab>> GetLabsAsync(string? userId = null, Guid? tenantId = null, bool includeDeleted = false);
+    Task<IEnumerable<PromptLab>> GetLabsAsync(string? userId = null, bool includeDeleted = false);
 
     /// <summary>
     /// Get a prompt lab by ID
     /// </summary>
     /// <param name="labId">Lab ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="includeDeleted">Whether to include soft-deleted labs</param>
     /// <param name="includeRelated">Whether to include related libraries and workflows</param>
     /// <returns>Prompt lab or null if not found</returns>
-    Task<PromptLab?> GetLabByIdAsync(Guid labId, Guid? tenantId = null, bool includeDeleted = false, bool includeRelated = true);
+    Task<PromptLab?> GetLabByIdAsync(Guid labId, bool includeDeleted = false, bool includeRelated = true);
 
     /// <summary>
     /// Create a new prompt lab
@@ -37,12 +35,11 @@ public interface IPromptLabService
     /// <param name="description">Optional lab description</param>
     /// <param name="visibility">Lab visibility level</param>
     /// <param name="tags">Optional tags</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="createdBy">User ID who created the lab</param>
     /// <returns>Created prompt lab</returns>
     Task<PromptLab> CreateLabAsync(string name, string? description = null, 
         LabVisibility visibility = LabVisibility.Private, List<string>? tags = null, 
-        Guid? tenantId = null, string? createdBy = null);
+        string? createdBy = null);
 
     /// <summary>
     /// Update an existing prompt lab
@@ -52,38 +49,34 @@ public interface IPromptLabService
     /// <param name="description">Updated description</param>
     /// <param name="visibility">Updated visibility level</param>
     /// <param name="tags">Updated tags</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="updatedBy">User ID who updated the lab</param>
     /// <returns>Updated prompt lab or null if not found</returns>
     Task<PromptLab?> UpdateLabAsync(Guid labId, string name, string? description = null, 
         LabVisibility? visibility = null, List<string>? tags = null, 
-        Guid? tenantId = null, string? updatedBy = null);
+        string? updatedBy = null);
 
     /// <summary>
     /// Delete a prompt lab (soft delete)
     /// </summary>
     /// <param name="labId">Lab ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="deletedBy">User ID who deleted the lab</param>
     /// <returns>True if deleted, false if not found</returns>
-    Task<bool> DeleteLabAsync(Guid labId, Guid? tenantId = null, string? deletedBy = null);
+    Task<bool> DeleteLabAsync(Guid labId, string? deletedBy = null);
 
     /// <summary>
     /// Permanently delete a prompt lab (hard delete)
     /// </summary>
     /// <param name="labId">Lab ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <returns>True if permanently deleted, false if not found</returns>
-    Task<bool> PermanentlyDeleteLabAsync(Guid labId, Guid? tenantId = null);
+    Task<bool> PermanentlyDeleteLabAsync(Guid labId);
 
     /// <summary>
     /// Restore a soft-deleted prompt lab
     /// </summary>
     /// <param name="labId">Lab ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="restoredBy">User ID who restored the lab</param>
     /// <returns>True if restored, false if not found</returns>
-    Task<bool> RestoreLabAsync(Guid labId, Guid? tenantId = null, string? restoredBy = null);
+    Task<bool> RestoreLabAsync(Guid labId, string? restoredBy = null);
 
     #endregion
 
@@ -94,55 +87,50 @@ public interface IPromptLabService
     /// </summary>
     /// <param name="searchTerm">Search term</param>
     /// <param name="userId">Optional user ID to filter by</param>
-    /// <param name="tenantId">Optional tenant ID to filter by</param>
     /// <param name="includeDeleted">Whether to include soft-deleted labs</param>
     /// <returns>List of matching prompt labs</returns>
     Task<IEnumerable<PromptLab>> SearchLabsAsync(string searchTerm, string? userId = null, 
-        Guid? tenantId = null, bool includeDeleted = false);
+        bool includeDeleted = false);
 
     /// <summary>
     /// Get labs by visibility level
     /// </summary>
     /// <param name="visibility">Visibility level</param>
     /// <param name="userId">Optional user ID to filter by</param>
-    /// <param name="tenantId">Optional tenant ID to filter by</param>
     /// <param name="includeDeleted">Whether to include soft-deleted labs</param>
     /// <returns>List of labs matching visibility criteria</returns>
     Task<IEnumerable<PromptLab>> GetLabsByVisibilityAsync(LabVisibility visibility, string? userId = null, 
-        Guid? tenantId = null, bool includeDeleted = false);
+        bool includeDeleted = false);
 
     /// <summary>
     /// Get labs by tags
     /// </summary>
     /// <param name="tags">Tags to filter by</param>
     /// <param name="userId">Optional user ID to filter by</param>
-    /// <param name="tenantId">Optional tenant ID to filter by</param>
     /// <param name="includeDeleted">Whether to include soft-deleted labs</param>
     /// <returns>List of labs matching tag criteria</returns>
     Task<IEnumerable<PromptLab>> GetLabsByTagsAsync(List<string> tags, string? userId = null, 
-        Guid? tenantId = null, bool includeDeleted = false);
+        bool includeDeleted = false);
 
     /// <summary>
     /// Get recently updated labs
     /// </summary>
     /// <param name="daysBack">Number of days to look back</param>
     /// <param name="userId">Optional user ID to filter by</param>
-    /// <param name="tenantId">Optional tenant ID to filter by</param>
-    /// <param name="limit">Maximum number of labs to return</param>
+        /// <param name="limit">Maximum number of labs to return</param>
     /// <param name="includeDeleted">Whether to include soft-deleted labs</param>
     /// <returns>List of recently updated labs</returns>
     Task<IEnumerable<PromptLab>> GetRecentlyUpdatedLabsAsync(int daysBack = 7, string? userId = null, 
-        Guid? tenantId = null, int limit = 50, bool includeDeleted = false);
+        int limit = 50, bool includeDeleted = false);
 
     /// <summary>
     /// Get most active labs (by execution count)
     /// </summary>
     /// <param name="userId">Optional user ID to filter by</param>
-    /// <param name="tenantId">Optional tenant ID to filter by</param>
     /// <param name="limit">Maximum number of labs to return</param>
     /// <param name="daysBack">Number of days to look back for activity stats</param>
     /// <returns>List of most active labs</returns>
-    Task<IEnumerable<PromptLab>> GetMostActiveLabsAsync(string? userId = null, Guid? tenantId = null, 
+    Task<IEnumerable<PromptLab>> GetMostActiveLabsAsync(string? userId = null, 
         int limit = 10, int daysBack = 30);
 
     /// <summary>
@@ -151,11 +139,10 @@ public interface IPromptLabService
     /// <param name="pageNumber">Page number</param>
     /// <param name="pageSize">Page size</param>
     /// <param name="userId">Optional user ID to filter by</param>
-    /// <param name="tenantId">Optional tenant ID to filter by</param>
     /// <param name="includeDeleted">Whether to include soft-deleted labs</param>
     /// <returns>Paginated list of labs</returns>
-    Task<PagedResult<PromptLab>> GetLabsPagedAsync(int pageNumber, int pageSize, string? userId = null, 
-        Guid? tenantId = null, bool includeDeleted = false);
+    Task<PagedResult<PromptLab>> GetLabsPagedAsync(int pageNumber, int pageSize, string? userId = null,
+        bool includeDeleted = false);
 
     #endregion
 
@@ -165,68 +152,61 @@ public interface IPromptLabService
     /// Get lab statistics
     /// </summary>
     /// <param name="labId">Lab ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="daysBack">Number of days to look back for statistics</param>
     /// <returns>Lab statistics</returns>
-    Task<LabStatistics> GetLabStatisticsAsync(Guid labId, Guid? tenantId = null, int daysBack = 30);
+    Task<LabStatistics> GetLabStatisticsAsync(Guid labId, int daysBack = 30);
 
     /// <summary>
     /// Get library count for a lab
     /// </summary>
     /// <param name="labId">Lab ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="includeDeleted">Whether to include soft-deleted libraries</param>
     /// <returns>Number of libraries in the lab</returns>
-    Task<int> GetLibraryCountAsync(Guid labId, Guid? tenantId = null, bool includeDeleted = false);
+    Task<int> GetLibraryCountAsync(Guid labId, bool includeDeleted = false);
 
     /// <summary>
     /// Get workflow count for a lab
     /// </summary>
     /// <param name="labId">Lab ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="includeDeleted">Whether to include soft-deleted workflows</param>
     /// <returns>Number of workflows in the lab</returns>
-    Task<int> GetWorkflowCountAsync(Guid labId, Guid? tenantId = null, bool includeDeleted = false);
+    Task<int> GetWorkflowCountAsync(Guid labId, bool includeDeleted = false);
 
     /// <summary>
     /// Get total template count across all libraries in a lab
     /// </summary>
     /// <param name="labId">Lab ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="includeDeleted">Whether to include soft-deleted templates</param>
     /// <returns>Total number of templates in the lab</returns>
-    Task<int> GetTotalTemplateCountAsync(Guid labId, Guid? tenantId = null, bool includeDeleted = false);
+    Task<int> GetTotalTemplateCountAsync(Guid labId, bool includeDeleted = false);
 
     /// <summary>
     /// Get total execution count across all templates in a lab
     /// </summary>
     /// <param name="labId">Lab ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="daysBack">Number of days to look back</param>
     /// <returns>Total number of executions in the lab</returns>
-    Task<int> GetTotalExecutionCountAsync(Guid labId, Guid? tenantId = null, int daysBack = 30);
+    Task<int> GetTotalExecutionCountAsync(Guid labId, int daysBack = 30);
 
     /// <summary>
     /// Get lab activity trends over time
     /// </summary>
     /// <param name="labId">Lab ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="daysBack">Number of days to look back</param>
     /// <param name="granularity">Time granularity for the data</param>
     /// <returns>Activity trend data</returns>
-    Task<List<LabActivityTrendData>> GetLabActivityTrendsAsync(Guid labId, Guid? tenantId = null, 
-        int daysBack = 30, TrendGranularity granularity = TrendGranularity.Daily);
+    Task<List<LabActivityTrendData>> GetLabActivityTrendsAsync(Guid labId, int daysBack = 30,
+        TrendGranularity granularity = TrendGranularity.Daily);
 
     /// <summary>
     /// Get top performing libraries in a lab
     /// </summary>
     /// <param name="labId">Lab ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="limit">Maximum number of libraries to return</param>
     /// <param name="daysBack">Number of days to look back</param>
     /// <returns>List of top performing libraries</returns>
     Task<List<LibraryPerformanceSummary>> GetTopPerformingLibrariesAsync(Guid labId, 
-        Guid? tenantId = null, int limit = 10, int daysBack = 30);
+        int limit = 10, int daysBack = 30);
 
     #endregion
 
@@ -236,9 +216,8 @@ public interface IPromptLabService
     /// Get lab members (users with access to the lab)
     /// </summary>
     /// <param name="labId">Lab ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <returns>List of lab members with their permissions</returns>
-    Task<List<LabMemberDto>> GetLabMembersAsync(Guid labId, Guid? tenantId = null);
+    Task<List<LabMemberDto>> GetLabMembersAsync(Guid labId);
 
     /// <summary>
     /// Add a member to a lab
@@ -246,11 +225,10 @@ public interface IPromptLabService
     /// <param name="labId">Lab ID</param>
     /// <param name="userId">User ID</param>
     /// <param name="role">Member role</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="addedBy">User ID who added the member</param>
     /// <returns>Created lab member</returns>
     Task<LabMemberDto> AddLabMemberAsync(Guid labId, string userId, LabMemberRole role, 
-        Guid? tenantId = null, string? addedBy = null);
+        string? addedBy = null);
 
     /// <summary>
     /// Update a lab member's role
@@ -258,21 +236,19 @@ public interface IPromptLabService
     /// <param name="labId">Lab ID</param>
     /// <param name="userId">User ID</param>
     /// <param name="role">New role</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="updatedBy">User ID who updated the member</param>
     /// <returns>Updated lab member or null if not found</returns>
     Task<LabMemberDto?> UpdateLabMemberRoleAsync(Guid labId, string userId, LabMemberRole role, 
-        Guid? tenantId = null, string? updatedBy = null);
+        string? updatedBy = null);
 
     /// <summary>
     /// Remove a member from a lab
     /// </summary>
     /// <param name="labId">Lab ID</param>
     /// <param name="userId">User ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="removedBy">User ID who removed the member</param>
     /// <returns>True if member was removed, false otherwise</returns>
-    Task<bool> RemoveLabMemberAsync(Guid labId, string userId, Guid? tenantId = null, string? removedBy = null);
+    Task<bool> RemoveLabMemberAsync(Guid labId, string userId, string? removedBy = null);
 
     /// <summary>
     /// Check if a user has access to a lab
@@ -280,19 +256,16 @@ public interface IPromptLabService
     /// <param name="labId">Lab ID</param>
     /// <param name="userId">User ID</param>
     /// <param name="requiredRole">Minimum required role</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <returns>True if user has access, false otherwise</returns>
-    Task<bool> HasLabAccessAsync(Guid labId, string userId, LabMemberRole requiredRole = LabMemberRole.Viewer, 
-        Guid? tenantId = null);
+    Task<bool> HasLabAccessAsync(Guid labId, string userId, LabMemberRole requiredRole = LabMemberRole.Viewer);
 
     /// <summary>
     /// Get user's role in a lab
     /// </summary>
     /// <param name="labId">Lab ID</param>
     /// <param name="userId">User ID</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <returns>User's role or null if not a member</returns>
-    Task<LabMemberRole?> GetUserLabRoleAsync(Guid labId, string userId, Guid? tenantId = null);
+    Task<LabMemberRole?> GetUserLabRoleAsync(Guid labId, string userId);
 
     #endregion
 
@@ -306,10 +279,9 @@ public interface IPromptLabService
     /// <param name="includeWorkflows">Whether to include workflows</param>
     /// <param name="includeExecutionHistory">Whether to include execution history</param>
     /// <param name="includePermissions">Whether to include permission information</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <returns>JSON representation of the lab</returns>
     Task<string> ExportLabAsync(Guid labId, bool includeLibraries = true, bool includeWorkflows = true, 
-        bool includeExecutionHistory = false, bool includePermissions = false, Guid? tenantId = null);
+        bool includeExecutionHistory = false, bool includePermissions = false);
 
     /// <summary>
     /// Import a lab from JSON format
@@ -320,12 +292,11 @@ public interface IPromptLabService
     /// <param name="importExecutionHistory">Whether to import execution history</param>
     /// <param name="importPermissions">Whether to import permission information</param>
     /// <param name="overwriteExisting">Whether to overwrite existing lab</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="importedBy">User ID who imported the lab</param>
     /// <returns>Imported lab or null if import failed</returns>
     Task<PromptLab?> ImportLabAsync(string jsonContent, bool importLibraries = true, bool importWorkflows = true, 
         bool importExecutionHistory = false, bool importPermissions = false, bool overwriteExisting = false, 
-        Guid? tenantId = null, string? importedBy = null);
+        string? importedBy = null);
 
     /// <summary>
     /// Clone a lab
@@ -335,12 +306,11 @@ public interface IPromptLabService
     /// <param name="includeLibraries">Whether to include libraries</param>
     /// <param name="includeWorkflows">Whether to include workflows</param>
     /// <param name="includeExecutionHistory">Whether to include execution history</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="clonedBy">User ID who cloned the lab</param>
     /// <returns>Cloned lab</returns>
     Task<PromptLab> CloneLabAsync(Guid sourceLabId, string newName, bool includeLibraries = true, 
         bool includeWorkflows = true, bool includeExecutionHistory = false, 
-        Guid? tenantId = null, string? clonedBy = null);
+        string? clonedBy = null);
 
     #endregion
 
@@ -357,19 +327,17 @@ public interface IPromptLabService
     /// Check if a lab name is unique for a tenant
     /// </summary>
     /// <param name="name">Lab name to check</param>
-    /// <param name="tenantId">Tenant ID</param>
     /// <param name="excludeLabId">Optional lab ID to exclude from uniqueness check</param>
     /// <returns>True if name is unique, false otherwise</returns>
-    Task<bool> IsLabNameUniqueAsync(string name, Guid? tenantId = null, Guid? excludeLabId = null);
+    Task<bool> IsLabNameUniqueAsync(string name,Guid? excludeLabId = null);
 
     /// <summary>
     /// Check if a lab exists by ID
     /// </summary>
     /// <param name="labId">Lab ID to check</param>
-    /// <param name="tenantId">Optional tenant ID for multi-tenancy</param>
     /// <param name="includeDeleted">Whether to include soft-deleted labs</param>
     /// <returns>True if lab exists, false otherwise</returns>
-    Task<bool> LabExistsAsync(Guid labId, Guid? tenantId = null, bool includeDeleted = false);
+    Task<bool> LabExistsAsync(Guid labId, bool includeDeleted = false);
 
     #endregion
 }

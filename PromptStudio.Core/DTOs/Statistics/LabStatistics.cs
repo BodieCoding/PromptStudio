@@ -207,7 +207,7 @@ public class LabStatistics
     /// <value>
     /// A dictionary mapping experiment categories to occurrence counts.
     /// </value>
-    public Dictionary<string, long> ExperimentCategories { get; set; } = new();
+    public Dictionary<string, long> ExperimentCategories { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of development methodologies and their usage.
@@ -216,7 +216,7 @@ public class LabStatistics
     /// <value>
     /// A dictionary mapping methodology names to usage counts.
     /// </value>
-    public Dictionary<string, long> DevelopmentMethodologies { get; set; } = new();
+    public Dictionary<string, long> DevelopmentMethodologies { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of research tools and their usage frequency.
@@ -225,7 +225,7 @@ public class LabStatistics
     /// <value>
     /// A dictionary mapping tool names to usage frequency counts.
     /// </value>
-    public Dictionary<string, long> ResearchToolUsage { get; set; } = new();
+    public Dictionary<string, long> ResearchToolUsage { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of collaboration patterns by team size.
@@ -234,7 +234,7 @@ public class LabStatistics
     /// <value>
     /// A dictionary mapping team sizes to frequency of collaborative experiments.
     /// </value>
-    public Dictionary<int, long> CollaborationPatterns { get; set; } = new();
+    public Dictionary<int, long> CollaborationPatterns { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the average resource utilization percentage for lab operations.
@@ -288,7 +288,7 @@ public class LabStatistics
     /// <value>
     /// A dictionary containing lab-specific metrics and analytics data.
     /// </value>
-    public Dictionary<string, object> AdditionalLabMetrics { get; set; } = new();
+    public Dictionary<string, object> AdditionalLabMetrics { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the timestamp when these statistics were last updated.
@@ -306,7 +306,7 @@ public class LabStatistics
     /// <value>
     /// A dictionary mapping outcome categories to occurrence counts.
     /// </value>
-    public Dictionary<string, long> ResearchOutcomes { get; set; } = new();
+    public Dictionary<string, long> ResearchOutcomes { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the knowledge base contribution count from lab activities.

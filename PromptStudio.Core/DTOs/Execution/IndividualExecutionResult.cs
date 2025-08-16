@@ -68,7 +68,7 @@ public class IndividualExecutionResult : ExecutionResult
     /// <value>
     /// A dictionary containing individual execution context such as source row data, variable context, or processing options.
     /// </value>
-    public Dictionary<string, object> BatchContext { get; set; } = new();
+    public Dictionary<string, object> BatchContext { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the order in which this execution was processed relative to other executions in the batch.
@@ -183,7 +183,7 @@ public class IndividualExecutionResult : ExecutionResult
         {
             IsSuccess = false,
             ExecutionId = Guid.NewGuid(),
-            Errors = new List<string> { error }
+            Errors = [error]
         };
     }
 

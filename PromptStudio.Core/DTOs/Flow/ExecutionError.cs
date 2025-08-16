@@ -100,7 +100,7 @@ public class ExecutionError
     /// <value>
     /// A dictionary containing additional error context and metadata.
     /// </value>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the inner error that caused this error.

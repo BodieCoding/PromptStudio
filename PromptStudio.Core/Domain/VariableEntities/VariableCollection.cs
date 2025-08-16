@@ -374,5 +374,5 @@ public class VariableCollection : AuditableEntity
     /// Used for execution history analysis and performance tracking.
     /// Large collections may require pagination for performance optimization.
     /// </remarks>
-    public virtual ICollection<PromptExecution> Executions { get; set; } = new List<PromptExecution>();
+    public virtual ICollection<PromptExecution> Executions { get; set; } = [];
 }

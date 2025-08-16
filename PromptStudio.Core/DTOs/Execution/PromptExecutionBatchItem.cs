@@ -15,7 +15,7 @@ public class PromptExecutionBatchItem
     /// <summary>
     /// Variables used for this execution
     /// </summary>
-    public Dictionary<string, string> Variables { get; set; } = new();
+    public Dictionary<string, string> Variables { get; set; } = [];
 
     /// <summary>
     /// Resolved prompt content

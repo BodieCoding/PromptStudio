@@ -65,17 +65,17 @@ public class PromptExecutionStatistics
     /// <summary>
     /// Count of variable usage
     /// </summary>
-    public Dictionary<string, long> VariableUsageCount { get; set; } = new();
+    public Dictionary<string, long> VariableUsageCount { get; set; } = [];
 
     /// <summary>
     /// Errors categorized by type
     /// </summary>
-    public Dictionary<string, long> ErrorsByType { get; set; } = new();
+    public Dictionary<string, long> ErrorsByType { get; set; } = [];
 
     /// <summary>
     /// Performance metrics by model
     /// </summary>
-    public Dictionary<string, double> ModelPerformance { get; set; } = new();
+    public Dictionary<string, double> ModelPerformance { get; set; } = [];
 
     /// <summary>
     /// Quality metrics

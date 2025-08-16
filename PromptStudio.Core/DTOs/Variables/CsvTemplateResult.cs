@@ -22,7 +22,7 @@ public class CsvTemplateResult
     /// <summary>
     /// Gets or sets the list of variable names included in the template
     /// </summary>
-    public List<string> VariableNames { get; set; } = new();
+    public List<string> VariableNames { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the number of sample rows generated
@@ -32,7 +32,7 @@ public class CsvTemplateResult
     /// <summary>
     /// Gets or sets any warnings or notes about the generated template
     /// </summary>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the generation timestamp

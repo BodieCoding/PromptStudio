@@ -264,7 +264,7 @@ public class PromptLab : AuditableEntity
     /// Navigation property for Entity Framework Core.
     /// Supports lazy loading and efficient querying of related libraries.
     /// </remarks>
-    public virtual ICollection<PromptLibrary> PromptLibraries { get; set; } = new List<PromptLibrary>();
+    public virtual ICollection<PromptLibrary> PromptLibraries { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the collection of prompt flows (workflows) associated with this lab.
@@ -280,5 +280,5 @@ public class PromptLab : AuditableEntity
     /// Navigation property for Entity Framework Core.
     /// Supports complex workflow orchestration and automation scenarios.
     /// </remarks>
-    public virtual ICollection<PromptFlow> PromptFlows { get; set; } = new List<PromptFlow>();
+    public virtual ICollection<PromptFlow> PromptFlows { get; set; } = [];
 }

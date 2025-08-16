@@ -45,7 +45,7 @@ public class PerformanceAnalyticsResult
     /// <summary>
     /// Performance bottleneck analysis
     /// </summary>
-    public List<PerformanceBottleneck> Bottlenecks { get; set; } = new();
+    public List<PerformanceBottleneck> Bottlenecks { get; set; } = [];
 
     /// <summary>
     /// Performance trends over time
@@ -60,12 +60,12 @@ public class PerformanceAnalyticsResult
     /// <summary>
     /// Performance optimization recommendations
     /// </summary>
-    public List<PerformanceRecommendation> Recommendations { get; set; } = new();
+    public List<PerformanceRecommendation> Recommendations { get; set; } = [];
 
     /// <summary>
     /// Performance alerts and anomalies
     /// </summary>
-    public List<PerformanceAlert> Alerts { get; set; } = new();
+    public List<PerformanceAlert> Alerts { get; set; } = [];
 }
 
 /// <summary>
@@ -106,12 +106,12 @@ public class PerformanceAnalyticsSummary
     /// <summary>
     /// Key performance indicators
     /// </summary>
-    public List<string> KeyFindings { get; set; } = new();
+    public List<string> KeyFindings { get; set; } = [];
 
     /// <summary>
     /// Performance improvement opportunities
     /// </summary>
-    public List<string> ImprovementOpportunities { get; set; } = new();
+    public List<string> ImprovementOpportunities { get; set; } = [];
 }
 
 /// <summary>
@@ -152,12 +152,12 @@ public class ResponseTimeAnalytics
     /// <summary>
     /// Response time distribution by ranges
     /// </summary>
-    public Dictionary<string, long> Distribution { get; set; } = new();
+    public Dictionary<string, long> Distribution { get; set; } = [];
 
     /// <summary>
     /// Response time by endpoint or operation
     /// </summary>
-    public Dictionary<string, double> ByEndpoint { get; set; } = new();
+    public Dictionary<string, double> ByEndpoint { get; set; } = [];
 }
 
 /// <summary>
@@ -183,12 +183,12 @@ public class ThroughputAnalytics
     /// <summary>
     /// Throughput by time period
     /// </summary>
-    public Dictionary<string, double> ByTimePeriod { get; set; } = new();
+    public Dictionary<string, double> ByTimePeriod { get; set; } = [];
 
     /// <summary>
     /// Throughput by endpoint or operation
     /// </summary>
-    public Dictionary<string, double> ByEndpoint { get; set; } = new();
+    public Dictionary<string, double> ByEndpoint { get; set; } = [];
 
     /// <summary>
     /// Throughput growth rate
@@ -209,17 +209,17 @@ public class ErrorRateAnalytics
     /// <summary>
     /// Error rate by error type
     /// </summary>
-    public Dictionary<string, double> ByErrorType { get; set; } = new();
+    public Dictionary<string, double> ByErrorType { get; set; } = [];
 
     /// <summary>
     /// Error rate by endpoint or operation
     /// </summary>
-    public Dictionary<string, double> ByEndpoint { get; set; } = new();
+    public Dictionary<string, double> ByEndpoint { get; set; } = [];
 
     /// <summary>
     /// Most common errors
     /// </summary>
-    public List<ErrorFrequency> MostCommonErrors { get; set; } = new();
+    public List<ErrorFrequency> MostCommonErrors { get; set; } = [];
 
     /// <summary>
     /// Error rate trends
@@ -255,7 +255,7 @@ public class ResourceUtilizationMetrics
     /// <summary>
     /// Resource utilization by component
     /// </summary>
-    public Dictionary<string, ResourceComponentMetrics> ByComponent { get; set; } = new();
+    public Dictionary<string, ResourceComponentMetrics> ByComponent { get; set; } = [];
 
     /// <summary>
     /// Resource efficiency score (0-100)
@@ -291,7 +291,7 @@ public class AvailabilityAnalytics
     /// <summary>
     /// Availability by service or component
     /// </summary>
-    public Dictionary<string, double> ByComponent { get; set; } = new();
+    public Dictionary<string, double> ByComponent { get; set; } = [];
 
     /// <summary>
     /// Planned vs unplanned downtime
@@ -327,7 +327,7 @@ public class PerformanceBottleneck
     /// <summary>
     /// Recommended actions
     /// </summary>
-    public List<string> RecommendedActions { get; set; } = new();
+    public List<string> RecommendedActions { get; set; } = [];
 
     /// <summary>
     /// Performance impact score (0-100)
@@ -356,17 +356,17 @@ public class PerformanceBenchmarks
     /// <summary>
     /// Industry benchmark comparison
     /// </summary>
-    public Dictionary<string, BenchmarkComparison> IndustryBenchmarks { get; set; } = new();
+    public Dictionary<string, BenchmarkComparison> IndustryBenchmarks { get; set; } = [];
 
     /// <summary>
     /// Historical performance comparison
     /// </summary>
-    public Dictionary<string, BenchmarkComparison> HistoricalComparison { get; set; } = new();
+    public Dictionary<string, BenchmarkComparison> HistoricalComparison { get; set; } = [];
 
     /// <summary>
     /// SLA compliance metrics
     /// </summary>
-    public Dictionary<string, SlaComplianceMetrics> SlaCompliance { get; set; } = new();
+    public Dictionary<string, SlaComplianceMetrics> SlaCompliance { get; set; } = [];
 }
 
 /// <summary>

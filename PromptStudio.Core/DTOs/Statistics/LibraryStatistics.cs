@@ -154,7 +154,7 @@ public class LibraryStatistics
     /// <value>
     /// A dictionary containing extended statistical information.
     /// </value>
-    public Dictionary<string, object> ExtendedMetrics { get; set; } = new();
+    public Dictionary<string, object> ExtendedMetrics { get; set; } = [];
 
     /// <summary>
     /// Gets the template utilization rate as a percentage.

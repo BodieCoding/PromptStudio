@@ -224,7 +224,7 @@ public class ExecutionStatistics
     /// <value>
     /// A dictionary mapping error categories to occurrence counts.
     /// </value>
-    public Dictionary<string, long> ErrorCategoryCounts { get; set; } = new();
+    public Dictionary<string, long> ErrorCategoryCounts { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of execution duration distributions.
@@ -233,7 +233,7 @@ public class ExecutionStatistics
     /// <value>
     /// A dictionary mapping duration ranges to execution counts.
     /// </value>
-    public Dictionary<string, long> DurationDistribution { get; set; } = new();
+    public Dictionary<string, long> DurationDistribution { get; set; } = [];
 
     /// <summary>
     /// Gets or sets additional metadata and custom metrics.
@@ -242,7 +242,7 @@ public class ExecutionStatistics
     /// <value>
     /// A dictionary containing custom metrics and metadata.
     /// </value>
-    public Dictionary<string, object> AdditionalMetrics { get; set; } = new();
+    public Dictionary<string, object> AdditionalMetrics { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the timestamp when these statistics were last updated.

@@ -70,7 +70,7 @@ public class ModelResponse
     /// Common entries: model_version, provider_request_id, finish_reason, usage_details.
     /// Service layers can extract provider-specific information for advanced processing.
     /// </summary>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
     
     /// <summary>
     /// Execution time in milliseconds for performance monitoring and SLA tracking.

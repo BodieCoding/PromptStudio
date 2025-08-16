@@ -83,5 +83,5 @@ public class QualityMetrics
     /// Key: score range identifier, Value: count of executions in that range.
     /// Enables detailed quality distribution analysis and outlier identification.
     /// </summary>
-    public Dictionary<string, int> ScoreDistribution { get; set; } = new();
+    public Dictionary<string, int> ScoreDistribution { get; set; } = [];
 }

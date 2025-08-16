@@ -21,7 +21,7 @@ public class ThroughputPrediction
 public class ErrorRatePrediction
 {
     public double PredictedErrorRate { get; set; }
-    public Dictionary<string, double> ErrorRateByType { get; set; } = new();
+    public Dictionary<string, double> ErrorRateByType { get; set; } = [];
     public DateTime PredictionDate { get; set; }
     public double ConfidenceInterval { get; set; }
 }
@@ -94,7 +94,7 @@ public class CapacityExhaustionPrediction
     public DateTime ExhaustionDate { get; set; }
     public double ConfidenceLevel { get; set; }
     public string ImpactSeverity { get; set; } = string.Empty;
-    public List<string> RecommendedActions { get; set; } = new();
+    public List<string> RecommendedActions { get; set; } = [];
 }
 
 // Cost Predictions
@@ -104,7 +104,7 @@ public class CostPrediction
     public DateTime PredictionDate { get; set; }
     public double ConfidenceInterval { get; set; }
     public string CostCategory { get; set; } = string.Empty;
-    public List<string> CostDrivers { get; set; } = new();
+    public List<string> CostDrivers { get; set; } = [];
 }
 
 public class CostOptimizationPrediction
@@ -129,7 +129,7 @@ public class CostSpikePrediction
     public DateTime SpikeDate { get; set; }
     public string SpikeTrigger { get; set; } = string.Empty;
     public double SpikeProbability { get; set; }
-    public List<string> MitigationStrategies { get; set; } = new();
+    public List<string> MitigationStrategies { get; set; } = [];
 }
 
 // Usage and Trend Predictions
@@ -146,7 +146,7 @@ public class PerformanceTrend
     public DateTime TrendDate { get; set; }
     public double PerformanceScore { get; set; }
     public string TrendDirection { get; set; } = string.Empty;
-    public Dictionary<string, double> ComponentPerformance { get; set; } = new();
+    public Dictionary<string, double> ComponentPerformance { get; set; } = [];
 }
 
 public class CostTrend
@@ -190,7 +190,7 @@ public class SecurityRiskPrediction
     public double RiskProbability { get; set; }
     public string VulnerableComponent { get; set; } = string.Empty;
     public string RiskSeverity { get; set; } = string.Empty;
-    public List<string> MitigationStrategies { get; set; } = new();
+    public List<string> MitigationStrategies { get; set; } = [];
 }
 
 public class PerformanceDegradationRisk
@@ -208,7 +208,7 @@ public class ComplianceRiskPrediction
     public double ViolationProbability { get; set; }
     public string RiskArea { get; set; } = string.Empty;
     public string PotentialViolation { get; set; } = string.Empty;
-    public List<string> PreventiveActions { get; set; } = new();
+    public List<string> PreventiveActions { get; set; } = [];
 }
 
 public class BusinessContinuityRisk
@@ -224,7 +224,7 @@ public class OverallRiskAssessment
 {
     public double TotalRiskScore { get; set; }
     public string RiskLevel { get; set; } = string.Empty;
-    public List<string> HighestRisks { get; set; } = new();
-    public List<string> ImmediateActions { get; set; } = new();
+    public List<string> HighestRisks { get; set; } = [];
+    public List<string> ImmediateActions { get; set; } = [];
     public DateTime AssessmentDate { get; set; }
 }

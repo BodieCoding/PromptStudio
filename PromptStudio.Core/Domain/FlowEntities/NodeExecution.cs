@@ -722,5 +722,5 @@ public class NodeExecution : AuditableEntity
     /// Used for complete execution path reconstruction and analysis.
     /// Empty collection indicates workflow termination or execution failure.
     /// </remarks>
-    public virtual ICollection<EdgeTraversal> OutgoingTraversals { get; set; } = new List<EdgeTraversal>();
+    public virtual ICollection<EdgeTraversal> OutgoingTraversals { get; set; } = [];
 }

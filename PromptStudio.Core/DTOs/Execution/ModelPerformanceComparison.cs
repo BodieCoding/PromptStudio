@@ -15,7 +15,7 @@ public class ModelPerformanceComparison
     /// <summary>
     /// Performance data for each model
     /// </summary>
-    public List<ModelPerformanceData> ModelPerformances { get; set; } = new();
+    public List<ModelPerformanceData> ModelPerformances { get; set; } = [];
 
     /// <summary>
     /// Overall performance summary
@@ -116,7 +116,7 @@ public class ModelPerformanceData
     /// <summary>
     /// Common error types and their frequencies
     /// </summary>
-    public Dictionary<string, int> ErrorTypes { get; set; } = new();
+    public Dictionary<string, int> ErrorTypes { get; set; } = [];
 
     /// <summary>
     /// Performance over time
@@ -162,7 +162,7 @@ public class ModelPerformanceSummary
     /// <summary>
     /// Performance improvement recommendations
     /// </summary>
-    public List<string> Recommendations { get; set; } = new();
+    public List<string> Recommendations { get; set; } = [];
 }
 
 /// <summary>
@@ -173,27 +173,27 @@ public class ModelPerformanceRankings
     /// <summary>
     /// Ranking by response time (fastest first)
     /// </summary>
-    public List<ModelRanking> ByResponseTime { get; set; } = new();
+    public List<ModelRanking> ByResponseTime { get; set; } = [];
 
     /// <summary>
     /// Ranking by quality score (highest first)
     /// </summary>
-    public List<ModelRanking> ByQualityScore { get; set; } = new();
+    public List<ModelRanking> ByQualityScore { get; set; } = [];
 
     /// <summary>
     /// Ranking by cost effectiveness (most cost-effective first)
     /// </summary>
-    public List<ModelRanking> ByCostEffectiveness { get; set; } = new();
+    public List<ModelRanking> ByCostEffectiveness { get; set; } = [];
 
     /// <summary>
     /// Ranking by reliability (most reliable first)
     /// </summary>
-    public List<ModelRanking> ByReliability { get; set; } = new();
+    public List<ModelRanking> ByReliability { get; set; } = [];
 
     /// <summary>
     /// Overall composite ranking
     /// </summary>
-    public List<ModelRanking> Overall { get; set; } = new();
+    public List<ModelRanking> Overall { get; set; } = [];
 }
 
 /// <summary>

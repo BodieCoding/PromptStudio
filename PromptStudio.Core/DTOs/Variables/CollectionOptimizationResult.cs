@@ -29,22 +29,22 @@ public class CollectionOptimizationResult
     /// <summary>
     /// Gets or sets specific optimization recommendations
     /// </summary>
-    public List<OptimizationRecommendation> Recommendations { get; set; } = new();
+    public List<OptimizationRecommendation> Recommendations { get; set; } = [];
 
     /// <summary>
     /// Gets or sets identified performance bottlenecks
     /// </summary>
-    public List<PerformanceBottleneck> Bottlenecks { get; set; } = new();
+    public List<PerformanceBottleneck> Bottlenecks { get; set; } = [];
 
     /// <summary>
     /// Gets or sets variable usage efficiency analysis
     /// </summary>
-    public Dictionary<string, VariableEfficiency> VariableEfficiency { get; set; } = new();
+    public Dictionary<string, VariableEfficiency> VariableEfficiency { get; set; } = [];
 
     /// <summary>
     /// Gets or sets suggested variable set optimizations
     /// </summary>
-    public List<VariableSetOptimization> SuggestedOptimizations { get; set; } = new();
+    public List<VariableSetOptimization> SuggestedOptimizations { get; set; } = [];
 
     /// <summary>
     /// Gets or sets quality metrics for the collection
@@ -59,7 +59,7 @@ public class CollectionOptimizationResult
     /// <summary>
     /// Gets or sets additional optimization metadata
     /// </summary>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 }
 
 /// <summary>
@@ -105,7 +105,7 @@ public class OptimizationRecommendation
     /// <summary>
     /// Gets or sets suggested actions to implement the recommendation
     /// </summary>
-    public List<string> SuggestedActions { get; set; } = new();
+    public List<string> SuggestedActions { get; set; } = [];
 }
 
 /// <summary>
@@ -131,12 +131,12 @@ public class PerformanceBottleneck
     /// <summary>
     /// Gets or sets the affected components
     /// </summary>
-    public List<string> AffectedComponents { get; set; } = new();
+    public List<string> AffectedComponents { get; set; } = [];
 
     /// <summary>
     /// Gets or sets suggested resolutions
     /// </summary>
-    public List<string> SuggestedResolutions { get; set; } = new();
+    public List<string> SuggestedResolutions { get; set; } = [];
 }
 
 /// <summary>
@@ -167,7 +167,7 @@ public class VariableEfficiency
     /// <summary>
     /// Gets or sets suggested improvements
     /// </summary>
-    public List<string> SuggestedImprovements { get; set; } = new();
+    public List<string> SuggestedImprovements { get; set; } = [];
 }
 
 /// <summary>
@@ -178,12 +178,12 @@ public class VariableSetOptimization
     /// <summary>
     /// Gets or sets the current variable set
     /// </summary>
-    public Dictionary<string, string> CurrentSet { get; set; } = new();
+    public Dictionary<string, string> CurrentSet { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the optimized variable set
     /// </summary>
-    public Dictionary<string, string> OptimizedSet { get; set; } = new();
+    public Dictionary<string, string> OptimizedSet { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the expected performance improvement

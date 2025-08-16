@@ -83,12 +83,12 @@ public class BatchExecutionResult
     /// Provides granular outcome analysis, error details, and individual metrics.
     /// Service layers can analyze this for detailed failure investigation and optimization.
     /// </summary>
-    public List<VariableSetExecutionResult> Results { get; set; } = new();
+    public List<VariableSetExecutionResult> Results { get; set; } = [];
     
     /// <summary>
     /// Aggregated execution metrics and performance indicators for the batch operation.
     /// Common metrics: average_execution_time, token_usage_total, cost_total, error_categories.
     /// Service layers can extract specialized metrics for analytics and optimization insights.
     /// </summary>
-    public Dictionary<string, object> ExecutionMetrics { get; set; } = new();
+    public Dictionary<string, object> ExecutionMetrics { get; set; } = [];
 }

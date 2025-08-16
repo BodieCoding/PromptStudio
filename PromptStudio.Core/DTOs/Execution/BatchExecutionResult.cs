@@ -40,7 +40,7 @@ public class BatchExecutionResult
     /// <value>
     /// A list of IndividualExecutionResult instances representing each execution in the batch.
     /// </value>
-    public List<IndividualExecutionResult> Results { get; set; } = new();
+    public List<IndividualExecutionResult> Results { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the unique identifier for this batch execution operation.
@@ -87,7 +87,7 @@ public class BatchExecutionResult
     /// <value>
     /// A list of batch-level error messages. Individual execution errors are tracked in the Results collection.
     /// </value>
-    public List<string> BatchErrors { get; set; } = new();
+    public List<string> BatchErrors { get; set; } = [];
 
     /// <summary>
     /// Gets or sets additional metadata associated with the batch execution.
@@ -96,7 +96,7 @@ public class BatchExecutionResult
     /// <value>
     /// A dictionary containing batch metadata such as processing options, source information, or performance metrics.
     /// </value>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 
     /// <summary>
     /// Gets the total number of individual executions in this batch.

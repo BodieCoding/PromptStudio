@@ -24,8 +24,8 @@ namespace PromptStudio.Pages.Prompts
         public PromptTemplate NewPrompt { get; set; } = new();
 
         public PromptTemplate OriginalPrompt { get; set; } = default!;
-        public List<Collection> Collections { get; set; } = new();
-        public List<string> DetectedVariables { get; set; } = new();
+        public List<Collection> Collections { get; set; } = [];
+        public List<string> DetectedVariables { get; set; } = [];
 
         public async Task<IActionResult> OnGetAsync(int id)
         {

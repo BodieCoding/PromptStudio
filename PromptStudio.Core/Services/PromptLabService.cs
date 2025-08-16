@@ -22,7 +22,7 @@ public class PromptLabService : IPromptLabService
 
     #region Lab CRUD Operations
 
-    public async Task<IEnumerable<PromptLab>> GetLabsAsync(string? userId = null, Guid? tenantId = null, bool includeDeleted = false)
+    public async Task<IEnumerable<PromptLab>> GetLabsAsync(string? userId = null, bool includeDeleted = false)
     {
         var query = _context.PromptLabs.AsQueryable();
 
@@ -34,17 +34,12 @@ public class PromptLabService : IPromptLabService
         if (!string.IsNullOrEmpty(userId))
         {
             query = query.Where(lab => lab.Owner == userId);
-        }
-
-        if (tenantId.HasValue)
-        {
-            query = query.Where(lab => lab.OrganizationId == tenantId.Value);
-        }
+        }      
 
         return await query.OrderByDescending(lab => lab.UpdatedAt).ToListAsync();
     }
 
-    public async Task<PromptLab?> GetLabByIdAsync(Guid labId, Guid? tenantId = null, bool includeDeleted = false, bool includeRelated = true)
+    public async Task<PromptLab?> GetLabByIdAsync(Guid labId, bool includeDeleted = false, bool includeRelated = true)
     {
         var query = _context.PromptLabs.AsQueryable();
 
@@ -60,15 +55,12 @@ public class PromptLabService : IPromptLabService
             query = query.Where(lab => lab.DeletedAt == null);
         }
 
-        if (tenantId.HasValue)
-        {
-            query = query.Where(lab => lab.OrganizationId == tenantId.Value);
-        }
-
         return await query.FirstOrDefaultAsync();
     }
 
-    public async Task<PromptLab> CreateLabAsync(string name, string? description = null, LabVisibility visibility = LabVisibility.Private, List<string>? tags = null, Guid? tenantId = null, string? createdBy = null)
+    public async Task<PromptLab> CreateLabAsync(string name, string? description = null,
+                                                LabVisibility visibility = LabVisibility.Private,
+                                                List<string>? tags = null, string? createdBy = null)
     {
         var lab = new PromptLab
         {
@@ -77,7 +69,6 @@ public class PromptLabService : IPromptLabService
             Description = description,
             Visibility = visibility,
             Tags = tags != null ? System.Text.Json.JsonSerializer.Serialize(tags) : null,
-            OrganizationId = tenantId,
             Owner = createdBy,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -89,7 +80,7 @@ public class PromptLabService : IPromptLabService
         return lab;
     }
 
-    public async Task<PromptLab?> UpdateLabAsync(Guid labId, string name, string? description = null, LabVisibility? visibility = null, List<string>? tags = null, Guid? tenantId = null, string? updatedBy = null)
+    public async Task<PromptLab?> UpdateLabAsync(Guid labId, string name, string? description = null, LabVisibility? visibility = null, List<string>? tags = null, string? updatedBy = null)
     {
         var lab = await _context.PromptLabs
             .Where(l => l.Id == labId && l.DeletedAt == null)
@@ -107,7 +98,7 @@ public class PromptLabService : IPromptLabService
         return lab;
     }
 
-    public async Task<bool> DeleteLabAsync(Guid labId, Guid? tenantId = null, string? deletedBy = null)
+    public async Task<bool> DeleteLabAsync(Guid labId, string? deletedBy = null)
     {
         var lab = await _context.PromptLabs
             .Where(l => l.Id == labId && l.DeletedAt == null)
@@ -123,7 +114,7 @@ public class PromptLabService : IPromptLabService
         return true;
     }
 
-    public async Task<bool> PermanentlyDeleteLabAsync(Guid labId, Guid? tenantId = null)
+    public async Task<bool> PermanentlyDeleteLabAsync(Guid labId)
     {
         var lab = await _context.PromptLabs
             .Where(l => l.Id == labId)
@@ -136,7 +127,7 @@ public class PromptLabService : IPromptLabService
         return true;
     }
 
-    public async Task<bool> RestoreLabAsync(Guid labId, Guid? tenantId = null, string? restoredBy = null)
+    public async Task<bool> RestoreLabAsync(Guid labId, string? restoredBy = null)
     {
         var lab = await _context.PromptLabs
             .Where(l => l.Id == labId && l.DeletedAt != null)
@@ -156,7 +147,7 @@ public class PromptLabService : IPromptLabService
 
     #region Lab Discovery
 
-    public async Task<IEnumerable<PromptLab>> SearchLabsAsync(string searchTerm, string? userId = null, Guid? tenantId = null, bool includeDeleted = false)
+    public async Task<IEnumerable<PromptLab>> SearchLabsAsync(string searchTerm, string? userId = null, bool includeDeleted = false)
     {
         var query = _context.PromptLabs.AsQueryable();
 
@@ -173,15 +164,10 @@ public class PromptLabService : IPromptLabService
             query = query.Where(lab => lab.Owner == userId);
         }
 
-        if (tenantId.HasValue)
-        {
-            query = query.Where(lab => lab.OrganizationId == tenantId.Value);
-        }
-
         return await query.OrderByDescending(lab => lab.UpdatedAt).ToListAsync();
     }
 
-    public async Task<IEnumerable<PromptLab>> GetLabsByVisibilityAsync(LabVisibility visibility, string? userId = null, Guid? tenantId = null, bool includeDeleted = false)
+    public async Task<IEnumerable<PromptLab>> GetLabsByVisibilityAsync(LabVisibility visibility, string? userId = null, bool includeDeleted = false)
     {
         var query = _context.PromptLabs.AsQueryable();
 
@@ -197,15 +183,10 @@ public class PromptLabService : IPromptLabService
             query = query.Where(lab => lab.Owner == userId);
         }
 
-        if (tenantId.HasValue)
-        {
-            query = query.Where(lab => lab.OrganizationId == tenantId.Value);
-        }
-
         return await query.OrderByDescending(lab => lab.UpdatedAt).ToListAsync();
     }
 
-    public async Task<IEnumerable<PromptLab>> GetLabsByTagsAsync(List<string> tags, string? userId = null, Guid? tenantId = null, bool includeDeleted = false)
+    public async Task<IEnumerable<PromptLab>> GetLabsByTagsAsync(List<string> tags, string? userId = null, bool includeDeleted = false)
     {
         var query = _context.PromptLabs.AsQueryable();
 
@@ -221,15 +202,10 @@ public class PromptLabService : IPromptLabService
             query = query.Where(lab => lab.Owner == userId);
         }
 
-        if (tenantId.HasValue)
-        {
-            query = query.Where(lab => lab.OrganizationId == tenantId.Value);
-        }
-
         return await query.OrderByDescending(lab => lab.UpdatedAt).ToListAsync();
     }
 
-    public async Task<IEnumerable<PromptLab>> GetRecentlyUpdatedLabsAsync(int daysBack = 7, string? userId = null, Guid? tenantId = null, int limit = 50, bool includeDeleted = false)
+    public async Task<IEnumerable<PromptLab>> GetRecentlyUpdatedLabsAsync(int daysBack = 7, string? userId = null, int limit = 50, bool includeDeleted = false)
     {
         var cutoffDate = DateTime.UtcNow.AddDays(-daysBack);
         var query = _context.PromptLabs.AsQueryable();
@@ -246,15 +222,10 @@ public class PromptLabService : IPromptLabService
             query = query.Where(lab => lab.Owner == userId);
         }
 
-        if (tenantId.HasValue)
-        {
-            query = query.Where(lab => lab.OrganizationId == tenantId.Value);
-        }
-
         return await query.OrderByDescending(lab => lab.UpdatedAt).Take(limit).ToListAsync();
     }
 
-    public async Task<IEnumerable<PromptLab>> GetMostActiveLabsAsync(string? userId = null, Guid? tenantId = null, int limit = 10, int daysBack = 30)
+    public async Task<IEnumerable<PromptLab>> GetMostActiveLabsAsync(string? userId = null, int limit = 10, int daysBack = 30)
     {
         // TODO: Implement based on activity metrics
         var query = _context.PromptLabs.AsQueryable();
@@ -266,15 +237,10 @@ public class PromptLabService : IPromptLabService
             query = query.Where(lab => lab.Owner == userId);
         }
 
-        if (tenantId.HasValue)
-        {
-            query = query.Where(lab => lab.OrganizationId == tenantId.Value);
-        }
-
         return await query.OrderByDescending(lab => lab.UpdatedAt).Take(limit).ToListAsync();
     }
 
-    public async Task<PagedResult<PromptLab>> GetLabsPagedAsync(int pageNumber, int pageSize, string? userId = null, Guid? tenantId = null, bool includeDeleted = false)
+    public async Task<PagedResult<PromptLab>> GetLabsPagedAsync(int pageNumber, int pageSize, string? userId = null, bool includeDeleted = false)
     {
         var query = _context.PromptLabs.AsQueryable();
 
@@ -286,11 +252,6 @@ public class PromptLabService : IPromptLabService
         if (!string.IsNullOrEmpty(userId))
         {
             query = query.Where(lab => lab.Owner == userId);
-        }
-
-        if (tenantId.HasValue)
-        {
-            query = query.Where(lab => lab.OrganizationId == tenantId.Value);
         }
 
         var totalItems = await query.CountAsync();
@@ -313,7 +274,7 @@ public class PromptLabService : IPromptLabService
 
     #region Lab Analytics
 
-    public async Task<LabStatistics> GetLabStatisticsAsync(Guid labId, Guid? tenantId = null, int daysBack = 30)
+    public async Task<LabStatistics> GetLabStatisticsAsync(Guid labId, int daysBack = 30)
     {
         var lab = await _context.PromptLabs
             .Include(l => l.PromptLibraries)
@@ -337,7 +298,7 @@ public class PromptLabService : IPromptLabService
         return stats;
     }
 
-    public async Task<int> GetLibraryCountAsync(Guid labId, Guid? tenantId = null, bool includeDeleted = false)
+    public async Task<int> GetLibraryCountAsync(Guid labId, bool includeDeleted = false)
     {
         var query = _context.PromptLibraries.Where(lib => lib.PromptLabId == labId);
 
@@ -349,13 +310,13 @@ public class PromptLabService : IPromptLabService
         return await query.CountAsync();
     }
 
-    public Task<int> GetWorkflowCountAsync(Guid labId, Guid? tenantId = null, bool includeDeleted = false)
+    public Task<int> GetWorkflowCountAsync(Guid labId, bool includeDeleted = false)
     {
         // TODO: Implement when workflow relationships are established
         return Task.FromResult(0);
     }
 
-    public async Task<int> GetTotalTemplateCountAsync(Guid labId, Guid? tenantId = null, bool includeDeleted = false)
+    public async Task<int> GetTotalTemplateCountAsync(Guid labId, bool includeDeleted = false)
     {
         var query = _context.PromptTemplates
             .Where(template => template.PromptLibrary.PromptLabId == labId);
@@ -369,19 +330,19 @@ public class PromptLabService : IPromptLabService
         return await query.CountAsync();
     }
 
-    public Task<int> GetTotalExecutionCountAsync(Guid labId, Guid? tenantId = null, int daysBack = 30)
+    public Task<int> GetTotalExecutionCountAsync(Guid labId, int daysBack = 30)
     {
         // TODO: Implement when execution relationships are established
         return Task.FromResult(0);
     }
 
-    public Task<List<LabActivityTrendData>> GetLabActivityTrendsAsync(Guid labId, Guid? tenantId = null, int daysBack = 30, TrendGranularity granularity = TrendGranularity.Daily)
+    public Task<List<LabActivityTrendData>> GetLabActivityTrendsAsync(Guid labId, int daysBack = 30, TrendGranularity granularity = TrendGranularity.Daily)
     {
         // TODO: Implement activity trend analysis
         return Task.FromResult(new List<LabActivityTrendData>());
     }
 
-    public Task<List<LibraryPerformanceSummary>> GetTopPerformingLibrariesAsync(Guid labId, Guid? tenantId = null, int limit = 10, int daysBack = 30)
+    public Task<List<LibraryPerformanceSummary>> GetTopPerformingLibrariesAsync(Guid labId, int limit = 10, int daysBack = 30)
     {
         // TODO: Implement performance analysis
         return Task.FromResult(new List<LibraryPerformanceSummary>());
@@ -391,31 +352,31 @@ public class PromptLabService : IPromptLabService
 
     #region Lab Collaboration and Permissions
 
-    public Task<List<LabMemberDto>> GetLabMembersAsync(Guid labId, Guid? tenantId = null)
+    public Task<List<LabMemberDto>> GetLabMembersAsync(Guid labId)
     {
         // TODO: Implement when member system is established
         return Task.FromResult(new List<LabMemberDto>());
     }
 
-    public Task<LabMemberDto> AddLabMemberAsync(Guid labId, string userId, LabMemberRole role, Guid? tenantId = null, string? addedBy = null)
+    public Task<LabMemberDto> AddLabMemberAsync(Guid labId, string userId, LabMemberRole role, string? addedBy = null)
     {
         // TODO: Implement when member system is established
         throw new NotImplementedException("Member system not yet implemented");
     }
 
-    public Task<LabMemberDto?> UpdateLabMemberRoleAsync(Guid labId, string userId, LabMemberRole role, Guid? tenantId = null, string? updatedBy = null)
+    public Task<LabMemberDto?> UpdateLabMemberRoleAsync(Guid labId, string userId, LabMemberRole role, string? updatedBy = null)
     {
         // TODO: Implement when member system is established
         return Task.FromResult<LabMemberDto?>(null);
     }
 
-    public Task<bool> RemoveLabMemberAsync(Guid labId, string userId, Guid? tenantId = null, string? removedBy = null)
+    public Task<bool> RemoveLabMemberAsync(Guid labId, string userId, string? removedBy = null)
     {
         // TODO: Implement when member system is established
         return Task.FromResult(false);
     }
 
-    public async Task<bool> HasLabAccessAsync(Guid labId, string userId, LabMemberRole requiredRole = LabMemberRole.Viewer, Guid? tenantId = null)
+    public async Task<bool> HasLabAccessAsync(Guid labId, string userId, LabMemberRole requiredRole = LabMemberRole.Viewer)
     {
         var lab = await _context.PromptLabs
             .Where(l => l.Id == labId && l.DeletedAt == null)
@@ -435,7 +396,7 @@ public class PromptLabService : IPromptLabService
         };
     }
 
-    public async Task<LabMemberRole?> GetUserLabRoleAsync(Guid labId, string userId, Guid? tenantId = null)
+    public async Task<LabMemberRole?> GetUserLabRoleAsync(Guid labId, string userId)
     {
         var lab = await _context.PromptLabs
             .Where(l => l.Id == labId && l.DeletedAt == null)
@@ -453,19 +414,19 @@ public class PromptLabService : IPromptLabService
 
     #region Lab Import/Export
 
-    public Task<string> ExportLabAsync(Guid labId, bool includeLibraries = true, bool includeWorkflows = true, bool includeExecutionHistory = false, bool includePermissions = false, Guid? tenantId = null)
+    public Task<string> ExportLabAsync(Guid labId, bool includeLibraries = true, bool includeWorkflows = true, bool includeExecutionHistory = false, bool includePermissions = false)
     {
         // TODO: Implement export functionality
         throw new NotImplementedException("Export functionality not yet implemented");
     }
 
-    public Task<PromptLab?> ImportLabAsync(string jsonContent, bool importLibraries = true, bool importWorkflows = true, bool importExecutionHistory = false, bool importPermissions = false, bool overwriteExisting = false, Guid? tenantId = null, string? importedBy = null)
+    public Task<PromptLab?> ImportLabAsync(string jsonContent, bool importLibraries = true, bool importWorkflows = true, bool importExecutionHistory = false, bool importPermissions = false, bool overwriteExisting = false, string? importedBy = null)
     {
         // TODO: Implement import functionality
         throw new NotImplementedException("Import functionality not yet implemented");
     }
 
-    public Task<PromptLab> CloneLabAsync(Guid sourceLabId, string newName, bool includeLibraries = true, bool includeWorkflows = true, bool includeExecutionHistory = false, Guid? tenantId = null, string? clonedBy = null)
+    public Task<PromptLab> CloneLabAsync(Guid sourceLabId, string newName, bool includeLibraries = true, bool includeWorkflows = true, bool includeExecutionHistory = false, string? clonedBy = null)
     {
         // TODO: Implement clone functionality
         throw new NotImplementedException("Clone functionality not yet implemented");
@@ -481,15 +442,10 @@ public class PromptLabService : IPromptLabService
         return Task.FromResult(new LabValidationResult { IsValid = true });
     }
 
-    public async Task<bool> IsLabNameUniqueAsync(string name, Guid? tenantId = null, Guid? excludeLabId = null)
+    public async Task<bool> IsLabNameUniqueAsync(string name, Guid? excludeLabId = null)
     {
         var query = _context.PromptLabs
             .Where(lab => lab.Name == name && lab.DeletedAt == null);
-
-        if (tenantId.HasValue)
-        {
-            query = query.Where(lab => lab.OrganizationId == tenantId.Value);
-        }
 
         if (excludeLabId.HasValue)
         {
@@ -499,7 +455,7 @@ public class PromptLabService : IPromptLabService
         return !await query.AnyAsync();
     }
 
-    public async Task<bool> LabExistsAsync(Guid labId, Guid? tenantId = null, bool includeDeleted = false)
+    public async Task<bool> LabExistsAsync(Guid labId, bool includeDeleted = false)
     {
         var query = _context.PromptLabs
             .Where(lab => lab.Id == labId);
@@ -507,11 +463,6 @@ public class PromptLabService : IPromptLabService
         if (!includeDeleted)
         {
             query = query.Where(lab => lab.DeletedAt == null);
-        }
-
-        if (tenantId.HasValue)
-        {
-            query = query.Where(lab => lab.OrganizationId == tenantId.Value);
         }
 
         return await query.AnyAsync();

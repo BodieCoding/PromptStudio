@@ -56,7 +56,7 @@ public class LibrarySharingResult
     /// Empty collection when no targets were successfully shared or operation failed completely.
     /// Used for success confirmation and permission verification workflows.
     /// </summary>
-    public List<ShareTarget> SharedTargets { get; set; } = new List<ShareTarget>();
+    public List<ShareTarget> SharedTargets { get; set; } = [];
 
     /// <summary>
     /// Collection of share targets that failed to receive access due to errors or restrictions.
@@ -64,7 +64,7 @@ public class LibrarySharingResult
     /// Includes targets with permission conflicts, invalid identities, or system errors.
     /// Critical for troubleshooting sharing issues and implementing retry logic.
     /// </summary>
-    public List<ShareTarget> FailedTargets { get; set; } = new List<ShareTarget>();
+    public List<ShareTarget> FailedTargets { get; set; } = [];
 
     /// <summary>
     /// Collection of error messages encountered during the sharing operation.
@@ -72,7 +72,7 @@ public class LibrarySharingResult
     /// Provides actionable information for troubleshooting and user feedback.
     /// Service layers should log these errors and provide appropriate user notifications.
     /// </summary>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
 
     /// <summary>
     /// Detailed results for each sharing target including success status and granted permissions.
@@ -80,7 +80,7 @@ public class LibrarySharingResult
     /// Contains both successful and failed target results with specific error details.
     /// Used for detailed reporting, permission verification, and retry logic implementation.
     /// </summary>
-    public List<ShareTargetResult> Results { get; set; } = new();
+    public List<ShareTargetResult> Results { get; set; } = [];
 
     /// <summary>
     /// Total count of targets that successfully received library access.
@@ -171,5 +171,5 @@ public class ShareTargetResult
     /// Used for permission verification, audit trails, and access control management.
     /// Empty collection for failed sharing attempts, populated for successful operations.
     /// </summary>
-    public List<string> GrantedPermissions { get; set; } = new();
+    public List<string> GrantedPermissions { get; set; } = [];
 }

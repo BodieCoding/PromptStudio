@@ -37,29 +37,29 @@ public class LabValidationResult
     /// Gets or sets the collection of critical validation errors that prevent lab deployment.
     /// </summary>
     /// <value>A list of lab-level errors that must be resolved before the lab can be considered valid.</value>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of validation warnings suggesting improvements.
     /// </summary>
     /// <value>A list of non-critical issues that should be addressed for optimal lab performance and maintainability.</value>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of optimization recommendations for the lab.
     /// </summary>
     /// <value>A list of suggested improvements for enhanced performance, efficiency, and best practices compliance.</value>
-    public List<string> Recommendations { get; set; } = new();
+    public List<string> Recommendations { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the validation results for all libraries within the lab.
     /// </summary>
     /// <value>A collection of library-specific validation summaries providing detailed component-level feedback.</value>
-    public List<LibraryValidationSummary> LibraryValidations { get; set; } = new();
+    public List<LibraryValidationSummary> LibraryValidations { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the validation results for all workflows within the lab.
     /// </summary>
     /// <value>A collection of workflow-specific validation summaries providing detailed component-level feedback.</value>
-    public List<WorkflowValidationSummary> WorkflowValidations { get; set; } = new();
+    public List<WorkflowValidationSummary> WorkflowValidations { get; set; } = [];
 }

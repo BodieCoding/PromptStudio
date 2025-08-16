@@ -58,7 +58,7 @@ public class BatchExecutionProgress
     /// <summary>
     /// Any errors encountered during processing
     /// </summary>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
 
     /// <summary>
     /// Additional status information

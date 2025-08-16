@@ -420,7 +420,7 @@ public class FlowNode : AuditableEntity
     /// Used for traversing the workflow graph upstream and analyzing dependencies.
     /// The number and types of incoming edges determine when this node can execute.
     /// </remarks>
-    public virtual ICollection<FlowEdge> IncomingEdges { get; set; } = new List<FlowEdge>();
+    public virtual ICollection<FlowEdge> IncomingEdges { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the collection of edges that originate from this node (outgoing connections).
@@ -431,7 +431,7 @@ public class FlowNode : AuditableEntity
     /// Used for traversing the workflow graph downstream and understanding data flow.
     /// Multiple outgoing edges enable branching logic and parallel execution paths.
     /// </remarks>
-    public virtual ICollection<FlowEdge> OutgoingEdges { get; set; } = new List<FlowEdge>();
+    public virtual ICollection<FlowEdge> OutgoingEdges { get; set; } = [];
     
     /// <summary>
     /// Gets or sets the collection of execution records for this specific node.
@@ -442,5 +442,5 @@ public class FlowNode : AuditableEntity
     /// Essential for debugging, performance analysis, and audit trails.
     /// Each execution record contains timing, status, input/output data, and error information.
     /// </remarks>
-    public virtual ICollection<NodeExecution> Executions { get; set; } = new List<NodeExecution>();
+    public virtual ICollection<NodeExecution> Executions { get; set; } = [];
 }

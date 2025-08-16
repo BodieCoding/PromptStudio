@@ -1,27 +1,29 @@
-﻿using PromptStudio.Core.DTOs.Models;
-using PromptStudio.Core.Interfaces.Models;
+using PromptStudio.Core.DTOs.Models;
 
 namespace PromptStudio.Core.Interfaces;
 
 /// <summary>
-/// Extended interface for advanced model provider management with cost estimation and validation
-/// Extends the existing IModelProviderManager from IModelProvider.cs
+/// Interface for managing multiple model providers
 /// </summary>
-public interface IAdvancedModelProviderManager : IModelProviderManager
+public interface IModelProviderManager
 {
     /// <summary>
-    /// Get available models from all providers
+    /// Get all registered providers
     /// </summary>
-    Task<IEnumerable<DetailedModelInfo>> GetAvailableModelsAsync();
-    
-    /// <summary>
-    /// Validate model availability and configuration
-    /// </summary>
-    Task<bool> ValidateModelAsync(string modelId);
-    
-    /// <summary>
-    /// Get estimated cost for a request
-    /// </summary>
-    Task<decimal> EstimateCostAsync(ModelRequest request);
-}
+    IEnumerable<IModelProvider> GetProviders();
 
+    /// <summary>
+    /// Get a specific provider by name
+    /// </summary>
+    IModelProvider? GetProvider(string providerName);
+
+    /// <summary>
+    /// Get all available models from all providers
+    /// </summary>
+    Task<IEnumerable<ModelInfo>> GetAllAvailableModelsAsync();
+
+    /// <summary>
+    /// Execute a prompt using the appropriate provider
+    /// </summary>
+    Task<ModelResponse> ExecutePromptAsync(ModelRequest request);
+}

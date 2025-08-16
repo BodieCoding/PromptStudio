@@ -20,7 +20,7 @@ public class ExecutionTrendAnalysis
     /// <summary>
     /// Data points over time
     /// </summary>
-    public List<ExecutionTrendPoint> TrendPoints { get; set; } = new();
+    public List<ExecutionTrendPoint> TrendPoints { get; set; } = [];
 
     /// <summary>
     /// Overall trend direction (increasing, decreasing, stable)

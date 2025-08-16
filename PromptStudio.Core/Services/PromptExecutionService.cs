@@ -171,7 +171,7 @@ namespace PromptStudio.Core.Services
                 {
                     BatchId = batchId,
                     IsSuccess = true,
-                    Results = new List<IndividualExecutionResult>()
+                    Results = []
                 };
 
                 return result;

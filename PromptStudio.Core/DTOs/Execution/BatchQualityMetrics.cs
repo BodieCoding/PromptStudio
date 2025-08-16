@@ -28,5 +28,5 @@ public class BatchQualityMetrics
     /// <summary>
     /// Distribution of quality scores by range
     /// </summary>
-    public Dictionary<string, int> QualityDistribution { get; set; } = new();
+    public Dictionary<string, int> QualityDistribution { get; set; } = [];
 }

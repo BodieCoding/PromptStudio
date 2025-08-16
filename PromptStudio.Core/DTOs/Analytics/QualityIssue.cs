@@ -54,5 +54,5 @@ public class QualityIssue
     /// Gets or sets additional contextual details about the quality issue.
     /// </summary>
     /// <value>A dictionary containing supporting information, metrics, and context for the quality issue.</value>
-    public Dictionary<string, object> Details { get; set; } = new();
+    public Dictionary<string, object> Details { get; set; } = [];
 }

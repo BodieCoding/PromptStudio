@@ -49,11 +49,11 @@ public class WorkflowValidationSummary
     /// Gets or sets the collection of workflow-specific validation errors.
     /// </summary>
     /// <value>A list of critical errors specific to this workflow that must be resolved.</value>
-    public List<string> Errors { get; set; } = new();
+    public List<string> Errors { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of workflow-specific validation warnings.
     /// </summary>
     /// <value>A list of non-critical issues specific to this workflow suggesting improvements.</value>
-    public List<string> Warnings { get; set; } = new();
+    public List<string> Warnings { get; set; } = [];
 }

@@ -25,7 +25,7 @@ public class PromptExecutionResult
     /// <summary>
     /// Variables used in the execution
     /// </summary>
-    public Dictionary<string, string> Variables { get; set; } = new();
+    public Dictionary<string, string> Variables { get; set; } = [];
 
     /// <summary>
     /// Whether the execution was successful
@@ -75,5 +75,5 @@ public class PromptExecutionResult
     /// <summary>
     /// Additional execution metadata
     /// </summary>
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 }

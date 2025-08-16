@@ -116,7 +116,7 @@ public class LibraryExecutionStatistics : ExecutionStatistics
     /// <value>
     /// A dictionary mapping template IDs to their execution counts.
     /// </value>
-    public Dictionary<int, long> TemplateExecutionCounts { get; set; } = new();
+    public Dictionary<int, long> TemplateExecutionCounts { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection of execution counts by collection ID.
@@ -125,7 +125,7 @@ public class LibraryExecutionStatistics : ExecutionStatistics
     /// <value>
     /// A dictionary mapping collection IDs to their total execution counts.
     /// </value>
-    public Dictionary<int, long> CollectionExecutionCounts { get; set; } = new();
+    public Dictionary<int, long> CollectionExecutionCounts { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the most frequently executed template in the library.
@@ -143,7 +143,7 @@ public class LibraryExecutionStatistics : ExecutionStatistics
     /// <value>
     /// A list of template popularity information ordered by execution count.
     /// </value>
-    public List<TemplatePopularityInfo> TopPopularTemplates { get; set; } = new();
+    public List<TemplatePopularityInfo> TopPopularTemplates { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the average execution count per template in the library.
@@ -201,7 +201,7 @@ public class LibraryExecutionStatistics : ExecutionStatistics
     /// <value>
     /// A dictionary containing library-specific metrics and analytics data.
     /// </value>
-    public Dictionary<string, object> LibrarySpecificMetrics { get; set; } = new();
+    public Dictionary<string, object> LibrarySpecificMetrics { get; set; } = [];
 
     /// <summary>
     /// Initializes a new instance of the LibraryExecutionStatistics class with default values.

@@ -73,7 +73,7 @@ public class VariableUsageAnalytics
     /// High usage counts indicate critical variables, low counts suggest candidates for review or removal.
     /// Used by optimization services for data-driven template improvement recommendations.
     /// </summary>
-    public Dictionary<string, long> VariableUsageCount { get; set; } = new();
+    public Dictionary<string, long> VariableUsageCount { get; set; } = [];
     
     /// <summary>
     /// Dictionary mapping variable names to collections of their most frequently used values.
@@ -81,7 +81,7 @@ public class VariableUsageAnalytics
     /// Useful for understanding user behavior, identifying popular configurations, and optimizing defaults.
     /// Service layers can analyze value patterns for template improvement and user experience enhancement.
     /// </summary>
-    public Dictionary<string, List<string>> MostCommonValues { get; set; } = new();
+    public Dictionary<string, List<string>> MostCommonValues { get; set; } = [];
     
     /// <summary>
     /// Dictionary mapping variable names to their execution success rates as decimal percentages.
@@ -89,7 +89,7 @@ public class VariableUsageAnalytics
     /// Critical for identifying problematic variables and optimization opportunities.
     /// Success rates below 0.9 typically indicate variables requiring attention or optimization.
     /// </summary>
-    public Dictionary<string, double> VariableSuccessRates { get; set; } = new();
+    public Dictionary<string, double> VariableSuccessRates { get; set; } = [];
     
     /// <summary>
     /// Dictionary mapping variable names to their average execution performance time spans.
@@ -97,7 +97,7 @@ public class VariableUsageAnalytics
     /// Used for performance optimization, bottleneck identification, and efficiency improvement.
     /// High performance impact variables may require optimization or caching strategies.
     /// </summary>
-    public Dictionary<string, TimeSpan> VariablePerformance { get; set; } = new();
+    public Dictionary<string, TimeSpan> VariablePerformance { get; set; } = [];
     
     /// <summary>
     /// Collection of variable names that have not been used in any recent executions.
@@ -105,7 +105,7 @@ public class VariableUsageAnalytics
     /// Unused variables may indicate outdated functionality or missed optimization opportunities.
     /// Service layers can use this for template cleanup and maintenance automation workflows.
     /// </summary>
-    public List<string> UnusedVariables { get; set; } = new();
+    public List<string> UnusedVariables { get; set; } = [];
     
     /// <summary>
     /// Collection of variable names demonstrating exceptional performance and success rates.
@@ -113,5 +113,5 @@ public class VariableUsageAnalytics
     /// High-performing variables can serve as models for improving other variable implementations.
     /// Used for best practice identification and template optimization strategy development.
     /// </summary>
-    public List<string> HighPerformingVariables { get; set; } = new();
+    public List<string> HighPerformingVariables { get; set; } = [];
 }

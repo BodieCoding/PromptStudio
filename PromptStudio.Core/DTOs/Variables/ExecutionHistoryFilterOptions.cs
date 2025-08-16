@@ -60,7 +60,7 @@ public class ExecutionHistoryFilterOptions
     /// <summary>
     /// Gets or sets tags to filter by
     /// </summary>
-    public List<string> Tags { get; set; } = new();
+    public List<string> Tags { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the page number for pagination
