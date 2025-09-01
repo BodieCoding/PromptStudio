@@ -19,6 +19,7 @@ public class PromptStudioDbContextFactory : IDesignTimeDbContextFactory<PromptSt
         
         // Use SQL Server for design-time operations (migrations)
         // Default connection for local development
+
         var connectionString = "Server=localhost,1433;Database=PromptStudio;User Id=sa;Password=Two3RobotDuckTag!;TrustServerCertificate=true;";
         optionsBuilder.UseSqlServer(connectionString);
 
